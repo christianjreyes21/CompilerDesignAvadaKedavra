@@ -1,5 +1,5 @@
 
-public class Main {
+public class Lex {
 	
 	public static void main (String args[])
 	{
