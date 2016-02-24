@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 
 public class Lex {
 
@@ -6,6 +8,12 @@ public class Lex {
 	public static void main (String args[])
 	{
 		
-		System.out.println("hello");
+		System.out.println(" \t ==LEXICAL ANALYZER==");
+		System.out.print("Enter sample text: ");
+		Scanner reader = new Scanner(System.in);
+		String sample = reader.nextLine();
+		String []buffer = sample.split("");
 	}
+	
+	
 }
