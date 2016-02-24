@@ -15,11 +15,22 @@ public class LexRecognizer {
 	public static Token comment(String buffer, int characterAt)
 	{
 		Token token = new Token();
-		token.tokenName="comment";
+		
 		if (buffer.charAt(characterAt) == ':' && buffer.charAt(characterAt+1) == '/')
 		{
+			token.tokenName="Single-line Comment";
 			int tempCharAt = characterAt+2;
 			while(buffer.charAt(tempCharAt) != '\n')
+			{
+				token.tokenAttribute += buffer.charAt(tempCharAt);
+				tempCharAt++;
+			}
+		}
+		if (buffer.charAt(characterAt) == '(' && buffer.charAt(characterAt+1) == ':')
+		{
+			token.tokenName="Multiple-line Comment";
+			int tempCharAt = characterAt+2;
+			while(buffer.charAt(characterAt) != ':' && buffer.charAt(characterAt+1) != ')')
 			{
 				token.tokenAttribute += buffer.charAt(tempCharAt);
 				tempCharAt++;
