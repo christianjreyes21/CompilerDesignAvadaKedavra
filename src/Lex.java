@@ -9,10 +9,8 @@ public class Lex {
 	{
 		
 		System.out.println(" \t ==LEXICAL ANALYZER==");
-		System.out.print("Enter sample text: ");
-		Scanner reader = new Scanner(System.in);
-		String sample = reader.nextLine();
-		String []buffer = sample.split("");
+		
+		
 	}
 	
 	
