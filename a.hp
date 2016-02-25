@@ -1,10 +1,19 @@
-#INTEGER @HELLO ;
-:/ this is a comment
+#INTEGER @HELLO
 
 @STRING @Seeeeee
 
 
-
 #DECIMAL @HELLOWORLD
 
-(: a b :)
+
+; ( ) 
+
+;	"
+	
+#STRING
+@Xtreeme
+
+:/ this is a comment please say hi
+
+(: Multi
+:) @POE

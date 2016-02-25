@@ -8,7 +8,7 @@ public class Lex {
 							"LOG_OP", // logical operators ( AND , OR , NOT )
 							"COMMENT", // comments 
 							"NOISE", // noise words ( GOTO )
-							"DELIM", // ( ) " ' , ;
+							"DELIM", // ( ) " ' , ; 
 							"INDENT", // \t
 							"NUMBER", // 0 1 2 3 4 5 6 7 8 9
 							"ERROR" // error or unrecognized lexemes
@@ -18,33 +18,68 @@ public class Lex {
 	{
 		int line = 1;
 		int numTokens = 0;
-		Token[] maxTokens = new Token[99999999];
+		Token[] maxTokens = new Token[9999999];
 		Token[] trimmedTokens;
 		String possibleToken = "";
 		
 		// reading the whole file (medyo ito yung scanner)
 		for (int i = 0; i < file.length(); i++)
 		{
-			possibleToken += file.charAt(i);
-			System.out.println(possibleToken);
-			if (file.charAt(i) == '\n')
+			// reads characters from start of a character to a space or newline
+			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n'))
+				possibleToken += file.charAt(i);
+				
+			//System.out.println(possibleToken);
+			System.out.println("Real: " + i);
+			// reads tab (indent)
+			if (file.charAt(i) == '\t')
 			{
-				if (possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '[' || possibleToken.charAt(0) == '(')
+				maxTokens[numTokens] = LexRecognizer.indent(possibleToken, line);
+				numTokens++;
+				possibleToken = "";
+			}
+			//
+			else if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
+			{
+				// for newlines that are not preceeded by another symbol
+				if (file.charAt(i) == '\n' && possibleToken.length() == 0)
+				{
+					line++;
+					continue;
+				}
+				
+				if (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '(' || possibleToken.charAt(0) == ')' || possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '"')
 				{
 					//System.out.println("IN");
-					maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
+					if (possibleToken.length() == 2 && (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == '('))
+					{
+						if (possibleToken.charAt(0) == ':' && possibleToken.charAt(1) == '/')
+						{
+							while (file.charAt(i) != '\n')
+							{
+								possibleToken += file.charAt(i);
+								System.out.println("Real2: " + i++);
+							}
+						}
+						else if (possibleToken.charAt(0) == '(' && possibleToken.charAt(1) == ':')
+						{
+							while (file.charAt(i-1) != ':' && file.charAt(i) != ')')
+							{
+								possibleToken += file.charAt(i);
+
+								System.out.println("Real2: " + i++);
+							}
+							
+						}
+						maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
+					}
+					else 
+						maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
+					
 					numTokens++;
 					possibleToken = "";
 				}
-				if (file.charAt(i) == '\n')
-				{
-					line++;
-					possibleToken ="";
-				}
-			}
-			else if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
-			{	
-				if (possibleToken.charAt(0) == '@')
+				else if (possibleToken.charAt(0) == '@')
 				{
 					//System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
@@ -59,16 +94,12 @@ public class Lex {
 					possibleToken = "";
 				} 
 				
+				// for newlines that have a preceeding symbol or token or word
 				if (file.charAt(i) == '\n')
 				{
 					line++;
-					possibleToken ="";
+					possibleToken = "";
 				}
-				/*else if (possibleToken.charAt(i) == ':' && possibleToken.charAt(i + 1) == '/')	
-				{
-				
-				}*/
-				// operators here paaa
 			}
 		}	
 		// FROM MAX ARRAY TO RIGHT NUMBER OF ARRAY
@@ -91,15 +122,9 @@ public class Lex {
 		
 		Token[] symbolTable = Lex(InputOutput.getText("a.hp"));
 		
-		System.out.println("\nToken Name   Line Number   Token Attribute");
-		
 		for (int i = 0; i < symbolTable.length; i++)
 		{
-			
-			System.out.println(symbolTable[i].tokenName + " " + symbolTable[i].lineNumber + " " + symbolTable[i].tokenAttribute);
-			
+			System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
 		}
 	}
-	
-	
 }

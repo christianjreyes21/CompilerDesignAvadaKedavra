@@ -111,7 +111,7 @@ public class LexRecognizer {
 		{
 		    for (int j=0; j<Keywords[i].length(); j++)
 		    {
-		    	System.out.println(str.charAt(j) + " " + Keywords[i].charAt(j) + j+str.length() + valid);
+		    	//System.out.println(str.charAt(j) + " " + Keywords[i].charAt(j) + j+str.length() + valid);
 		    	if(str.charAt(j) != Keywords[i].charAt(j))
 		    	{
 		    		break;
@@ -137,12 +137,14 @@ public class LexRecognizer {
 	public static Token comment(String str, int line)
 	{
 		Token token = new Token();
-		token.tokenName="COMMENT";
+		token.tokenName="ERROR";
 		token.tokenAttribute= str;
 		token.lineNumber = line;
 		
-		if (!(str.charAt(0) == ':' && str.charAt(1) == '/') || !(str.charAt(0) == '(' && str.charAt(1) == ':' && str.charAt(str.length() - 1) == ':' && str.charAt(str.length() - 2) == ')'))	
-			token.tokenName = "ERROR";
+		if ((str.charAt(0) == ':' && str.charAt(1) == '/') || (str.charAt(0) == '(' && str.charAt(1) == ':' && str.charAt(str.length() - 1) == ':' && str.charAt(str.length() - 2) == ')'))	
+			token.tokenName = "COMMENT";
+		
+		System.out.println("Delimeter");
 		return token;
 	}
 	
@@ -176,74 +178,22 @@ public class LexRecognizer {
 	public static Token indent(String str, int line)
 	{
 		Token token = new Token();
-		token.tokenName = "IDENT";
+		token.tokenName = "INDENT";
 		token.tokenAttribute = str;
 		token.lineNumber = line;
 		
+		System.out.println("Indent");
 		return token;
 	}
 	
 	public static Token delim(String str, int line)
 	{
-		System.out.println(str);
 		Token token = new Token();
 		token.tokenName = "DELIM";
-		token.tokenAttribute = "";
+		token.tokenAttribute = str;
 		token.lineNumber = line;
 		
-		if (str.charAt(str.length()-2) == ';')
-		{
-			token.tokenAttribute = ";";
-		}
-		
-		if (str.charAt(str.length()-2) == ',')
-		{
-			token.tokenAttribute = ",";
-		}
-		
-		if (str.charAt(0) == '(')
-		{
-			int x=0;
-			while (!(str.charAt(x) == ')'))
-			{	
-				token.tokenAttribute += str.charAt(x);
-				x++;
-			}
-			token.tokenAttribute += ")";
-		}
-		
-		if (str.charAt(0) == '[')
-		{
-			int x=0;
-			while (str.charAt(x) != ']')
-			{
-				token.tokenAttribute += str.charAt(x);
-				x++;
-			}
-			token.tokenAttribute += "]";
-		}
-		
-		if (str.charAt(0) == '"')
-		{
-			int x=0;
-			while (str.charAt(x) != '"')
-			{
-				token.tokenAttribute += str.charAt(x);
-				x++;
-			}
-			token.tokenAttribute += "\"";
-		}
-		if (str.charAt(0) == '\'')
-		{
-			int x=0;
-			while (str.charAt(x) != '\'')
-			{
-				token.tokenAttribute += str.charAt(x);
-				x++;
-			}
-			token.tokenAttribute += "'";
-		}
-		
+		System.out.println("Delimeter");
 		return token;
 	}
 }
