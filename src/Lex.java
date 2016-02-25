@@ -17,7 +17,7 @@ public class Lex {
 	{
 		int line = 0;
 		int numTokens = 0;
-		Token[] maxTokens = new Token[Integer.MAX_VALUE - 8];
+		Token[] maxTokens = new Token[99999999];
 		Token[] trimmedTokens;
 		char firstChar = file.charAt(0);
 		String possibleToken = "";
