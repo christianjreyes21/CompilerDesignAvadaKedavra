@@ -92,6 +92,14 @@ public class Lex {
 		//System.out.println(LexRecognizer.keyword("FOR").tokenName);
 		
 		// CALL IT Lex HERE
+		
+		Token[] symbolTable = Lex(InputOutput.getText("FileName.here"));
+		
+		System.out.println("Token Name \t\t\t Line Number \t\t\t Token Attribute");
+		for (int i = 0; i < symbolTable.length; i++)
+		{
+			System.out.println(symbolTable[i].tokenName + "\t\t\t" + symbolTable[i].lineNumber + "\t\t\t" + symbolTable[i].tokenAttribute);
+		}
 	}
 	
 	
