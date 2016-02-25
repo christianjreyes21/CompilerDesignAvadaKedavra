@@ -87,4 +87,13 @@ public class LexRecognizer {
 		
 		return token;
 	}
+	
+	public Token indent(String str)
+	{
+		Token token = new Token();
+		token.tokenName = "IDENT";
+		token.tokenAttribute = str;
+		
+		return token;
+	}
 }
