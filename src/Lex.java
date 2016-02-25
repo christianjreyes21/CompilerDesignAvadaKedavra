@@ -17,64 +17,62 @@ public class Lex {
 	{
 		int line = 0;
 		int numTokens = 0;
+		int cursor = 0;
 		Token[] maxTokens = new Token[99999999];
 		Token[] trimmedTokens;
-		char firstChar = file.charAt(0);
 		String possibleToken = "";
 		
 		// reading the whole file (medyo ito yung scanner)
-		for (int i = 0; i < file.length(); i++)
+		while (true)
 		{
-			if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
+			if (cursor == file.length() - 1)
+				break;
+			
+			if (file.charAt(cursor) == ':' && file.charAt(cursor + 1) == '/')
 			{
-				if (possibleToken.charAt(0) == '@')
-					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
-				else if (possibleToken.charAt(0) == '#' || possibleToken.charAt(0) == '%')
-					LexRecognizer.keyword(possibleToken, line);
-				// tuloy nyo tong if else para sa Relational Operators, Arithmetic Operators tsaka Logical Operators
-				// OPERATORS HERE PLZ
+				while (file.charAt(cursor) != '\n')
+					possibleToken += file.charAt(cursor++);
 				
-				if (file.charAt(i) == '\n')
-					i++;
-	
+				maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
+				numTokens++;
+			}
+			else if (file.charAt(cursor) == '\t')
+			{
+				possibleToken += file.charAt(cursor);
+				maxTokens[numTokens] = LexRecognizer.indent(possibleToken, line);
+				numTokens++;
 				possibleToken = "";
-				numTokens++;
 			}
-			// SINGLE LINE COMMENT
-			else if (file.charAt(i) == ':' && file.charAt(i+1) == '/')
+			// add multiline comment here
+			else if (file.charAt(cursor) == ' ' && file.charAt(cursor) == '\n')
 			{
-				while (file.charAt(i) != '\n')
+				if (file.charAt(cursor) == '\n')
+					line++;
+				// identifiers
+				if (possibleToken.charAt(0) == '@')
 				{
-					possibleToken += file.charAt(i);
-					i++;
+					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
 				}
-				maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
-				numTokens++;
-			}
-			// MULTI LINE COMMENT
-			else if (file.charAt(i) == '(' && file.charAt(i+1) == ':')
-			{
-				while (file.charAt(i) != ':' && file.charAt(i + 1) != ')')
+				// keywords
+				else if (possibleToken.charAt(0) == '%' || possibleToken.charAt(0) == '#')
 				{
-					possibleToken += file.charAt(i);
-					i++;
+					maxTokens[numTokens] = LexRecognizer.keyword(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
 				}
-				maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
-				numTokens++;
+				else if (/*code for operations and delimeters here*/ true)
+				{}
+					
 			}
-			// FOR TABS (ito yung nag-aadd ng character sa string every time na nag-iiterate sya unless token yung mabasa)
 			else
 			{
-				possibleToken += file.charAt(i);
-				if (possibleToken.charAt(0) == '\t')
-				{
-					maxTokens[numTokens] = LexRecognizer.indent(possibleToken, line); 
-					possibleToken = "";
-					numTokens++;
-				}
+				possibleToken += file.charAt(cursor);
 			}
+			cursor++;
 		}
-		
+			
 		// FROM MAX ARRAY TO RIGHT NUMBER OF ARRAY
 		trimmedTokens = new Token[numTokens];
 		for (int i = 0; i < numTokens; i++)

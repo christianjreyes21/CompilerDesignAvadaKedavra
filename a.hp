@@ -1,3 +1,8 @@
 (: hello
 world
 :)
+=======
+#INTEGER @HELLO
+:/ this is a comment
+
+#STRING @Seeeeee
