@@ -18,11 +18,12 @@ public class LexRecognizer {
 	static String Keywords[] = {"INTEGER","DECIMAL","CHARACTER","STRING","BOOLEAN","SWITCH","CASE","STOP","DEFAULT","FOR","OUTPUT.PRINT","OUTPUT.PRINTLN","INPUT.GET"};
 	
 	
-	public static Token keyword(String str)
+	public static Token keyword(String str, int line)
 	{
 		Token token = new Token();
 		token.tokenName = "KEYWORD";
 		token.tokenAttribute = str;
+		token.lineNumber = line;
 		boolean valid = false;
 		
 		for (int i = 0; i < Keywords.length; i++)
@@ -51,23 +52,25 @@ public class LexRecognizer {
 		return token;
 	}
 	
-	public static Token comment(String str)
+	public static Token comment(String str, int line)
 	{
 		Token token = new Token();
 		token.tokenName="COMMENT";
 		token.tokenAttribute= str;
+		token.lineNumber = line;
 		
 		if (!(str.charAt(0) == ':' && str.charAt(1) == '/') || !(str.charAt(0) == '(' && str.charAt(1) == ':' && str.charAt(str.length() - 1) == ':' && str.charAt(str.length() - 2) == ')'))	
 			token.tokenName = "ERROR";
 		return token;
 	}
 	
-	public static Token identifier(String str)
+	public static Token identifier(String str, int line)
 	{
 		Token token = new Token();
 		token.tokenName = "IDENT";
 		token.tokenAttribute = str;
 		boolean valid = true;
+		token.lineNumber = line;
 		
 		// check if the symbol preceeding @ is a part of the alphabet
 		if (!(str.charAt(1) == 'A' || str.charAt(1) == 'B' || str.charAt(1) == 'C' || str.charAt(1) == 'D' || str.charAt(1) == 'E' || str.charAt(1) == 'F' || str.charAt(1) == 'G' || str.charAt(1) == 'H' || str.charAt(1) == 'I' || str.charAt(1) == 'J' || str.charAt(1) == 'K' || str.charAt(1) == 'L' || str.charAt(1) == 'M' || str.charAt(1) == 'N' || str.charAt(1) == 'O' || str.charAt(1) == 'P' || str.charAt(1) == 'Q' || str.charAt(1) == 'R' || str.charAt(1) == 'S' || str.charAt(1) == 'T' || str.charAt(1) == 'U' || str.charAt(1) == 'V' || str.charAt(1) == 'W' || str.charAt(1) == 'X' || str.charAt(1) == 'Y' || str.charAt(1) == 'Z' || str.charAt(1) == 'a' || str.charAt(1) == 'b' || str.charAt(1) == 'c' || str.charAt(1) == 'd' || str.charAt(1) == 'e' || str.charAt(1) == 'f' || str.charAt(1) == 'g' || str.charAt(1) == 'h' || str.charAt(1) == 'i' || str.charAt(1) == 'j' || str.charAt(1) == 'k' || str.charAt(1) == 'l' || str.charAt(1) == 'm' || str.charAt(1) == 'n' || str.charAt(1) == 'o' || str.charAt(1) == 'p' || str.charAt(1) == 'q' || str.charAt(1) == 'r' || str.charAt(1) == 's' || str.charAt(1) == 't' || str.charAt(1) == 'u' || str.charAt(1) == 'v' || str.charAt(1) == 'w' || str.charAt(1) == 'x' || str.charAt(1) == 'y' || str.charAt(1) == 'z'))
@@ -88,11 +91,12 @@ public class LexRecognizer {
 		return token;
 	}
 	
-	public Token indent(String str)
+	public static Token indent(String str, int line)
 	{
 		Token token = new Token();
 		token.tokenName = "IDENT";
 		token.tokenAttribute = str;
+		token.lineNumber = line;
 		
 		return token;
 	}
