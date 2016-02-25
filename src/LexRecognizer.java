@@ -6,18 +6,18 @@ public class LexRecognizer {
 	public static Token keyword(String buffer, int characterAt)
 	{
 		Token token = new Token();
-		token.tokenName="";
+		token.tokenName="KEYWORD";
 		token.tokenAttribute="";
 		int tempCharAt = characterAt;
 		
 		if (buffer.charAt(characterAt) == '#')
 		{
-			while(buffer.charAt(tempCharAt) != ' ')
+			while(buffer.charAt(tempCharAt) != ' ' && buffer.charAt(tempCharAt) != '\n')
 			{
 				token.tokenName += buffer.charAt(tempCharAt);
 				tempCharAt++;
 			}
-			
+			/*
 			while(buffer.charAt(tempCharAt) != '@')
 			{
 				tempCharAt++;
@@ -27,7 +27,7 @@ public class LexRecognizer {
 			{
 				token.tokenAttribute += buffer.charAt(tempCharAt);
 				tempCharAt++;
-			}
+			}*/
 		}
 		return token;
 	}
@@ -35,10 +35,10 @@ public class LexRecognizer {
 	public static Token comment(String buffer, int characterAt)
 	{
 		Token token = new Token();
+		token.tokenName="COMMENT";
 		token.tokenAttribute="";
 		if (buffer.charAt(characterAt) == ':' && buffer.charAt(characterAt+1) == '/')
 		{
-			token.tokenName="Single-line Comment";
 			int tempCharAt = characterAt+2;
 			while(buffer.charAt(tempCharAt) != '\n')
 			{
@@ -48,7 +48,6 @@ public class LexRecognizer {
 		}
 		if (buffer.charAt(characterAt) == '(' && buffer.charAt(characterAt+1) == ':')
 		{
-			token.tokenName="Multiple-line Comment";
 			int tempCharAt = characterAt+2;
 			while(buffer.charAt(tempCharAt) != ':' || buffer.charAt(tempCharAt+1) != ')')
 			{
