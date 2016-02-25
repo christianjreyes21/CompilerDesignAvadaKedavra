@@ -13,11 +13,11 @@ public class Lex {
 							"ERROR" // error or unrecognized lexemes
 							};
 	
-	public Token[] Lex(String file)
+	public static Token[] Lex(String file)
 	{
 		int line = 0;
 		int numTokens = 0;
-		Token[] maxTokens = new Token[Integer.MAX_VALUE];
+		Token[] maxTokens = new Token[99999999];
 		Token[] trimmedTokens;
 		char firstChar = file.charAt(0);
 		String possibleToken = "";
@@ -93,7 +93,7 @@ public class Lex {
 		
 		// CALL IT Lex HERE
 		
-		Token[] symbolTable = Lex(InputOutput.getText("FileName.here"));
+		Token[] symbolTable = Lex(InputOutput.getText("a.hp"));
 		
 		System.out.println("Token Name \t\t\t Line Number \t\t\t Token Attribute");
 		for (int i = 0; i < symbolTable.length; i++)
