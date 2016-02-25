@@ -5,6 +5,8 @@ public class LexRecognizer {
 	public static Token keyword(String buffer, int characterAt)
 	{
 		Token token = new Token();
+		token.tokenName="";
+		token.tokenAttribute="";
 		int tempCharAt = characterAt;
 		
 		if (buffer.charAt(characterAt) == '#')
@@ -32,7 +34,7 @@ public class LexRecognizer {
 	public static Token comment(String buffer, int characterAt)
 	{
 		Token token = new Token();
-		
+		token.tokenAttribute="";
 		if (buffer.charAt(characterAt) == ':' && buffer.charAt(characterAt+1) == '/')
 		{
 			token.tokenName="Single-line Comment";
@@ -47,7 +49,7 @@ public class LexRecognizer {
 		{
 			token.tokenName="Multiple-line Comment";
 			int tempCharAt = characterAt+2;
-			while(buffer.charAt(characterAt) != ':' && buffer.charAt(characterAt+1) != ')')
+			while(buffer.charAt(tempCharAt) != ':' || buffer.charAt(tempCharAt+1) != ')')
 			{
 				token.tokenAttribute += buffer.charAt(tempCharAt);
 				tempCharAt++;

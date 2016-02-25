@@ -19,8 +19,8 @@ public class Lex {
 	{
 		
 		System.out.println(" \t ==LEXICAL ANALYZER==");
-		System.out.println(InputOutput.getText("a.hp"));
-		
+		//System.out.println(InputOutput.getText("a.hp"));
+		System.out.println(LexRecognizer.comment(InputOutput.getText("a.hp"), 0).tokenName + "\n" + LexRecognizer.comment(InputOutput.getText("a.hp"), 0).tokenAttribute);
 		
 	}
 	
