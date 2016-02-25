@@ -17,6 +17,40 @@ public class LexRecognizer {
 	static char IG[] = {'I', 'N', 'P', 'U', 'T', '.', 'G', 'E', 'T'};*/
 	static String Keywords[] = {"#INTEGER","#DECIMAL","#CHARACTER","#STRING","#BOOLEAN","%SWITCH","%CASE","%STOP","%DEFAULT","%FOR","%OUTPUT.PRINT","%OUTPUT.PRINTLN","%INPUT.GET"};
 	
+	public static Token arithmeticOperator(String str, int line)
+	{
+		Token token = new Token();
+		token.tokenName = "ARITH_OP";
+		token.tokenAttribute = str;
+		token.lineNumber = line;
+		boolean valid = true;
+		
+		if ((str.length()==1 && !((str.charAt(0) == '+') || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^')))
+		{
+			valid = false;
+		}
+			
+		{
+		if(str.length()==2)
+		{
+			if(str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^')
+				{
+					valid = false;
+				}
+		}
+		else
+		{
+			valid = false;
+		}
+				
+		}
+		
+		if (!valid)
+			token.tokenName = "ERROR";
+		System.out.println("Invalid Operator.");
+		return token;
+
+	}
 	
 	public static Token keyword(String str, int line)
 	{
