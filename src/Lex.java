@@ -30,7 +30,7 @@ public class Lex {
 			{
 				if (possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '[' || possibleToken.charAt(0) == '(')
 				{
-					System.out.println("IN");
+					//System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
@@ -45,14 +45,14 @@ public class Lex {
 			{	
 				if (possibleToken.charAt(0) == '@')
 				{
-					System.out.println("IN");
+					//System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
 				}
 				else if (possibleToken.charAt(0) == '#' || possibleToken.charAt(0) == '%')
 				{
-					System.out.println("IN");
+					//System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.keyword(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
