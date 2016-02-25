@@ -28,16 +28,16 @@ public class LexRecognizer {
 		
 		for (int i = 0; i < Keywords.length; i++)
 		{
-		    for (int j=0; j<Keywords[i].length() || j < str.length() - 1; j++)
+		    for (int j=0; j<Keywords[i].length(); j++)
 		    {
-		    	System.out.println(str.charAt(j) + " " + Keywords[i].charAt(j));
+		    	System.out.println(str.charAt(j) + " " + Keywords[i].charAt(j) + j+str.length() + valid);
 		    	if(str.charAt(j) != Keywords[i].charAt(j))
 		    	{
 		    		break;
 		    	}
 		    	else
 		    	{
-		    		if(j==str.length()-1)
+		    		if(j==str.length()-2)
 		    		{
 		    			valid=true;
 		    		}

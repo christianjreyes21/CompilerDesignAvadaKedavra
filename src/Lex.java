@@ -30,11 +30,7 @@ public class Lex {
 			{	
 				if (possibleToken.charAt(0) == '@')
 				{
-<<<<<<< HEAD
-					
-=======
 					System.out.println("IN");
->>>>>>> origin/master
 					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
@@ -72,7 +68,6 @@ public class Lex {
 	{
 		
 		System.out.println(" \t ==LEXICAL ANALYZER==");
-		System.out.println((int)'@');
 		//System.out.println(InputOutput.getText("a.hp"));
 		//System.out.println(LexRecognizer.keyword(InputOutput.getText("a.hp"), 0).tokenName + "\n" + LexRecognizer.keyword(InputOutput.getText("a.hp"), 0).tokenAttribute);
 		//System.out.println(LexRecognizer.keyword("FOR").tokenName);
