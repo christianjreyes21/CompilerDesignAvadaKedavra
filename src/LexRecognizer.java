@@ -106,7 +106,7 @@ public class LexRecognizer {
 	{
 		Token token = new Token();
 		token.tokenName = "DELIM";
-		token.tokenAttribute = str;
+		token.tokenAttribute = "";
 		token.lineNumber = line;
 		
 		if (str.charAt(str.length()-1) == ';')
@@ -123,10 +123,12 @@ public class LexRecognizer {
 		{
 			int x=0;
 			while (str.charAt(x) != ')')
-			{
+			{	
 				token.tokenAttribute += str.charAt(x);
 				x++;
+				System.out.println(token.tokenAttribute);
 			}
+			token.tokenAttribute += ")";
 		}
 		
 		if (str.charAt(0) == '[')
@@ -137,6 +139,7 @@ public class LexRecognizer {
 				token.tokenAttribute += str.charAt(x);
 				x++;
 			}
+			token.tokenAttribute += "]";
 		}
 		
 		if (str.charAt(0) == '"')
@@ -147,6 +150,7 @@ public class LexRecognizer {
 				token.tokenAttribute += str.charAt(x);
 				x++;
 			}
+			token.tokenAttribute += "\"";
 		}
 		if (str.charAt(0) == '\'')
 		{
@@ -156,6 +160,7 @@ public class LexRecognizer {
 				token.tokenAttribute += str.charAt(x);
 				x++;
 			}
+			token.tokenAttribute += "'";
 		}
 		
 		return token;

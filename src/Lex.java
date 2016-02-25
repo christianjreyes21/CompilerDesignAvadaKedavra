@@ -42,6 +42,13 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				} 
+				else if (possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '[' || possibleToken.charAt(0) == '(')
+				{
+					System.out.println("IN");
+					maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
+				} 
 				
 
 				if (file.charAt(i) == '\n')
@@ -78,7 +85,6 @@ public class Lex {
 		
 		System.out.println("\nToken Name   Line Number   Token Attribute");
 		
-		System.out.println(symbolTable.length);
 		for (int i = 0; i < symbolTable.length; i++)
 		{
 			

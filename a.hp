@@ -1,4 +1,4 @@
-#INTEGER @HELLO
+#INTEGER @HELLO ;
 :/ this is a comment
 
 @STRING @Seeeeee
@@ -6,3 +6,7 @@
 
 
 #DECIMAL @HELLOWORLD
+
+,
+
+(a a)
