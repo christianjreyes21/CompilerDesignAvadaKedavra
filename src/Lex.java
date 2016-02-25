@@ -17,60 +17,40 @@ public class Lex {
 	{
 		int line = 0;
 		int numTokens = 0;
-		int cursor = 0;
 		Token[] maxTokens = new Token[99999999];
 		Token[] trimmedTokens;
 		String possibleToken = "";
 		
 		// reading the whole file (medyo ito yung scanner)
-		while (true)
+		for (int i = 0; i < file.length(); i++)
 		{
-			if (cursor == file.length() - 1)
-				break;
-			
-			if (file.charAt(cursor) == ':' && file.charAt(cursor + 1) == '/')
+			System.out.print(file.charAt(i));
+			if (file.charAt(i) == ' ' && file.charAt(i) == '\n')
 			{
-				while (file.charAt(cursor) != '\n')
-					possibleToken += file.charAt(cursor++);
-				
-				maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
-				numTokens++;
-			}
-			else if (file.charAt(cursor) == '\t')
-			{
-				possibleToken += file.charAt(cursor);
-				maxTokens[numTokens] = LexRecognizer.indent(possibleToken, line);
-				numTokens++;
-				possibleToken = "";
-			}
-			// add multiline comment here
-			else if (file.charAt(cursor) == ' ' && file.charAt(cursor) == '\n')
-			{
-				if (file.charAt(cursor) == '\n')
+				if (file.charAt(i) == '\n')
 					line++;
-				// identifiers
-				if (possibleToken.charAt(0) == '@')
+				
+				if (possibleToken.charAt(i) == '@')
 				{
 					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
 				}
-				// keywords
-				else if (possibleToken.charAt(0) == '%' || possibleToken.charAt(0) == '#')
+				else if (possibleToken.charAt(i) == '#' && possibleToken.charAt(i) == '%')
 				{
 					maxTokens[numTokens] = LexRecognizer.keyword(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
-				}
-				else if (/*code for operations and delimeters here*/ true)
-				{}
-					
+				} 
+				/*else if (possibleToken.charAt(i) == ':' && possibleToken.charAt(i + 1) == '/')	
+				{
+				
+				}*/
+				// operators here paaa
 			}
 			else
-			{
-				possibleToken += file.charAt(cursor);
-			}
-			cursor++;
+				possibleToken += file.charAt(i);
+			
 		}
 			
 		// FROM MAX ARRAY TO RIGHT NUMBER OF ARRAY
@@ -93,10 +73,10 @@ public class Lex {
 		
 		Token[] symbolTable = Lex(InputOutput.getText("a.hp"));
 		
-		System.out.println("Token Name \t\t\t Line Number \t\t\t Token Attribute");
+		System.out.println("\nToken Name   Line Number   Token Attribute");
 		for (int i = 0; i < symbolTable.length; i++)
 		{
-			System.out.println(symbolTable[i].tokenName + "\t\t\t" + symbolTable[i].lineNumber + "\t\t\t" + symbolTable[i].tokenAttribute);
+			System.out.println(symbolTable[i].tokenName + " " + symbolTable[i].lineNumber + " " + symbolTable[i].tokenAttribute);
 		}
 	}
 	

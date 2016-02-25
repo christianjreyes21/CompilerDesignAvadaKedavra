@@ -48,7 +48,8 @@ public class LexRecognizer {
 		
 		if (!valid)
 			token.tokenName = "ERROR";
-			
+		
+		System.out.println("Keyword");
 		return token;
 	}
 	
@@ -87,7 +88,7 @@ public class LexRecognizer {
 		
 		if (!valid)
 			token.tokenName = "ERROR";
-		
+		System.out.println("Identifier");
 		return token;
 	}
 	
