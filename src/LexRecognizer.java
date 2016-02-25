@@ -23,20 +23,23 @@ public class LexRecognizer {
 		Token token = new Token();
 		token.tokenName = "KEYWORD";
 		token.tokenAttribute = str;
-		boolean valid = true;
+		boolean valid = false;
 		
 		for (int i = 0; i < Keywords.length; i++)
 		{
 		    for (int j=0; j<str.length(); j++)
 		    {
-		    	boolean keywordStateValid;
+		    	
 		    	if(str.charAt(j) != Keywords[i].charAt(j))
 		    	{
 		    		break;
 		    	}
 		    	else
 		    	{
-		    		keywordStateValid = true;
+		    		if(j==str.length()-1)
+		    		{
+		    			valid=true;
+		    		}
 		    	}
 		    }
 		}
