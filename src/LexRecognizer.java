@@ -100,4 +100,63 @@ public class LexRecognizer {
 		
 		return token;
 	}
+	
+	public static Token delim(String str, int line)
+	{
+		Token token = new Token();
+		token.tokenName = "DELIM";
+		token.tokenAttribute = str;
+		token.lineNumber = line;
+		
+		if (str.charAt(str.length()-1) == ';')
+		{
+			token.tokenAttribute = ";";
+		}
+		
+		if (str.charAt(str.length()-1) == ',')
+		{
+			token.tokenAttribute = ",";
+		}
+		
+		if (str.charAt(0) == '(')
+		{
+			int x=0;
+			while (str.charAt(x) != ')')
+			{
+				token.tokenAttribute += str.charAt(x);
+				x++;
+			}
+		}
+		
+		if (str.charAt(0) == '[')
+		{
+			int x=0;
+			while (str.charAt(x) != ']')
+			{
+				token.tokenAttribute += str.charAt(x);
+				x++;
+			}
+		}
+		
+		if (str.charAt(0) == '"')
+		{
+			int x=0;
+			while (str.charAt(x) != '"')
+			{
+				token.tokenAttribute += str.charAt(x);
+				x++;
+			}
+		}
+		if (str.charAt(0) == '\'')
+		{
+			int x=0;
+			while (str.charAt(x) != '\'')
+			{
+				token.tokenAttribute += str.charAt(x);
+				x++;
+			}
+		}
+		
+		return token;
+	}
 }
