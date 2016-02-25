@@ -22,7 +22,7 @@ public class LexRecognizer {
 				tempCharAt++;
 			}
 			
-			while(buffer.charAt(tempCharAt) != ' ' || buffer.charAt(tempCharAt) != '\n')
+			while(buffer.charAt(tempCharAt) != ' ' && buffer.charAt(tempCharAt) != '\n')
 			{
 				token.tokenAttribute += buffer.charAt(tempCharAt);
 				tempCharAt++;

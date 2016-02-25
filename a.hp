@@ -1,5 +1,1 @@
-(:this is
-a 
-multi line()
-comment:
-:)
+#INTEGER @HELLO
