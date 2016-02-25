@@ -1,5 +1,4 @@
-
 #INTEGER @HELLO
 :/ this is a comment
 
-#STRING @Seeeeee
+@STRING @Seeeeee

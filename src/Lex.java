@@ -24,35 +24,38 @@ public class Lex {
 		// reading the whole file (medyo ito yung scanner)
 		for (int i = 0; i < file.length(); i++)
 		{
-			System.out.print(file.charAt(i));
-			if (file.charAt(i) == ' ' && file.charAt(i) == '\n')
-			{
-				if (file.charAt(i) == '\n')
-					line++;
-				
-				if (possibleToken.charAt(i) == '@')
+			possibleToken += file.charAt(i);
+			System.out.println(possibleToken);
+			if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
+			{	
+				if (possibleToken.charAt(0) == '@')
 				{
+					System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.identifier(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
 				}
-				else if (possibleToken.charAt(i) == '#' && possibleToken.charAt(i) == '%')
+				else if (possibleToken.charAt(0) == '#' || possibleToken.charAt(0) == '%')
 				{
+					System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.keyword(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
 				} 
+				
+
+				if (file.charAt(i) == '\n')
+				{
+					line++;
+					possibleToken ="";
+				}
 				/*else if (possibleToken.charAt(i) == ':' && possibleToken.charAt(i + 1) == '/')	
 				{
 				
 				}*/
 				// operators here paaa
 			}
-			else
-				possibleToken += file.charAt(i);
-			
-		}
-			
+		}	
 		// FROM MAX ARRAY TO RIGHT NUMBER OF ARRAY
 		trimmedTokens = new Token[numTokens];
 		for (int i = 0; i < numTokens; i++)
