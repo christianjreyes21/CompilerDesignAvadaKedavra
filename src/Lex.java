@@ -21,6 +21,7 @@ public class Lex {
 	{
 		
 		System.out.println(" \t ==LEXICAL ANALYZER==");
+		System.out.println(InputOutput.getText("a.hp"));
 		
 		
 	}
