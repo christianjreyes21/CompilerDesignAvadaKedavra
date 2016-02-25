@@ -7,4 +7,4 @@
 
 #DECIMAL @HELLOWORLD
 
-(a b)
+(: a b :)
