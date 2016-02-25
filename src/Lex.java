@@ -15,7 +15,7 @@ public class Lex {
 	
 	public static Token[] Lex(String file)
 	{
-		int line = 0;
+		int line = 1;
 		int numTokens = 0;
 		Token[] maxTokens = new Token[99999999];
 		Token[] trimmedTokens;
@@ -26,7 +26,22 @@ public class Lex {
 		{
 			possibleToken += file.charAt(i);
 			System.out.println(possibleToken);
-			if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
+			if (file.charAt(i) == '\n')
+			{
+				if (possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '[' || possibleToken.charAt(0) == '(')
+				{
+					System.out.println("IN");
+					maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
+				}
+				if (file.charAt(i) == '\n')
+				{
+					line++;
+					possibleToken ="";
+				}
+			}
+			else if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
 			{	
 				if (possibleToken.charAt(0) == '@')
 				{
@@ -42,15 +57,7 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				} 
-				else if (possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '[' || possibleToken.charAt(0) == '(')
-				{
-					System.out.println("IN");
-					maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
-					numTokens++;
-					possibleToken = "";
-				} 
 				
-
 				if (file.charAt(i) == '\n')
 				{
 					line++;

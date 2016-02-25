@@ -104,17 +104,18 @@ public class LexRecognizer {
 	
 	public static Token delim(String str, int line)
 	{
+		System.out.println(str);
 		Token token = new Token();
 		token.tokenName = "DELIM";
 		token.tokenAttribute = "";
 		token.lineNumber = line;
 		
-		if (str.charAt(str.length()-1) == ';')
+		if (str.charAt(str.length()-2) == ';')
 		{
 			token.tokenAttribute = ";";
 		}
 		
-		if (str.charAt(str.length()-1) == ',')
+		if (str.charAt(str.length()-2) == ',')
 		{
 			token.tokenAttribute = ",";
 		}
@@ -122,11 +123,10 @@ public class LexRecognizer {
 		if (str.charAt(0) == '(')
 		{
 			int x=0;
-			while (str.charAt(x) != ')')
+			while (!(str.charAt(x) == ')'))
 			{	
 				token.tokenAttribute += str.charAt(x);
 				x++;
-				System.out.println(token.tokenAttribute);
 			}
 			token.tokenAttribute += ")";
 		}
