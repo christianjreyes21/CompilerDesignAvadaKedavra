@@ -27,7 +27,7 @@ public class LexRecognizer {
 		
 		for (int i = 0; i < Keywords.length; i++)
 		{
-		    for (int j=0; j<str.length(); j++)
+		    for (int j=0; j<Keywords[i].length(); j++)
 		    {
 		    	
 		    	if(str.charAt(j) != Keywords[i].charAt(j))
