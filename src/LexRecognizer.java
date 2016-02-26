@@ -213,6 +213,9 @@ public class LexRecognizer {
 		token.tokenAttribute = str;
 		token.lineNumber = line;
 		
+		if(str.length() != 1)
+			token.tokenName = "ERROR";
+		
 		System.out.println("Delimeter");
 		return token;
 	}
