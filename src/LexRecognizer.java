@@ -20,81 +20,35 @@ public class LexRecognizer {
 	public static Token allOperator(String str, int line)
 	{
 		Token token = new Token();
+		token.tokenName = "ERROR";
 		token.tokenAttribute = str;
 		token.lineNumber = line;
-		boolean valid = true;
 		
-		if ((str.length()==1 && !(str.charAt(0) == '+' || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' || str.charAt(0) == '=' )))
-		{
-			valid = false;
-		}
-			token.tokenName = "ARITH_OP";
-			token.tokenAttribute = str;
-		{
-		if(str.length()==2 && (str.charAt(0) == '+'))
-		{
-			if(str.charAt(1) == '-' || str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^' || str.charAt(0) == '=' || str.charAt(0) == '<' || str.charAt(0) == '>' || str.charAt(0) == '!' )
-				{
-					valid = false;
-				}
+		if (str.charAt(0) == '+' || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' || str.charAt(0) == '=' )
+			if (str.length()==1)
 				token.tokenName = "ARITH_OP";
-				token.tokenAttribute = str;
-		}
-		if(str.length()==2 && (str.charAt(0) == '-'))
-		{
-			if(str.charAt(1) == '+' || str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^' || str.charAt(0) == '=' || str.charAt(0) == '<' || str.charAt(0) == '>' || str.charAt(0) == '!' )
-				{
-					valid = false;
-				}
-				token.tokenName = "ARITH_OP";
-				token.tokenAttribute = str;
-		}
-		if(str.length()==2 && (str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' ))
-		{
-			if(str.charAt(1) == '+' || str.charAt(1) == '-' || str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^' || str.charAt(0) == '=' || str.charAt(0) == '<' || str.charAt(0) == '>' || str.charAt(0) == '!' )
-				{
-					valid = false;
-				}
-				token.tokenName = "ARITH_OP";
-				token.tokenAttribute = str;
-		}
+			
+			if (str.length() == 2)
+				if (((str.charAt(0) == '+') && (str.charAt(0) == '+')) || ((str.charAt(0) == '-') && (str.charAt(0) == '-')))
+					token.tokenName = "ARITH_OP";
+		
+		
 		if(str.length()==2 && (str.charAt(0) == '=' ))
 		{
-			if(str.charAt(1) == '+' || str.charAt(1) == '-' || str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^' || str.charAt(0) == '<' || str.charAt(0) == '>' || str.charAt(0) == '!' )
-				{
-					valid = false;
-				}
+			if(str.charAt(1) == '<' || str.charAt(1) == '>')
 				token.tokenName = "REL_OP";
-				token.tokenAttribute = str;
-		}
-		if(str.length()==2 && (str.charAt(0) == '<' || str.charAt(0) == '>'))
-		{
-			if(str.charAt(1) == '+' || str. charAt(1) == '-' || str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^' || str.charAt(0) == '<' || str.charAt(0) == '>' || str.charAt(0) == '!' )
-				{
-					valid = false;
-				}
-				token.tokenName = "REL_OP";
-				token.tokenAttribute = str;
-		}
-		if(str.length()==2 && (str.charAt(0) == '!' ))
-		{
-			if(str.charAt(1) == '+' || str. charAt(1) == '-' || str.charAt(1) == '*' || str.charAt(1) == '/' || str.charAt(1) == '^' || str.charAt(0) == '<' || str.charAt(0) == '>' || str.charAt(0) == '!' )
-				{
-					valid = false;
-				}
-				token.tokenName = "REL_OP";
-				token.tokenAttribute = str;
-		}
-		else
-		{
-			valid = false;
-		}
-				
 		}
 		
-		if (!valid)
-			token.tokenName = "ERROR";
-		System.out.println("Invalid Operator.");
+		if(str.length()==2 && (str.charAt(0) == '<' || str.charAt(0) == '>'))
+			if(str.charAt(1) == '=')
+				token.tokenName = "REL_OP";
+		
+		if(str.length()==2 && (str.charAt(0) == '!' ))
+		{
+			if(str.charAt(1) == '=')
+				token.tokenName = "REL_OP";
+		}
+		
 		return token;
 
 	}
@@ -140,11 +94,11 @@ public class LexRecognizer {
 		token.tokenName="ERROR";
 		token.tokenAttribute= str;
 		token.lineNumber = line;
-		
+
 		if ((str.charAt(0) == ':' && str.charAt(1) == '/') || (str.charAt(0) == '(' && str.charAt(1) == ':' && str.charAt(str.length() - 1) == ':' && str.charAt(str.length() - 2) == ')'))	
 			token.tokenName = "COMMENT";
 		
-		System.out.println("Delimeter");
+		System.out.println("Comment");
 		return token;
 	}
 	
@@ -194,6 +148,31 @@ public class LexRecognizer {
 		token.lineNumber = line;
 		
 		System.out.println("Delimeter");
+		return token;
+	}
+	
+	public static Token number(String str, int line)
+	{
+		Token token = new Token();
+		token.tokenName = "NUMBER";
+		token.tokenAttribute = str;
+		token.lineNumber = line;
+		
+		// start sa 1 kasi pwedeng negative. Yung pagcheck ng negative nasa Lex na function, kasama na sya dun sa if statement. Pag nagstart yung character sa - 0 1 2 3 4 5 6 7 8 9, bale, pag nagstart sa - understood na yun na negative tas dito
+		// checheck nalang yung remaining symbols kung number ba talaga sila
+		for (int i = 1; i < str.length(); i++)
+		{
+			if (!(str.charAt(i) == '0' || str.charAt(i) == '1' || str.charAt(i) == '2' || str.charAt(i) == '3' || str.charAt(i) == '4' || str.charAt(i) == '5' || str.charAt(i) == '6' || str.charAt(i) == '7' || str.charAt(i) == '8' || str.charAt(i) == '9'))
+			{
+				token.tokenName = "ERROR";
+				break;
+			}
+		}
+		
+		if (str.charAt(0) == '-' && str.length() == 1)
+			token.tokenName = "ERROR";
+		
+		System.out.println("Number");
 		return token;
 	}
 }

@@ -11,6 +11,7 @@ public class Lex {
 							"DELIM", // ( ) " ' , ; 
 							"INDENT", // \t
 							"NUMBER", // 0 1 2 3 4 5 6 7 8 9
+							"BLANK",
 							"ERROR" // error or unrecognized lexemes
 							};
 	
@@ -18,7 +19,7 @@ public class Lex {
 	{
 		int line = 1;
 		int numTokens = 0;
-		Token[] maxTokens = new Token[9999999];
+		Token[] maxTokens = new Token[999999];
 		Token[] trimmedTokens;
 		String possibleToken = "";
 		
@@ -30,24 +31,24 @@ public class Lex {
 				possibleToken += file.charAt(i);
 				
 			//System.out.println(possibleToken);
-			System.out.println("Real: " + i);
 			// reads tab (indent)
-			if (file.charAt(i) == '\t')
+			if (file.charAt(0) == '\t')
 			{
-				maxTokens[numTokens] = LexRecognizer.indent(possibleToken, line);
+				maxTokens[numTokens] = LexRecognizer.indent("", line);
 				numTokens++;
 				possibleToken = "";
+				continue;
 			}
 			//
 			else if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
-			{
+			{	
 				// for newlines that are not preceeded by another symbol
 				if (file.charAt(i) == '\n' && possibleToken.length() == 0)
 				{
 					line++;
 					continue;
 				}
-				
+				// delimeters
 				if (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '(' || possibleToken.charAt(0) == ')' || possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '"')
 				{
 					//System.out.println("IN");
@@ -58,27 +59,26 @@ public class Lex {
 							while (file.charAt(i) != '\n')
 							{
 								possibleToken += file.charAt(i);
-								System.out.println("Real2: " + i++);
+								i++;
 							}
 						}
 						else if (possibleToken.charAt(0) == '(' && possibleToken.charAt(1) == ':')
 						{
-							while (file.charAt(i-1) != ':' && file.charAt(i) != ')')
+							while (i < file.length() - 2 && file.charAt(i-2) != ':' && file.charAt(i-1) != ')')
 							{
-								possibleToken += file.charAt(i);
-
-								System.out.println("Real2: " + i++);
+								possibleToken += file.charAt(i);									
+								i++;
 							}
-							
 						}
 						maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
 					}
-					else 
+					else
 						maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
 					
 					numTokens++;
 					possibleToken = "";
 				}
+				// identifier
 				else if (possibleToken.charAt(0) == '@')
 				{
 					//System.out.println("IN");
@@ -86,13 +86,40 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				}
+				// keywords
 				else if (possibleToken.charAt(0) == '#' || possibleToken.charAt(0) == '%')
 				{
 					//System.out.println("IN");
 					maxTokens[numTokens] = LexRecognizer.keyword(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
-				} 
+				}
+				// operators
+				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<')
+				{
+					maxTokens[numTokens] = LexRecognizer.allOperator(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
+				}
+				// numbers
+				else if (possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '0' || possibleToken.charAt(0) == '1' || possibleToken.charAt(0) == '2' || possibleToken.charAt(0) == '3' || possibleToken.charAt(0) == '4' || possibleToken.charAt(0) == '5' || possibleToken.charAt(0) == '6' || possibleToken.charAt(0) == '7' || possibleToken.charAt(0) == '8' || possibleToken.charAt(0) == '9')
+				{
+					maxTokens[numTokens] = LexRecognizer.number(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
+				}
+				// anything else na erroneous
+				else
+				{
+					Token error = new Token();
+					error.tokenName = "ERROR";
+					error.tokenAttribute = possibleToken;
+					error.lineNumber = line;
+					maxTokens[numTokens] =error;
+					numTokens++;
+					possibleToken = "";
+				}
+				
 				
 				// for newlines that have a preceeding symbol or token or word
 				if (file.charAt(i) == '\n')
