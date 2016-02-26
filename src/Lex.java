@@ -30,7 +30,6 @@ public class Lex {
 			// reads characters from start of a character to a space or newline
 			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n' || file.charAt(i) == '\t'))
 				possibleToken += file.charAt(i);
-			System.out.println(possibleToken);
 			// reads tab (indent)
 			if (file.charAt(i) == '\t')
 			{
@@ -42,20 +41,24 @@ public class Lex {
 			//
 			else if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
 			{
-				maxTokens[numTokens] = LexRecognizer.blank(Character.toString(file.charAt(i)), line);
+				/* IMPLEMENT THIS STILL BUGGY (MIXES NEWLINE WITH SPACES. HELP.
+				 * PLEASE. TYSM. UNCOMMENT THIS IF A SOLUTION IS FOUND :)
+				 * 
+				 * maxTokens[numTokens] = LexRecognizer.blank(Character.toString(file.charAt(i)), line);
 				numTokens++;
 		
+				if (file.charAt(i) == ' ' && possibleToken.length() == 0)
+					continue;
+				*/
 				// for newlines that are not preceeded by another symbol
 				if (file.charAt(i) == '\n' && possibleToken.length() == 0)
 				{
 					line++;
 					continue;
 				}
-
-				if (i < file.length() - 1 && possibleToken.length() == 0)
-					continue;
+				
 				// delimeters
-				else if (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '(' || possibleToken.charAt(0) == ')' || possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '"')
+				if (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '(' || possibleToken.charAt(0) == ')' || possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '"')
 				{
 					//System.out.println("IN");
 					if (possibleToken.length() == 2 && (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == '('))
@@ -163,7 +166,6 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				}
-				
 				
 				// for newlines that have a preceeding symbol or token or word
 				if (file.charAt(i) == '\n')
