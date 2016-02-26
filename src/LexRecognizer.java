@@ -15,7 +15,7 @@ public class LexRecognizer {
 	static char OP[] = {'O', 'U', 'T', 'P', 'U', 'T', '.', 'P', 'R', 'I', 'N', 'T'};
 	static char OPl[] = {'O', 'U', 'T', 'P', 'U', 'T', '.', 'P', 'R', 'I', 'N', 'T', 'L', 'N'};
 	static char IG[] = {'I', 'N', 'P', 'U', 'T', '.', 'G', 'E', 'T'};*/
-	static String Keywords[] = {"#INTEGER","#DECIMAL","#CHARACTER","#STRING","#BOOLEAN","%SWITCH","%CASE","%STOP","%DEFAULT","%FOR","%OUTPUT.PRINT","%OUTPUT.PRINTLN","%INPUT.GET"};
+	static String Keywords[] = {"#INTEGER","#DECIMAL","#CHARACTER","#STRING","#BOOLEAN","%SWITCH","%CASE","%STOP","%DEFAULT","%FOR","%OUTPUT.PRINT","%OUTPUT.PRINTLN","%INPUT.GET", "%TRUE", "%FALSE"};
 	
 	public static Token arithmeticAndRelationalOperator(String str, int line)
 	{
