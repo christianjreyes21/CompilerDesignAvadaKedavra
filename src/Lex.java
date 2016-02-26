@@ -94,10 +94,17 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				}
-				// operators
+				// arith and rela operators
 				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<' || possibleToken.charAt(0) == '^')
 				{
-					maxTokens[numTokens] = LexRecognizer.allOperator(possibleToken, line);
+					maxTokens[numTokens] = LexRecognizer.arithmeticAndRelationalOperator(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
+				}
+				// logi operators
+				else if (possibleToken.charAt(0) == '&')
+				{
+					maxTokens[numTokens] = LexRecognizer.logicalOperator(possibleToken, line);
 					numTokens++;
 					possibleToken = "";
 				}

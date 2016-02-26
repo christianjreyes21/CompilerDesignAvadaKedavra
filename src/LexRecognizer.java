@@ -17,7 +17,7 @@ public class LexRecognizer {
 	static char IG[] = {'I', 'N', 'P', 'U', 'T', '.', 'G', 'E', 'T'};*/
 	static String Keywords[] = {"#INTEGER","#DECIMAL","#CHARACTER","#STRING","#BOOLEAN","%SWITCH","%CASE","%STOP","%DEFAULT","%FOR","%OUTPUT.PRINT","%OUTPUT.PRINTLN","%INPUT.GET"};
 	
-	public static Token allOperator(String str, int line)
+	public static Token arithmeticAndRelationalOperator(String str, int line)
 	{
 		Token token = new Token();
 		token.tokenName = "ERROR";
@@ -57,6 +57,40 @@ public class LexRecognizer {
 		
 		return token;
 
+	}
+	public static Token logicalOperator(String str, int line)
+	{
+		Token token = new Token();
+		token.tokenName = "ERROR";
+		token.tokenAttribute = str;
+		token.lineNumber = line;
+		
+		if (str.charAt(0) == '&')
+		{
+			if (str.length()==1)
+			{
+				token.tokenName = "ERROR";
+			}
+			if (str.length() == 3)
+			{	
+				if(str.charAt(1) == 'O' && str.charAt(2) == 'R')
+				token.tokenName = "LOG_OP";
+			}
+			if (str.length() == 4)
+			{	
+				if(str.charAt(1) == 'A' && str.charAt(2) == 'N' && str.charAt(3) == 'D')
+				{
+					token.tokenName = "LOG_OP";
+				}
+				if(str.charAt(1) == 'N' && str.charAt(2) == 'O' && str.charAt(3) == 'T')
+				{
+					token.tokenName = "LOG_OP";
+				}
+			}
+			
+		}	
+		
+		return token;
 	}
 	
 	public static Token keyword(String str, int line)
