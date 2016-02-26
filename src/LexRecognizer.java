@@ -93,6 +93,32 @@ public class LexRecognizer {
 		return token;
 	}
 	
+	public static Token noise(String str, int line)
+	{
+		Token token = new Token();
+		token.tokenName = "ERROR";
+		token.tokenAttribute = str;
+		token.lineNumber = line;
+		
+		if (str.charAt(0) == '?')
+		{
+			if (str.length()==1)
+			{
+				token.tokenName = "ERROR";
+			}
+			if (str.length() == 5)
+			{	
+				if(str.charAt(1) == 'G' && str.charAt(2) == 'O' && str.charAt(3) == 'T' && str.charAt(4) == 'O')
+				{
+					token.tokenName = "NOISE";
+				}
+			}
+			
+		}	
+		
+		return token;
+	}
+	
 	public static Token keyword(String str, int line)
 	{
 		Token token = new Token();

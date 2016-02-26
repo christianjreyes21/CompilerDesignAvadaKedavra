@@ -38,3 +38,8 @@
 &ANDI
 &OR
 &NOT
+
+?
+?G
+?GOTO
+?GOTOKING

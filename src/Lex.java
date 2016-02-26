@@ -108,6 +108,13 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				}
+				// noise
+				else if (possibleToken.charAt(0) == '?')
+				{
+					maxTokens[numTokens] = LexRecognizer.noise(possibleToken, line);
+					numTokens++;
+					possibleToken = "";
+				}
 				// numbers
 				else if (possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '0' || possibleToken.charAt(0) == '1' || possibleToken.charAt(0) == '2' || possibleToken.charAt(0) == '3' || possibleToken.charAt(0) == '4' || possibleToken.charAt(0) == '5' || possibleToken.charAt(0) == '6' || possibleToken.charAt(0) == '7' || possibleToken.charAt(0) == '8' || possibleToken.charAt(0) == '9')
 				{
