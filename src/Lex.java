@@ -11,7 +11,8 @@ public class Lex {
 							"DELIM", // ( ) " ' , ; 
 							"INDENT", // \t
 							"NUMBER", // 0 1 2 3 4 5 6 7 8 9
-							"BLANK",
+							"SPACE",
+							"NEWLINE",
 							"ERROR" // error or unrecognized lexemes
 							};
 	
@@ -29,8 +30,7 @@ public class Lex {
 			// reads characters from start of a character to a space or newline
 			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n' || file.charAt(i) == '\t'))
 				possibleToken += file.charAt(i);
-				
-			//System.out.println(possibleToken);
+			System.out.println(possibleToken);
 			// reads tab (indent)
 			if (file.charAt(i) == '\t')
 			{
@@ -41,15 +41,21 @@ public class Lex {
 			}
 			//
 			else if (file.charAt(i) == ' ' || file.charAt(i) == '\n')
-			{	
+			{
+				maxTokens[numTokens] = LexRecognizer.blank(Character.toString(file.charAt(i)), line);
+				numTokens++;
+		
 				// for newlines that are not preceeded by another symbol
 				if (file.charAt(i) == '\n' && possibleToken.length() == 0)
 				{
 					line++;
 					continue;
 				}
+
+				if (i < file.length() - 1 && possibleToken.length() == 0)
+					continue;
 				// delimeters
-				if (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '(' || possibleToken.charAt(0) == ')' || possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '"')
+				else if (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == ';' || possibleToken.charAt(0) == ',' || possibleToken.charAt(0) == '(' || possibleToken.charAt(0) == ')' || possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '"')
 				{
 					//System.out.println("IN");
 					if (possibleToken.length() == 2 && (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == '('))
