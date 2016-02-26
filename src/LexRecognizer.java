@@ -150,7 +150,6 @@ public class LexRecognizer {
 		if (!valid)
 			token.tokenName = "ERROR";
 		
-		System.out.println("Keyword");
 		return token;
 	}
 	
@@ -160,11 +159,12 @@ public class LexRecognizer {
 		token.tokenName="ERROR";
 		token.tokenAttribute= str;
 		token.lineNumber = line;
-
-		if ((str.charAt(0) == ':' && str.charAt(1) == '/') || (str.charAt(0) == '(' && str.charAt(1) == ':' && str.charAt(str.length() - 1) == ':' && str.charAt(str.length() - 2) == ')'))	
-			token.tokenName = "COMMENT";
 		
-		System.out.println("Comment");
+		if ((str.charAt(0) == ':' && str.charAt(1) == '/') || (str.charAt(0) == '(' && str.charAt(1) == ':' && str.charAt(str.length() - 1) == ')' && str.charAt(str.length() - 2) == ':'))	
+		{
+			token.tokenName = "COMMENT";
+		}
+		
 		return token;
 	}
 	
@@ -191,7 +191,7 @@ public class LexRecognizer {
 		
 		if (!valid)
 			token.tokenName = "ERROR";
-		System.out.println("Identifier");
+
 		return token;
 	}
 	
@@ -202,7 +202,6 @@ public class LexRecognizer {
 		token.tokenAttribute = str;
 		token.lineNumber = line;
 		
-		System.out.println("Indent");
 		return token;
 	}
 	
@@ -216,7 +215,6 @@ public class LexRecognizer {
 		if(str.length() != 1)
 			token.tokenName = "ERROR";
 		
-		System.out.println("Delimeter");
 		return token;
 	}
 	
@@ -241,7 +239,21 @@ public class LexRecognizer {
 		if (str.charAt(0) == '-' && str.length() == 1)
 			token.tokenName = "ERROR";
 		
-		System.out.println("Number");
+		return token;
+	}
+	
+	public static Token blank(String str, int line)
+	{
+		Token token = new Token();
+		token.tokenName = "SPACE";
+		token.tokenAttribute = "";
+		token.lineNumber = line;
+		
+		if (str.charAt(0) == ' ')
+			token.tokenName = "SPACE";
+		else if (str.charAt(0) == '\n')
+			token.tokenName = "NEWLINE";
+		
 		return token;
 	}
 }

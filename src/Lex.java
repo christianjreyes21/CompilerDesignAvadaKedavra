@@ -54,7 +54,28 @@ public class Lex {
 					//System.out.println("IN");
 					if (possibleToken.length() == 2 && (possibleToken.charAt(0) == ':' || possibleToken.charAt(0) == '('))
 					{
-						if (possibleToken.charAt(0) == ':' && possibleToken.charAt(1) == '/')
+						if (possibleToken.charAt(0) == '(' && possibleToken.charAt(1) == ':')
+						{
+							while (i < file.length() - 2)
+							{
+								System.out.println(possibleToken);
+								// pag may newline sa comment diba. para madagdagan parin yung line counter
+								if (file.charAt(i) == '\n')
+									line++;
+								
+								if (file.charAt(i) == ':' && file.charAt(i+1) == ')')
+								{
+									possibleToken += file.charAt(i);
+									possibleToken += file.charAt(i + 1);
+									i = i + 2;
+									System.out.println(possibleToken);
+									break;
+								}
+								possibleToken += file.charAt(i);
+								i++;
+							}
+						}
+						else if (possibleToken.charAt(0) == ':' && possibleToken.charAt(1) == '/')
 						{
 							while (file.charAt(i) != '\n')
 							{
@@ -62,14 +83,7 @@ public class Lex {
 								i++;
 							}
 						}
-						else if (possibleToken.charAt(0) == '(' && possibleToken.charAt(1) == ':')
-						{
-							while (i < file.length() - 2 && file.charAt(i-2) != ':' && file.charAt(i-1) != ')')
-							{
-								possibleToken += file.charAt(i);									
-								i++;
-							}
-						}
+						
 						maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
 					}
 					else
@@ -97,9 +111,19 @@ public class Lex {
 				// arith and rela operators
 				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<' || possibleToken.charAt(0) == '^')
 				{
-					maxTokens[numTokens] = LexRecognizer.arithmeticAndRelationalOperator(possibleToken, line);
-					numTokens++;
-					possibleToken = "";
+					// this if is for negative numbers
+					if (possibleToken.charAt(0) == '-' && possibleToken.length() > 0)
+					{
+						maxTokens[numTokens] = LexRecognizer.number(possibleToken, line);
+						numTokens++;
+						possibleToken = "";
+					}
+					else
+					{
+						maxTokens[numTokens] = LexRecognizer.arithmeticAndRelationalOperator(possibleToken, line);
+						numTokens++;
+						possibleToken = "";
+					}
 				}
 				// logi operators
 				else if (possibleToken.charAt(0) == '&')
@@ -116,7 +140,7 @@ public class Lex {
 					possibleToken = "";
 				}
 				// numbers
-				else if (possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '0' || possibleToken.charAt(0) == '1' || possibleToken.charAt(0) == '2' || possibleToken.charAt(0) == '3' || possibleToken.charAt(0) == '4' || possibleToken.charAt(0) == '5' || possibleToken.charAt(0) == '6' || possibleToken.charAt(0) == '7' || possibleToken.charAt(0) == '8' || possibleToken.charAt(0) == '9')
+				else if (possibleToken.charAt(0) == '0' || possibleToken.charAt(0) == '1' || possibleToken.charAt(0) == '2' || possibleToken.charAt(0) == '3' || possibleToken.charAt(0) == '4' || possibleToken.charAt(0) == '5' || possibleToken.charAt(0) == '6' || possibleToken.charAt(0) == '7' || possibleToken.charAt(0) == '8' || possibleToken.charAt(0) == '9')
 				{
 					maxTokens[numTokens] = LexRecognizer.number(possibleToken, line);
 					numTokens++;
@@ -155,11 +179,6 @@ public class Lex {
 	{
 		
 		System.out.println(" \t ==LEXICAL ANALYZER==");
-		//System.out.println(InputOutput.getText("a.hp"));
-		//System.out.println(LexRecognizer.keyword(InputOutput.getText("a.hp"), 0).tokenName + "\n" + LexRecognizer.keyword(InputOutput.getText("a.hp"), 0).tokenAttribute);
-		//System.out.println(LexRecognizer.keyword("FOR").tokenName);
-		
-		// CALL IT Lex HERE
 		
 		Token[] symbolTable = Lex(InputOutput.getText("a.hp"));
 		
