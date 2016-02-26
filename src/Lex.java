@@ -27,12 +27,12 @@ public class Lex {
 		for (int i = 0; i < file.length(); i++)
 		{
 			// reads characters from start of a character to a space or newline
-			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n'))
+			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n' || file.charAt(i) == '\t'))
 				possibleToken += file.charAt(i);
 				
 			//System.out.println(possibleToken);
 			// reads tab (indent)
-			if (file.charAt(0) == '\t')
+			if (file.charAt(i) == '\t')
 			{
 				maxTokens[numTokens] = LexRecognizer.indent("", line);
 				numTokens++;
