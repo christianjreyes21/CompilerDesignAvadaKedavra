@@ -24,29 +24,35 @@ public class LexRecognizer {
 		token.tokenAttribute = str;
 		token.lineNumber = line;
 		
-		if (str.charAt(0) == '+' || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' || str.charAt(0) == '=' )
+		if (str.charAt(0) == '+' || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' || str.charAt(0) == '=')
+		{
 			if (str.length()==1)
 				token.tokenName = "ARITH_OP";
 			
-			if (str.length() == 2)
-				if (((str.charAt(0) == '+') && (str.charAt(0) == '+')) || ((str.charAt(0) == '-') && (str.charAt(0) == '-')))
+			if (str.length() == 2 && str.charAt(0) != '=')
+				if (((str.charAt(0) == '+') && (str.charAt(1) == '+')) || ((str.charAt(0) == '-') && (str.charAt(1) == '-')))
 					token.tokenName = "ARITH_OP";
-		
-		
-		if(str.length()==2 && (str.charAt(0) == '=' ))
-		{
-			if(str.charAt(1) == '<' || str.charAt(1) == '>')
-				token.tokenName = "REL_OP";
+			if (str.length() == 2 && str.charAt(0) == '=')
+				if (str.charAt(0) == '=' && str.charAt(1) == '=')
+					token.tokenName = "REL_OP";	
 		}
-		
-		if(str.length()==2 && (str.charAt(0) == '<' || str.charAt(0) == '>'))
-			if(str.charAt(1) == '=')
-				token.tokenName = "REL_OP";
-		
-		if(str.length()==2 && (str.charAt(0) == '!' ))
+		if (str.charAt(0) == '<' || str.charAt(0) == '>')
 		{
-			if(str.charAt(1) == '=')
+			if (str.length()==1)
 				token.tokenName = "REL_OP";
+			
+			if (str.length() == 2)
+				if (((str.charAt(0) == '<') && (str.charAt(1) == '=')) || ((str.charAt(0) == '>') && (str.charAt(1) == '=')))
+					token.tokenName = "REL_OP";
+		}
+		if (str.charAt(0) == '!')
+		{
+			if (str.length()==1)
+				token.tokenName = "ERROR";
+			
+			if (str.length() == 2)
+				if (((str.charAt(0) == '!') && (str.charAt(1) == '=')))
+					token.tokenName = "REL_OP";
 		}
 		
 		return token;

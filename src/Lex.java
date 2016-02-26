@@ -95,7 +95,7 @@ public class Lex {
 					possibleToken = "";
 				}
 				// operators
-				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<')
+				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<' || possibleToken.charAt(0) == '^')
 				{
 					maxTokens[numTokens] = LexRecognizer.allOperator(possibleToken, line);
 					numTokens++;
