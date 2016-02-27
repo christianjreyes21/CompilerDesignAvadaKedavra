@@ -1,46 +1,17 @@
-#INTEGER @HELLO
-
-@STRING @Seeeeee
-
-
-#DECIMAL @HELLOWORLD
-+ = - / *
-^ < > !
-!= 
-==
-++
---
-+-
--+
-**
-//
-^^
-<=
->=
-=>
-=<
-; ( ) 
-
-;	"
-9999 2234 223 12355 22123 -2313578
-#STRING
-@Xtreeme
-
-:/ this is a comment please say hi
-:
-(: Multi
-:) @poe
-
-
-&
-&A
-&AN
-&AND
-&ANDI
-&OR
-&NOT
-
-?
-?G
+#INTEGER #DECIMAL #CHARACTER #STRING #BOOLEAN 
+%SWITCH %CASE %STOP %DEFAULT %FOR %OUTPUT.PRINT %OUTPUT.PRINTLN %INPUT.GET %TRUE %FALSE
+< > <= >= == !=
++ - * / ^ 
+$MOD $DIV
+&AND &OR &NOT 
+:/Single line comment
+(: Multi-line comment :)
 ?GOTO
-?GOTOKING
+( ) " ' , ; 
+	:/Tab
+0 1 2 3 4 5 6 7 8 9
+ :/Space
+:/Newline
+
+@IDENTIFIER @P____ @O-
+:/ Thank you! 
