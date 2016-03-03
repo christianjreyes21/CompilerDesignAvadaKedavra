@@ -1,5 +1,6 @@
 #INTEGER #DECIMAL #CHARACTER #STRING #BOOLEAN 
-%SWITCH %CASE %STOP %DEFAULT %FOR %OUTPUT.PRINT %OUTPUT.PRINTLN %INPUT.GET %TRUE %FALSE
+%SWITCH %CASE %STOP %DEFAULT %FOR %OUTPUT.PRINT %OUTPUT.PRINTLN %INPUT.GET
+%TRUE %FALSE
 < > <= >= == !=
 + - * / ^ 
 $MOD $DIV
@@ -14,4 +15,5 @@ $MOD $DIV
 :/Newline
 
 @IDENTIFIER @P____ @O-
-:/ Thank you! 
+
+:/ Thank you for checking out our Lexical Analyzer! :)

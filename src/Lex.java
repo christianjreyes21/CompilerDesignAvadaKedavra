@@ -5,6 +5,7 @@ public class Lex {
 	String tokenNames[] = {	"IDENTIFIER", // identifiers  
 							"KEYWORD", // keywords (BOOLEAN , SWITCH , CASE , STOP , DEFAULT , FOR , OUTPUT.PRINT , OUTPRINT.PRINTLN , INPUT.GET )
 							"RESERVEDWORD", // INTEGER , DECIMAL , CHARACTER , STRING , BOOLEAN
+							"BOOLEAN", //boolean values (true, false)
 							"REL_OP", // relational operators ( < , > , <= , >=, == , != )
 							"ARITH_OP", // arithmetic operators ( + , - , / , * , MOD, DIV, ^ )
 							"LOG_OP", // logical operators ( AND , OR , NOT )

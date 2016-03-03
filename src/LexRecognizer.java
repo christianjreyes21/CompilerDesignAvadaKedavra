@@ -147,7 +147,12 @@ public class LexRecognizer {
 		    	//System.out.println(str.charAt(j) + " " + Keywords[i].charAt(j) + j+str.length() + valid);
 		    	if(str.charAt(j) != Keywords[i].charAt(j))
 		    	{
+		    		if((str.charAt(1) == 'T' && str.charAt(2) == 'R' && str.charAt(3) == 'U' && str.charAt(4) == 'E') || (str.charAt(1) == 'F' && str.charAt(2) == 'A' && str.charAt(3) == 'L' && str.charAt(4) == 'S' && str.charAt(5) == 'E'))
+		    		{
+		    			token.tokenName = "BOOLEAN";
+		    		}
 		    		break;
+
 		    	}
 		    	else
 		    	{
@@ -168,7 +173,7 @@ public class LexRecognizer {
 		public static Token reservedWord(String str, int line)
 		{
 			Token token = new Token();
-			token.tokenName = "RESERVED";
+			token.tokenName = "RESERVEDWORD";
 			token.tokenAttribute = str;
 			token.lineNumber = line;
 			boolean valid = false;
