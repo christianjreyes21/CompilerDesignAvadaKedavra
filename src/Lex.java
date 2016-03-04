@@ -125,15 +125,15 @@ public class Lex {
 					numTokens++;
 					possibleToken = "";
 				}
-				// arith and rela operators
-				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<' || possibleToken.charAt(0) == '^' || possibleToken.charAt(0) == '$')
+				// arith, rela, and logi operators
+				else if (possibleToken.charAt(0) == '!' || possibleToken.charAt(0) == '=' || possibleToken.charAt(0) == '+' || possibleToken.charAt(0) == '-' || possibleToken.charAt(0) == '/' || possibleToken.charAt(0) == '*' || possibleToken.charAt(0) == '>' || possibleToken.charAt(0) == '<' || possibleToken.charAt(0) == '^' || possibleToken.charAt(0) == '$' || possibleToken.charAt(0) == '&')
 				{
 					// this if is for negative numbers
 					if (possibleToken.charAt(0) == '-' && possibleToken.length() > 1)
 					{
 						if(possibleToken.length() == 2 && possibleToken.charAt(1) == '-')
 						{
-							maxTokens[numTokens] = LexRecognizer.arithmeticAndRelationalOperator(possibleToken, line);
+							maxTokens[numTokens] = LexRecognizer.operator(possibleToken, line);
 							numTokens++;
 							possibleToken = "";
 						}
@@ -146,17 +146,10 @@ public class Lex {
 					}
 					else
 					{
-						maxTokens[numTokens] = LexRecognizer.arithmeticAndRelationalOperator(possibleToken, line);
+						maxTokens[numTokens] = LexRecognizer.operator(possibleToken, line);
 						numTokens++;
 						possibleToken = "";
 					}
-				}
-				// logi operators
-				else if (possibleToken.charAt(0) == '&')
-				{
-					maxTokens[numTokens] = LexRecognizer.logicalOperator(possibleToken, line);
-					numTokens++;
-					possibleToken = "";
 				}
 				// noise
 				else if (possibleToken.charAt(0) == '?')

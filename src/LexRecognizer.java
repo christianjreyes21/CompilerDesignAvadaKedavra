@@ -17,7 +17,7 @@ public class LexRecognizer {
 	static String Keywords[] = {"%SWITCH","%CASE","%STOP","%DEFAULT","%FOR","%OUTPUT.PRINT","%OUTPUT.PRINTLN","%INPUT.GET", "%TRUE", "%FALSE"};
 	static String reservedWords[] = {"#INTEGER","#DECIMAL","#CHARACTER","#STRING","#BOOLEAN"};
 	
-	public static Token arithmeticAndRelationalOperator(String str, int line)
+	public static Token operator(String str, int line)
 	{
 		Token token = new Token();
 		token.tokenName = "ERROR";
@@ -33,8 +33,6 @@ public class LexRecognizer {
 				else if (str.charAt(1) == 'D' && str.charAt(2) == 'I' && str.charAt(3) == 'V')
 					token.tokenName = "ARITH_OP";
 			}
-			else
-				return token;
 		}
 		
 		if (str.charAt(0) == '+' || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' || str.charAt(0) == '=')
@@ -68,16 +66,6 @@ public class LexRecognizer {
 					token.tokenName = "REL_OP";
 		}
 		
-		return token;
-
-	}
-	public static Token logicalOperator(String str, int line)
-	{
-		Token token = new Token();
-		token.tokenName = "ERROR";
-		token.tokenAttribute = str;
-		token.lineNumber = line;
-		
 		if (str.charAt(0) == '&')
 		{
 			if (str.length()==1)
@@ -104,6 +92,7 @@ public class LexRecognizer {
 		}	
 		
 		return token;
+
 	}
 	
 	public static Token noise(String str, int line)
