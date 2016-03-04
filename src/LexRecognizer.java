@@ -29,32 +29,71 @@ public class LexRecognizer {
 			if (str.length() == 4)
 			{
 				if(str.charAt(1) == 'M' && str.charAt(2) == 'O' && str.charAt(3) == 'D')
-					token.tokenName = "ARITH_OP";
+					token.tokenName = "MOD_OP";
 				else if (str.charAt(1) == 'D' && str.charAt(2) == 'I' && str.charAt(3) == 'V')
-					token.tokenName = "ARITH_OP";
+					token.tokenName = "DIV_OP";
 			}
 		}
 		
 		if (str.charAt(0) == '+' || str.charAt(0) == '-' || str.charAt(0) == '*' || str.charAt(0) == '/' || str.charAt(0) == '^' || str.charAt(0) == '=')
 		{
 			if (str.length()==1)
-				token.tokenName = "ARITH_OP";
+			{
+				if(str.charAt(0) == '+'){
+					token.tokenName = "ADD_OP";
+				}
+				else if(str.charAt(0) == '-'){
+					token.tokenName = "SUBT_OP";
+				}
+				else if(str.charAt(0) == '*'){
+					token.tokenName = "MULT_OP";
+				}
+				else if(str.charAt(0) == '/'){
+					token.tokenName = "DIVI_OP";
+				}
+				else if(str.charAt(0) == '^'){
+					token.tokenName = "EXPON_OP";
+				}
+				else if(str.charAt(0) == '='){
+					token.tokenName = "ASSIGN_OP";
+				}
+			}
 			
 			if (str.length() == 2 && str.charAt(0) != '=')
-				if (((str.charAt(0) == '+') && (str.charAt(1) == '+')) || ((str.charAt(0) == '-') && (str.charAt(1) == '-')))
-					token.tokenName = "ARITH_OP";
+			{
+				if (((str.charAt(0) == '+') && (str.charAt(1) == '+')))
+					token.tokenName = "INCRE_OP";
+				else if(((str.charAt(0) == '-') && (str.charAt(1) == '-')))
+					token.tokenName = "DECRE_OP";
+			}
 			if (str.length() == 2 && str.charAt(0) == '=')
+			{
 				if (str.charAt(0) == '=' && str.charAt(1) == '=')
-					token.tokenName = "REL_OP";	
+					token.tokenName = "EQUALTO_OP";	
+			}
 		}
 		if (str.charAt(0) == '<' || str.charAt(0) == '>')
 		{
 			if (str.length()==1)
-				token.tokenName = "REL_OP";
-			
+			{
+				if(str.charAt(0) == '<'){
+					token.tokenName = "LESS_OP";
+				}
+				else if(str.charAt(0) == '<'){
+					token.tokenName = "GREATER_OP";
+				}
+			}
 			if (str.length() == 2)
-				if (((str.charAt(0) == '<') && (str.charAt(1) == '=')) || ((str.charAt(0) == '>') && (str.charAt(1) == '=')))
-					token.tokenName = "REL_OP";
+			{
+				if (((str.charAt(0) == '<') && (str.charAt(1) == '=')))
+				{
+					token.tokenName = "LESSEQUAL_OP";
+				}
+				else if ((str.charAt(0) == '>') && (str.charAt(1) == '='))
+				{
+					token.tokenName = "GREATEREQUAL_OP";
+				}
+			}
 		}
 		if (str.charAt(0) == '!')
 		{
@@ -63,7 +102,7 @@ public class LexRecognizer {
 			
 			if (str.length() == 2)
 				if (((str.charAt(0) == '!') && (str.charAt(1) == '=')))
-					token.tokenName = "REL_OP";
+					token.tokenName = "NOTEQUALTO_OP";
 		}
 		
 		if (str.charAt(0) == '&')
@@ -75,17 +114,17 @@ public class LexRecognizer {
 			if (str.length() == 3)
 			{	
 				if(str.charAt(1) == 'O' && str.charAt(2) == 'R')
-				token.tokenName = "LOG_OP";
+				token.tokenName = "OR_OP";
 			}
 			if (str.length() == 4)
 			{	
 				if(str.charAt(1) == 'A' && str.charAt(2) == 'N' && str.charAt(3) == 'D')
 				{
-					token.tokenName = "LOG_OP";
+					token.tokenName = "AND_OP";
 				}
 				if(str.charAt(1) == 'N' && str.charAt(2) == 'O' && str.charAt(3) == 'T')
 				{
-					token.tokenName = "LOG_OP";
+					token.tokenName = "NOT_OP";
 				}
 			}
 			
