@@ -1,5 +1,8 @@
 package AnalysisPhase.SyntaxAnalysis;
 
+import AnalysisPhase.LexicalAnalysis.InputOutput;
+import AnalysisPhase.LexicalAnalysis.Lex;
+import AnalysisPhase.LexicalAnalysis.Token;
 import Utilities.Node;
 
 
@@ -50,4 +53,48 @@ public class SyntaxAnalyzer {
 	Node valueNode = null;
 	Node constantNode = null;
 	Node booleanConstantNode = null;
+	
+	Token[] token;
+	int tokenCount = 0;
+	
+	public void analyze()
+	{
+		token = Lex.Lex(InputOutput.getText("a.hp"));
+		System.out.println("analyze"+token.length);
+		while (tokenCount < token.length)
+		{
+			//System.out.println(token[tokenCount].getTokenName());
+			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD"))
+			{
+				System.out.println("hello");
+				lineIdentifier();
+			}
+			tokenCount++;
+		}
+	}
+	
+	public void lineIdentifier()
+	{
+		nextToken(); // SPACE after IDENTIFIER
+		if(!nextToken().getTokenAttribute().equals("=") && !token[tokenCount].getTokenAttribute().equals(";")) // NAME DAPAT ITO NG VARIABLE
+		{
+			System.out.println(token[tokenCount].getTokenAttribute());
+			if(nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE"))
+			{
+				System.out.println("PUTANGINA MO SAGUM NAKITA NYA NA YUNG IDENTIFIER!!!");
+				System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
+			}
+			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("ERROR") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
+			{
+				System.out.println("PUTANGINA MO SAGUM NAKITA NYA NA YUNG IDENTIFIER WITH VALUE!!!");
+				System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+			}
+		}
+	}
+	
+	public Token nextToken()
+	{
+		tokenCount++;
+		return token[tokenCount];
+	}
 }

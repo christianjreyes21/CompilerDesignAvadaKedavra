@@ -2,6 +2,8 @@ package AnalysisPhase.LexicalAnalysis;
 
 import javax.swing.JOptionPane;
 
+import AnalysisPhase.SyntaxAnalysis.SyntaxAnalyzer;
+
 public class Lex {
 
 	String tokenNames[] = {	"IDENTIFIER", // identifiers  
@@ -201,9 +203,11 @@ public class Lex {
 		if (file.charAt(file.length() - 2) == 'h' && file.charAt(file.length() - 1) == 'p')
 		{
 			symbolTable = Lex(InputOutput.getText(file));
+			SyntaxAnalyzer syntax = new SyntaxAnalyzer();
+			syntax.analyze();
 			for (int i = 0; i < symbolTable.length; i++)
 			{
-				System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
+				//System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
 			}
 			InputOutput.writeText(symbolTable);
 		}
