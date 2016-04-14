@@ -1,3 +1,5 @@
+package AnalysisPhase.LexicalAnalysis;
+
 import javax.swing.JOptionPane;
 
 public class Lex {

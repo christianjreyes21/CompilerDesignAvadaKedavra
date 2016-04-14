@@ -1,3 +1,5 @@
+package AnalysisPhase.SyntaxAnalysis;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 

@@ -1,3 +1,5 @@
+package AnalysisPhase.LexicalAnalysis;
+
 public class Token {
 
 	String tokenName;
