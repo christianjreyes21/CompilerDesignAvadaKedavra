@@ -1,18 +1,38 @@
 #INTEGER hello = 1
 #DECIMAL DECIMALVAR
-#INTEGER #DECIMAL #CHARACTER #STRING #BOOLEAN 
+%
+%O
+%OUTPUT.PRINT
+%OUTPUT.PRINTLN
+%OUTPUT.PRINTL
+%OUTPUT.PRINTLNN
+#
+#B
+#BOOLEAN
+#INTEGER #DECIMAL #CHARACTER #STRING #BOOLEAN
+%
+%S
 %SWITCH %CASE %STOP %DEFAULT %FOR %OUTPUT.PRINT %OUTPUT.PRINTLN %INPUT.GET
 %TRUE %FALSE
-< > <= >= == !=
-+ - * / ^ 
+< > <= >= == != !== !
++ - * / ^ ++ --
+$
+$M
 $MOD $DIV
+&
+&A
 &AND &OR &NOT 
-:/Single line comment
+:/Wrong single line comment
+:/ Single line comment
+(:Wrong Multi line comment :)
 (: Multi-line comment :)
+?
+?G
+?GO
 ?GOTO
 ( ) " ' , ; 
 	:/Tab
-0 1 2 3 4 5 6 7 8 9
+0 1 2 3 4 5 6 7 8 9 0.5
  :/Space
 :/Newline
 
