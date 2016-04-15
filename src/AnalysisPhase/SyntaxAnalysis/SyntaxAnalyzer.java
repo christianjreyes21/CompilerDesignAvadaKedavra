@@ -71,6 +71,7 @@ public class SyntaxAnalyzer {
 				System.out.println("hello");
 				//lineIdentifier();
 			}
+			else if(token[tokenCount].getTokenName().equals("BOOLEAN_TRUE"))
 			tokenCount++;
 		}
 	}
