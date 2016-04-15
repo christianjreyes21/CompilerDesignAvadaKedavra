@@ -83,12 +83,12 @@ public class SyntaxAnalyzer {
 			System.out.println(token[tokenCount].getTokenAttribute());
 			if(nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE"))
 			{
-				System.out.println("PUTANGINA MO SAGUM NAKITA NYA NA YUNG IDENTIFIER!!!");
+				
 				System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
 			}
 			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("ERROR") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
 			{
-				System.out.println("PUTANGINA MO SAGUM NAKITA NYA NA YUNG IDENTIFIER WITH VALUE!!!");
+				
 				System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
 			}
 		}
