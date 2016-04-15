@@ -150,6 +150,30 @@ public class LexRecognizer {
 		token.lineNumber = line;
 		// Boolean bool = false;
 		// if (str.charAt(0) == '%') {
+		if (str.length() == 5) {
+			if (str.charAt(1) == 'T') {
+				if (str.charAt(2) == 'R') {
+					if (str.charAt(3) == 'U') {
+						if (str.charAt(4) == 'E') {
+							token.tokenName = "KEYWORD_BOOLEAN_TRUE";
+						}
+					}
+				}
+			}
+		}
+		if (str.length() == 6) {
+			if (str.charAt(1) == 'F') {
+				if (str.charAt(2) == 'A') {
+					if (str.charAt(3) == 'L') {
+						if (str.charAt(4) == 'S') {
+							if (str.charAt(5) == 'E') {
+								token.tokenName = "KEYWORD_BOOLEAN_FALSE";
+							}
+						}
+					}
+				}
+			}
+		}
 		if (str.length() == 7) {
 			if (str.charAt(1) == 'S') {
 				if (str.charAt(2) == 'W') {
@@ -294,30 +318,7 @@ public class LexRecognizer {
 		token.lineNumber = line;
 
 		// if (str.charAt(0) == '#') {
-		if (str.length() == 4) {
-			if (str.charAt(1) == 'T') {
-				if (str.charAt(2) == 'R') {
-					if (str.charAt(3) == 'U') {
-						if (str.charAt(4) == 'E') {
-							token.tokenName = "RESERVEDWORD_BOOLEAN_TRUE";
-						}
-					}
-				}
-			}
-		}
-		if (str.length() == 5) {
-			if (str.charAt(1) == 'F') {
-				if (str.charAt(2) == 'A') {
-					if (str.charAt(3) == 'L') {
-						if (str.charAt(4) == 'S') {
-							if (str.charAt(5) == 'E') {
-								token.tokenName = "RESERVEDWORD_BOOLEAN_FALSE";
-							}
-						}
-					}
-				}
-			}
-		}
+		
 		if (str.length() == 8) {
 			if (str.charAt(1) == 'B') {
 				if (str.charAt(2) == 'O') {
@@ -652,3 +653,4 @@ public class LexRecognizer {
 		return token;
 	}
 }
+
