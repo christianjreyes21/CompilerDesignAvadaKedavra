@@ -69,13 +69,13 @@ public class SyntaxAnalyzer {
 			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD"))
 			{
 				System.out.println("hello");
-				lineIdentifier();
+				//lineIdentifier();
 			}
 			tokenCount++;
 		}
 	}
 	
-	public void lineIdentifier()
+	public void declaration(Node<String> parent)
 	{
 		nextToken(); // SPACE after IDENTIFIER
 		if(!nextToken().getTokenAttribute().equals("=") && !token[tokenCount].getTokenAttribute().equals(";")) // NAME DAPAT ITO NG VARIABLE
@@ -84,12 +84,12 @@ public class SyntaxAnalyzer {
 			if(nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE"))
 			{
 				
-				System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
+				//System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
 			}
 			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("ERROR") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
 			{
 				
-				System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+				//System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
 			}
 		}
 	}
@@ -100,6 +100,123 @@ public class SyntaxAnalyzer {
 		return token[tokenCount];
 	}
 	
+	public void input (Node<String> parent)
+	{
+		Node<String> inputNode = new Node<String>();
+		inputNode.data = "<INPUT_STMT>";
+		parent.children.add(inputNode);
+		
+		nextToken = nextToken();
+		if(nextToken.getTokenName().equals("IDENTIFIER"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			parent.children.add(inputNode);
+		}
+	}
+	
+	public void output(Node<String> parent)
+	{
+		Node<String> outputNode = new Node<String>();
+		outputNode.data = "<OUTPUT_STMT>";
+		parent.children.add(outputNode);
+		if (nextToken.getTokenName().equals("KEYWORD_OUTPUT.PRINT"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			parent.children.add(leafNode);
+			expressions(outputNode);
+		}
+		else if (nextToken.getTokenName().equals("KEYWORD_OUTPUT.PRINTLN"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			parent.children.add(leafNode);
+			expressions(outputNode);
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Invalid symbol detected");
+		}
+	}
+	
+	public void conditional(Node<String> parent)
+	{
+		conditionalNode = new Node<String>();
+		conditionalNode.data = "<CONDITIONAL>";
+		parent.children.add(conditionalNode);
+		//switchCase(parent);
+		System.out.println("Exited conditional");
+	}
+	
+	public void looping(Node<String> parent)
+	{
+		loopingNode = new Node<String>();
+		loopingNode.data = "<LOOPING>";
+		parent.children.add(loopingNode);
+		forStatement(parent);
+		System.out.println("Exited looping");
+	}
+	
+	public void expressions(Node<String> parent)
+	{
+		expressionsNode = new Node<String>();
+		expressionsNode.data = "<EXPRESSIONS>";
+		
+		parent.children.add(expressionsNode);
+		
+		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			expressionsNode.children.add(leafNode);
+			
+			nextToken = nextToken();
+			
+			mathExpression(expressionsNode);
+		}
+		else if (nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING"))
+		{
+			relationalExpression(expressionsNode);
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Invalid symbol detected");
+		}
+
+		System.out.println("Exited Relational Expression");
+	}
+	
+	/*
+	public void callParameters(Node<String> parent)
+	{
+		relationalExpressionNode = new Node<String>();
+		relationalExpressionNode.data = "<CALL_PARAMS>";
+		
+		parent.children.add(callParametersNode);
+		
+		if (nextToken.getTokenName().equals("PARAM_SEP"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			callParametersNode.children.add(leafNode);
+			
+			nextToken = nextToken();
+			
+			relationalExpression(callParametersNode);
+		}
+		else if (nextToken.getTokenName().equals("PARAM_SEP"))
+		{
+			callParameters(relationalExpressionNode);
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Invalid symbol detected");
+		}
+
+		System.out.println("Exited Relational Expression");
+	}
+	*/
 	public void forStatement(Node<String> parent)
 	{
 		forStatementNode = new Node<String>();
@@ -109,24 +226,73 @@ public class SyntaxAnalyzer {
 		
 		if (nextToken.getTokenName().equals("KEYWORD_FOR"))
 		{
+			leafNode = new Node<String>();
+			leafNode.data = "KEYWORD_FOR";
+			forStatementNode.children.add(leafNode);
 			nextToken = nextToken();
 			
 			if (nextToken.getTokenName().equals("DELIM_LEFT_PAREN"))
 			{
+				leafNode = new Node<String>();
+				leafNode.data = "DELIM_LEFT_PAREN";
+				forStatementNode.children.add(leafNode);
 				nextToken = nextToken();
 				
 				if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
 				{
 					// declaration(forStatementNode);
-					
+					declaration(forStatementNode);
+					if(nextToken().getTokenName().equals("DELIM_SEMICOLON"))
+					{
+						leafNode = new Node<String>();
+						leafNode.data = "DELIM_SEMICOLON";
+						forStatementNode.children.add(leafNode);
+						nextToken = nextToken();
+						relationalExpression(forStatementNode);
+						nextToken = nextToken();
+						mathExpression(forStatementNode);
+						if(nextToken.getTokenName().equals("DELIM_RIGHT_PAREN"))
+						{
+							leafNode = new Node<String>();
+							leafNode.data = "DELIM_RIGHT_PAREN";
+							forStatementNode.children.add(leafNode);
+							nextToken = nextToken();
+							while(nextToken.getTokenName().equals("INDENT"))
+							{
+								leafNode = new Node<String>();
+								leafNode.data = "INDENT";
+								forStatementNode.children.add(leafNode);
+							}
+						}
+						else
+						{
+							System.out.println("Syntax Analyzer: Invalid symbol detected for DELIM_RIGHT_PAREN");
+						}
+					}
+					else
+					{
+						System.out.println("Syntax Analyzer: Invalid symbol detected for DELIM_SEMICOLON");
+					}
 					//if relational operatior yung condition
 						//if expression 
 							// if delim right paren
 								// if statements
 				}
+				else
+				{
+					System.out.println("Syntax Analyzer: Invalid symbol detected for INITIALIZE");
+				}
 				
 				// if condition
 			}
+			else
+			{
+				System.out.println("Syntax Analyzer: Invalid symbol detected for DELIM_LEFT_PAREN");
+			}
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Invalid symbol detected for KEYWORD_FOR");
 		}
 	}
 	
@@ -327,6 +493,105 @@ public class SyntaxAnalyzer {
 		System.out.println("Exited Math Expression 4");
 	}
 	
+	public void relationalExpression(Node<String> parent)
+	{
+		relationalExpressionNode = new Node<String>();
+		relationalExpressionNode.data = "<REL_EXPR2>";
+		
+		parent.children.add(relationalExpressionNode);
+		
+		if (nextToken.getTokenName().equals("OR_OP"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			relationalExpressionNode.children.add(leafNode);
+			
+			nextToken = nextToken();
+			
+			relationalExpression(relationalExpressionNode);
+		}
+		else
+		{
+			relationalExpression2(relationalExpressionNode);
+		}
+
+		System.out.println("Exited Relational Expression");
+	}
+	
+	public void relationalExpression2(Node<String> parent)
+	{
+		relationalExpression2Node = new Node<String>();
+		relationalExpression2Node.data = "<REL_EXPR2>";
+		
+		parent.children.add(relationalExpression2Node);
+		
+		if (nextToken.getTokenName().equals("AND_OP"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			relationalExpression2Node.children.add(leafNode);
+			
+			nextToken = nextToken();
+			
+			relationalExpression2(relationalExpression2Node);
+		}
+		else
+		{
+			relationalExpression3(relationalExpression2Node);
+		}
+
+		System.out.println("Exited Relational Expression 2");
+	}
+	
+	public void relationalExpression3(Node<String> parent)
+	{
+		relationalExpression3Node = new Node<String>();
+		relationalExpression3Node.data = "<REL_EXPR3>";
+		
+		parent.children.add(relationalExpression3Node);
+		
+		if (nextToken.getTokenName().equals("EQUAL_OP") || nextToken.getTokenName().equals("NOT_EQUAL_OP"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			relationalExpression3Node.children.add(leafNode);
+			
+			nextToken = nextToken();
+			
+			relationalExpression3(relationalExpression3Node);
+		}
+		else
+		{
+			relationalExpression4(relationalExpression3Node);
+		}
+
+		System.out.println("Exited Relational Expression 3");
+	}
+	
+	public void relationalExpression4(Node<String> parent)
+	{
+		relationalExpression4Node = new Node<String>();
+		relationalExpression4Node.data = "<REL_EXPR4>";
+		
+		parent.children.add(relationalExpression4Node);
+		
+		if (nextToken.getTokenName().equals("GREAT_OP") || nextToken.getTokenName().equals("LESS_OP") || nextToken.getTokenName().equals("GREAT_EQ_OP") || nextToken.getTokenName().equals("LESS_EQ_OP"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			relationalExpression4Node.children.add(leafNode);
+			
+			nextToken = nextToken();
+			
+			relationalExpression4(relationalExpression4Node);
+		}
+		else
+		{
+			relationalExpression5(relationalExpression4Node);
+		}
+
+		System.out.println("Exited Relational Expression 4");
+	}
 	
 	public void relationalExpression5(Node<String> parent)
 	{
@@ -340,7 +605,7 @@ public class SyntaxAnalyzer {
 			nextToken = nextToken();
 			// relationalExpressionNode(relationalExpression5Node);		
 		}
-		else if (nextToken.getTokenName().equals("BOOLEAN_TRUE") || nextToken.getTokenName().equals("BOOLEAN_TRUE"))
+		else if (nextToken.getTokenName().equals("BOOLEAN_TRUE") || nextToken.getTokenName().equals("BOOLEAN_FALSE"))
 		{
 			booleanConstant(relationalExpression5Node);
 		}
