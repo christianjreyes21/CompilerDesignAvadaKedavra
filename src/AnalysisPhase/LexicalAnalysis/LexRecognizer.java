@@ -519,10 +519,11 @@ public class LexRecognizer {
 		token.tokenName = "DELIM";
 		token.tokenAttribute = str;
 		token.lineNumber = line;
-		/*
-		 * if (str.length() != 1) token.tokenName = "ERROR";
-		 */
-
+		
+		  if (str.length() != 1) {
+			  token.tokenName = "ERROR";
+		  }
+		  
 		return token;
 	}
 
@@ -584,7 +585,7 @@ public class LexRecognizer {
 		token.tokenName = "ERROR";
 		token.tokenAttribute = str;
 		token.lineNumber = line;
-		boolean valid = true;
+		//boolean valid = true;
 
 		if ((str.length() == 1)
 				&& (str.charAt(0) == 'A' || str.charAt(0) == 'B'
@@ -612,8 +613,9 @@ public class LexRecognizer {
 						|| str.charAt(0) == 's' || str.charAt(0) == 't'
 						|| str.charAt(0) == 'u' || str.charAt(0) == 'v'
 						|| str.charAt(0) == 'w' || str.charAt(0) == 'x'
-						|| str.charAt(0) == 'y' || str.charAt(0) == 'z'))
+						|| str.charAt(0) == 'y' || str.charAt(0) == 'z')){
 			token.tokenName = "CHARACTER";
+		}
 		else {
 			for (int i = 0; i < str.length(); i++) {
 				if (!(str.charAt(i) == 'A' || str.charAt(i) == 'B'
@@ -642,15 +644,14 @@ public class LexRecognizer {
 						|| str.charAt(i) == 'u' || str.charAt(i) == 'v'
 						|| str.charAt(i) == 'w' || str.charAt(i) == 'x'
 						|| str.charAt(i) == 'y' || str.charAt(i) == 'z')) {
-					valid = false;
+					//valid = false;
 					break;
 				}
 			}
 
-			if (valid)
-				token.tokenName = "STRING";
+			/*if (valid)
+				token.tokenName = "STRING";*/
 		}
 		return token;
 	}
 }
-
