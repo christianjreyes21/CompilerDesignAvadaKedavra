@@ -1,4 +1,4 @@
-import Token;
+package AnalysisPhase.LexicalAnalysis;
 
 public class LexRecognizer {
 
