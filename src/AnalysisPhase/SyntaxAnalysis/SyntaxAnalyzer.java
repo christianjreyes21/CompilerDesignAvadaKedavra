@@ -85,6 +85,19 @@ public class SyntaxAnalyzer {
 				System.out.println("Entering FOR STATEMENT");
 				forStatement(syntaxNode);
 			}
+			else if(token[tokenCount].getTokenName().equals("IDENT"))
+			{
+				if (token[tokenCount+2].getTokenName().equals("ARITH_OP_INCRE"))
+				{
+					System.out.println("Entering INCREMENT");
+					postIncrement(syntaxNode);
+				}
+				else if (token[tokenCount+2].getTokenName().equals("ARITH_OP_DECRE"))
+				{
+					System.out.println("Entering DECREMENT");
+					postDecrement(syntaxNode);
+				}
+			}
 			else if((token[tokenCount].getTokenName().equals("INTEGER") || token[tokenCount].getTokenName().equals("DECIMAL")))
 			{
 				if (token[tokenCount+2].getTokenName().equals("ARITH_OP_ADD") || token[tokenCount+2].getTokenName().equals("ARITH_OP_SUBT") || token[tokenCount+2].getTokenName().equals("ARITH_OP_MULT") || token[tokenCount+2].getTokenName().equals("ARITH_OP_DIV") || token[tokenCount+2].getTokenName().equals("ARITH_OP_EXPON"))
@@ -369,14 +382,14 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(postIncrementNode);
 		
-		if (nextToken.getTokenName().equals("IDENTIFIER"))
+		if (nextToken.getTokenName().equals("IDENT"))
 		{
 			mathConstant(postIncrementNode);
 			nextToken = nextToken();
 			space(postIncrementNode);
 			nextToken = nextToken();
-			
-			if (nextToken.getTokenName().equals("ARITH_OP_INCREMENT"))
+			System.out.println(nextToken.getTokenName());
+			if (nextToken.getTokenName().equals("ARITH_OP_INCRE"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = nextToken.getTokenAttribute();
@@ -397,7 +410,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(postIncrementNode);
 		
-		if (nextToken.getTokenName().equals("IDENTIFIER"))
+		if (nextToken.getTokenName().equals("IDENT"))
 		{
 			mathConstant(postIncrementNode);
 			nextToken = nextToken();
@@ -405,8 +418,8 @@ public class SyntaxAnalyzer {
 			space(postIncrementNode);
 			
 			nextToken = nextToken();
-			
-			if (nextToken.getTokenName().equals("ARITH_OP_DECREMENT"))
+			System.out.println(nextToken.getTokenName());
+			if (nextToken.getTokenName().equals("ARITH_OP_DECRE"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = nextToken.getTokenAttribute();
@@ -702,7 +715,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(constantNode);
 		
-		if (nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("IDENTIFIER"))
+		if (nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("IDENT"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -724,7 +737,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(constantNode);
 		
-		if (nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("IDENTIFIER"))
+		if (nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("IDENT"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -746,7 +759,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(constantNode);
 		
-		if (nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL") || nextToken.getTokenName().equals("IDENTIFIER"))
+		if (nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL") || nextToken.getTokenName().equals("IDENT"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
