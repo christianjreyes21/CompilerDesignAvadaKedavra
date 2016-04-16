@@ -204,14 +204,17 @@ public class Lex {
 		{
 			symbolTable = Lex(InputOutput.getText(file));
 			SyntaxAnalyzer syntax = new SyntaxAnalyzer();
-			syntax.analyze();
+			
 			for (int i = 0; i < symbolTable.length; i++)
 			{
 				//System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
 			}
 			InputOutput.writeText(symbolTable);
+			syntax.analyze();
 		}
 		else
 			System.out.println("INVALID FILE. PLEASE ENTER A .HP FILE");	
+		
+		
 	}
 }

@@ -68,7 +68,7 @@ public class SyntaxAnalyzer {
 		syntaxNode.data = "<PARENT>";
 		while (tokenCount < token.length)
 		{
-			System.out.println(token[tokenCount].getTokenName());
+			//System.out.println(token[tokenCount].getTokenName());
 			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD_INTEGER"))
 			{
 				System.out.println("hello");
@@ -92,12 +92,16 @@ public class SyntaxAnalyzer {
 			if(nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE"))
 			{
 				
-				//System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
+				System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
 			}
-			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("ERROR") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
+			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("INTEGER") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
 			{
 				
-				//System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+				System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+			}
+			else
+			{
+				System.out.println("Syntax Analyzer: Invalid symbol detected");
 			}
 		}
 	}
