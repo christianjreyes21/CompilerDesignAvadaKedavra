@@ -28,8 +28,8 @@ public class SyntaxAnalyzer {
 	Node<String> expressionStatementsNode = null;
 	Node<String> returnNode = null;
 	Node<String> dataTypeNode = null;
-	Node<String> inputStatement = null;
-	Node<String> outputStatement = null;
+	Node<String> inputStatementNode = null;
+	Node<String> outputStatementNode = null;
 	Node<String> conditionalNode = null;
 	Node<String> loopingNode = null;
 	Node<String> expressionsNode = null;
@@ -113,6 +113,79 @@ public class SyntaxAnalyzer {
 			}
 			
 			nextToken = nextToken();
+		}
+	}
+	
+	public void switchCase(Node<String> parent)
+	{
+		switchStatementNode = new Node<String>();
+		switchStatementNode.data = "<SWITCH_STMT>";
+		
+		parent.children.add(switchStatementNode);
+		
+		if (nextToken.getTokenName().equals("SWITCH"))
+		{
+			nextToken = nextToken();
+			space(switchStatementNode);
+			nextToken = nextToken();
+			
+			if (nextToken.getTokenName().equals("DELIM"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = nextToken.getTokenAttribute();
+				switchStatementNode.children.add(leafNode);
+				
+				nextToken = nextToken();
+				space(switchStatementNode);
+				
+				declaration(switchStatementNode);
+				
+				nextToken = nextToken();
+				space(switchStatementNode);
+				nextToken = nextToken();
+				
+				if (nextToken.getTokenName().equals("DELIM"))
+				{
+					leafNode = new Node<String>();
+					leafNode.data = nextToken.getTokenAttribute();
+					
+					nextToken = nextToken();
+					space(switchStatementNode);
+					nextToken = nextToken();
+					
+					while (nextToken.getTokenName().equals("CASE"))
+					{
+						leafNode = new Node<String>();
+						leafNode.data = nextToken.getTokenAttribute();
+						
+						nextToken = nextToken();
+						space(switchStatementNode);
+						nextToken = nextToken();
+						//// statement();
+						nextToken = nextToken();
+						space(switchStatementNode);
+						nextToken = nextToken();
+						
+						if (nextToken.getTokenName().equals("STOP"))
+						{
+							leafNode = new Node<String>();
+							leafNode.data = nextToken.getTokenAttribute();
+						}
+						else
+						{
+							System.out.println("Syntax Analyzer: Stop expected here");
+						}
+					}
+				}
+				else
+				{
+					System.out.println("Syntax Analyzer: Delimiter Expected");
+				}
+			}
+			else
+			{
+				System.out.println("Syntax Analyzer: Delimiter Expected");
+			}
 		}
 	}
 	
@@ -264,6 +337,13 @@ public class SyntaxAnalyzer {
 		System.out.println("Exited Relational Expression");
 	}
 	*/
+	public void dataType(Node<String> parent)
+	{
+		dataTypeNode = new Node<String>();
+		dataTypeNode.data = "<DATATYPE>";
+		
+	}
+	
 	public void forStatement(Node<String> parent)
 	{
 		forStatementNode = new Node<String>();
