@@ -70,7 +70,7 @@ public class SyntaxAnalyzer {
 		while (tokenCount < token.length)
 		{
 			//System.out.println(token[tokenCount].getTokenName());
-			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD_INTEGER"))
+			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD_INTEGER") || (token[tokenCount].getTokenName()).equals("RESERVEDWORD_DOUBLE") || (token[tokenCount].getTokenName()).equals("RESERVEDWORD_CHAR"))
 			{
 				System.out.println("hello");
 				declaration(syntaxNode);
@@ -161,7 +161,7 @@ public class SyntaxAnalyzer {
 						nextToken = nextToken();
 						space(switchStatementNode);
 						nextToken = nextToken();
-						//// statement();
+						statement(switchStatementNode);
 						nextToken = nextToken();
 						space(switchStatementNode);
 						nextToken = nextToken();
@@ -186,6 +186,18 @@ public class SyntaxAnalyzer {
 			{
 				System.out.println("Syntax Analyzer: Delimiter Expected");
 			}
+		}
+	}
+	
+	public void statement(Node<String> parent)
+	{
+		if((token[tokenCount].getTokenName()).equals("RESERVEDWORD_INTEGER") || (token[tokenCount].getTokenName()).equals("RESERVEDWORD_DOUBLE") || (token[tokenCount].getTokenName()).equals("RESERVEDWORD_CHAR"))
+		{
+			declaration (parent);
+		}
+		else
+		{
+			expressions(parent);
 		}
 	}
 	
