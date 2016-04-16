@@ -200,16 +200,11 @@ public class Lex {
 		String file = JOptionPane.showInputDialog("Please enter the full path of the file");
 		Token[] symbolTable;
 		//System.out.println(file);
+		SyntaxAnalyzer syntax = new SyntaxAnalyzer();
 		if (file.charAt(file.length() - 2) == 'h' && file.charAt(file.length() - 1) == 'p')
 		{
 			symbolTable = Lex(InputOutput.getText(file));
-<<<<<<< HEAD
-			//SyntaxAnalyzer syntax = new SyntaxAnalyzer();
-			//syntax.analyze();
-=======
-			SyntaxAnalyzer syntax = new SyntaxAnalyzer();
-			
->>>>>>> origin/master
+
 			for (int i = 0; i < symbolTable.length; i++)
 			{
 				//System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
