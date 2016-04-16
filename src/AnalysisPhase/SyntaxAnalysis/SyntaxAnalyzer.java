@@ -63,22 +63,23 @@ public class SyntaxAnalyzer {
 	{
 		token = Lex.Lex(InputOutput.getText("a.hp"));
 		System.out.println("analyze"+token.length);
+		nextToken = token[tokenCount];
 		Node<String> syntaxNode = new Node<String>();
 		syntaxNode.data = "<PARENT>";
 		while (tokenCount < token.length)
 		{
 			System.out.println(token[tokenCount].getTokenName());
-			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD"))
+			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD_INTEGER"))
 			{
 				System.out.println("hello");
-				//lineIdentifier();
+				declaration(syntaxNode);
 			}
-			else if(token[tokenCount].getTokenName().equals("KEYWORD_BOOLEAN_TRUE"))
+			else if(token[tokenCount].getTokenName().equals("KEYWORD_BOOLEAN_TRUE") || token[tokenCount].getTokenName().equals("KEYWORD_BOOLEAN_FALSE"))
 			{
-				System.out.println("boolean true");
+				System.out.println("Entering booleanConstant");
 				booleanConstant(syntaxNode);
 			}
-			tokenCount++;
+			nextToken = nextToken();
 		}
 	}
 	
@@ -694,7 +695,6 @@ public class SyntaxAnalyzer {
 	{
 		booleanConstantNode = new Node<String>();
 		booleanConstantNode.data = "<BOOL_CONST>";
-		
 		parent.children.add(booleanConstantNode);
 		 
 		if (nextToken.getTokenName().equals("KEYWORD_BOOLEAN_TRUE") || nextToken.getTokenName().equals("KEYWORD_BOOLEAN_FALSE"))
