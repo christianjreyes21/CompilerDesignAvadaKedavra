@@ -66,7 +66,7 @@ public class SyntaxAnalyzer {
 		System.out.println("analyze"+token.length);
 		nextToken = token[tokenCount];
 		Node<String> syntaxNode = new Node<String>();
-		syntaxNode.data = "<PARENT>";
+		syntaxNode.data = "<PROGRAM>";
 		while (tokenCount < token.length)
 		{
 			//System.out.println(token[tokenCount].getTokenName());
@@ -111,6 +111,11 @@ public class SyntaxAnalyzer {
 					relationalExpression(syntaxNode);
 				}
 			}
+			else if((token[tokenCount].getTokenName().equals("KEYWORD_SWITCH")))
+			{
+				System.out.println("Entering SWITCH CASE");
+				switchCase(syntaxNode);
+			}
 			
 			nextToken = nextToken();
 		}
@@ -123,7 +128,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(switchStatementNode);
 		
-		if (nextToken.getTokenName().equals("SWITCH"))
+		if (nextToken.getTokenName().equals("KEYWORD_SWITCH"))
 		{
 			nextToken = nextToken();
 			space(switchStatementNode);
@@ -187,6 +192,8 @@ public class SyntaxAnalyzer {
 				System.out.println("Syntax Analyzer: Delimiter Expected");
 			}
 		}
+		
+		System.out.println("Exited Switch");
 	}
 	
 	public void statement(Node<String> parent)
@@ -226,8 +233,13 @@ public class SyntaxAnalyzer {
 	
 	public Token nextToken()
 	{
+		if(tokenCount<token.length-1)
+		{
 		tokenCount++;
 		return token[tokenCount];
+		}
+		else
+			return token[tokenCount-1];
 	}
 	
 	public void input (Node<String> parent)

@@ -1,2 +1,3 @@
-@a ++
-@b --
+%SWITCH ( @a = 1 )
+%CASE @aaa = 1 + 1 %STOP
+ 
