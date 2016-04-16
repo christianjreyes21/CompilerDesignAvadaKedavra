@@ -80,6 +80,25 @@ public class SyntaxAnalyzer {
 				System.out.println("Entering booleanConstant");
 				booleanConstant(syntaxNode);
 			}
+			else if(token[tokenCount].getTokenName().equals("KEYWORD_FOR"))
+			{
+				System.out.println("Entering FOR STATEMENT");
+				forStatement(syntaxNode);
+			}
+			else if((token[tokenCount].getTokenName().equals("INTEGER") || token[tokenCount].getTokenName().equals("DECIMAL")))
+			{
+				if (token[tokenCount+2].getTokenName().equals("ARITH_OP_ADD") || token[tokenCount+2].getTokenName().equals("ARITH_OP_SUBT") || token[tokenCount+2].getTokenName().equals("ARITH_OP_MULT") || token[tokenCount+2].getTokenName().equals("ARITH_OP_DIV") || token[tokenCount+2].getTokenName().equals("ARITH_OP_EXPON"))
+				{
+					System.out.println("Entering MATH EXPRESSION");
+					mathExpression(syntaxNode);
+				}
+				else
+				{
+					System.out.println("Entering RELATIONAL EXPRESSION");
+					relationalExpression(syntaxNode);
+				}
+			}
+			
 			nextToken = nextToken();
 		}
 	}
@@ -95,10 +114,10 @@ public class SyntaxAnalyzer {
 				
 				System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
 			}
-			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("INTEGER") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
+			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("INTEGER") && (nextToken().getTokenName().equals("NEWLINE") || (token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals(";"))))
 			{
 				
-				System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+				System.out.println("IDENTIFIER: "+ token[tokenCount-8].getTokenAttribute() +" VarName: "+ token[tokenCount-6].getTokenAttribute() +" Value: "+ token[tokenCount-2].getTokenAttribute());
 			}
 			else
 			{
@@ -248,7 +267,7 @@ public class SyntaxAnalyzer {
 			space(forStatementNode);
 			nextToken = nextToken();
 			
-			if (nextToken.getTokenName().equals("DELIM_LEFT_PAREN"))
+			if (nextToken.getTokenName().equals("DELIM"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = "DELIM_LEFT_PAREN";
@@ -256,15 +275,15 @@ public class SyntaxAnalyzer {
 				nextToken = nextToken();
 				space(forStatementNode);
 				nextToken = nextToken();
-				
+				System.out.println(nextToken.getTokenName());
 				if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
 				{
 					// declaration(forStatementNode);
 					declaration(forStatementNode);
-					if(nextToken().getTokenName().equals("DELIM_SEMICOLON"))
+					if(nextToken().getTokenName().equals("DELIM"))
 					{
 						leafNode = new Node<String>();
-						leafNode.data = "DELIM_SEMICOLON";
+						leafNode.data = "DELIM";
 						forStatementNode.children.add(leafNode);
 						nextToken = nextToken();
 						space(forStatementNode);
@@ -276,10 +295,10 @@ public class SyntaxAnalyzer {
 						mathExpression(forStatementNode);
 						space(forStatementNode);
 						nextToken = nextToken();
-						if(nextToken.getTokenName().equals("DELIM_RIGHT_PAREN"))
+						if(nextToken.getTokenName().equals("DELIM"))
 						{
 							leafNode = new Node<String>();
-							leafNode.data = "DELIM_RIGHT_PAREN";
+							leafNode.data = "DELIM";
 							forStatementNode.children.add(leafNode);
 							nextToken = nextToken();
 							space(forStatementNode);
@@ -413,7 +432,7 @@ public class SyntaxAnalyzer {
 		space(mathExpressionNode);
 		nextToken = nextToken();
 		
-		if (nextToken.getTokenName().equals("ARITH_OP_ADD") || nextToken.getTokenName().equals("ARITH_OP_SUBTRACT"))
+		if (nextToken.getTokenName().equals("ARITH_OP_ADD") || nextToken.getTokenName().equals("ARITH_OP_SUBT"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -425,7 +444,7 @@ public class SyntaxAnalyzer {
 			
 			mathExpression(mathExpressionNode);
 		}
-		else if (nextToken.getTokenName().equals("ARITH_OP_MULTIPLY") || nextToken.getTokenName().equals("ARITH_OP_DIVIDE") || nextToken.getTokenName().equals("ARITH_OP_MOD") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_EXPONENT") || nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
+		else if (nextToken.getTokenName().equals("ARITH_OP_MULT") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_MOD") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_EXPON") || nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL"))
 		{
 			mathExpression2(mathExpressionNode);
 		}
@@ -444,7 +463,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(mathExpression2Node);
 		
-		if (nextToken.getTokenName().equals("ARITH_OP_MULTIPLY") || nextToken.getTokenName().equals("ARITH_OP_DIVIDE") || nextToken.getTokenName().equals("ARITH_OP_MOD") || nextToken.getTokenName().equals("ARITH_OP_DIV"))
+		if (nextToken.getTokenName().equals("ARITH_OP_MULT") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_MOD") || nextToken.getTokenName().equals("ARITH_OP_DIV"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -455,7 +474,7 @@ public class SyntaxAnalyzer {
 			nextToken = nextToken();
 			mathExpression2(mathExpression2Node);
 		}
-		else if (nextToken.getTokenName().equals("ARITH_OP_EXPONENT") || nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
+		else if (nextToken.getTokenName().equals("ARITH_OP_EXPON") || nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL"))
 		{
 			mathExpression3(mathExpression2Node);
 		}
@@ -474,7 +493,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(mathExpression3Node);
 		
-		if (nextToken.getTokenName().equals("ARITH_OP_EXPONENT"))
+		if (nextToken.getTokenName().equals("ARITH_OP_EXPON"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -485,7 +504,7 @@ public class SyntaxAnalyzer {
 			nextToken = nextToken();
 			mathExpression3(mathExpression3Node);
 		}
-		else if (nextToken.getTokenName().equals("DELIM_LEFT_PAREN") || nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
+		else if (nextToken.getTokenName().equals("DELIM_LEFT_PAREN") || nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL"))
 		{
 			mathExpression4(mathExpression3Node);
 		}
@@ -528,11 +547,10 @@ public class SyntaxAnalyzer {
 				nextToken = nextToken();
 			}
 		} 
-		else if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
+		else if (nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL"))
 		{
 			mathConstant(mathExpression4Node);
 		}
-		
 		System.out.println("Exited Math Expression 4");
 	}
 	
@@ -542,6 +560,12 @@ public class SyntaxAnalyzer {
 		relationalExpressionNode.data = "<REL_EXPR2>";
 		
 		parent.children.add(relationalExpressionNode);
+		
+		mathConstant(relationalExpressionNode);
+		nextToken = nextToken();
+		space(relationalExpressionNode);
+		nextToken = nextToken();
+		System.out.println(nextToken.getTokenName());
 		
 		if (nextToken.getTokenName().equals("OR_OP"))
 		{
@@ -570,7 +594,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(relationalExpression2Node);
 		
-		if (nextToken.getTokenName().equals("AND_OP"))
+		if (nextToken.getTokenName().equals("LOG_OP_AND"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -597,7 +621,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(relationalExpression3Node);
 		
-		if (nextToken.getTokenName().equals("EQUAL_OP") || nextToken.getTokenName().equals("NOT_EQUAL_OP"))
+		if (nextToken.getTokenName().equals("ARITH_OP_ASSIGN") || nextToken.getTokenName().equals("LOG_OP_NOT"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -624,8 +648,8 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(relationalExpression4Node);
 
-		
-		if (nextToken.getTokenName().equals("GREAT_OP") || nextToken.getTokenName().equals("LESS_OP") || nextToken.getTokenName().equals("GREAT_EQ_OP") || nextToken.getTokenName().equals("LESS_EQ_OP"))
+		System.out.println(nextToken.getTokenName());
+		if (nextToken.getTokenName().equals("REL_OP_GREATER") || nextToken.getTokenName().equals("REL_OP_LESS") || nextToken.getTokenName().equals("REL_OP_GREATEREQUAL") || nextToken.getTokenName().equals("REL_OP_LESSEQUAL"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -722,7 +746,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(constantNode);
 		
-		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("IDENTIFIER"))
+		if (nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL") || nextToken.getTokenName().equals("IDENTIFIER"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -764,7 +788,7 @@ public class SyntaxAnalyzer {
 		
 		parent.children.add(spaceNode);
 		
-		if (nextToken.getTokenName().equals("SPACE"))
+		if (nextToken.getTokenName().equals("SPACE") || nextToken.getTokenName().equals("NEWLINE"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = "space";
