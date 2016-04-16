@@ -53,6 +53,7 @@ public class SyntaxAnalyzer {
 	Node<String> valueNode = null;
 	Node<String> constantNode = null;
 	Node<String> booleanConstantNode = null;
+	Node<String> spaceNode = null;
 	Node<String> leafNode = null;
 	Token nextToken = null;
 	
@@ -586,6 +587,7 @@ public class SyntaxAnalyzer {
 		relationalExpression4Node.data = "<REL_EXPR4>";
 		
 		parent.children.add(relationalExpression4Node);
+
 		
 		if (nextToken.getTokenName().equals("GREAT_OP") || nextToken.getTokenName().equals("LESS_OP") || nextToken.getTokenName().equals("GREAT_EQ_OP") || nextToken.getTokenName().equals("LESS_EQ_OP"))
 		{
@@ -614,6 +616,8 @@ public class SyntaxAnalyzer {
 		
 		if (nextToken.getTokenName().equals("LOG_OP_NOT"))
 		{
+			nextToken = nextToken();
+			space(relationalExpression5Node);
 			nextToken = nextToken();
 			// relationalExpressionNode(relationalExpression5Node);		
 		}
@@ -700,7 +704,7 @@ public class SyntaxAnalyzer {
 		booleanConstantNode = new Node<String>();
 		booleanConstantNode.data = "<BOOL_CONST>";
 		parent.children.add(booleanConstantNode);
-		 
+		
 		if (nextToken.getTokenName().equals("KEYWORD_BOOLEAN_TRUE") || nextToken.getTokenName().equals("KEYWORD_BOOLEAN_FALSE"))
 		{
 			leafNode = new Node<String>();
@@ -713,5 +717,27 @@ public class SyntaxAnalyzer {
 		}
 		
 		System.out.println("Exited Boolean Constant");
+	}
+	
+	public void space(Node<String> parent)
+	{
+		spaceNode = new Node<String>();
+		spaceNode.data = "<SPACE>";
+		
+		parent.children.add(spaceNode);
+		
+		if (nextToken.getTokenName().equals("SPACE"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = "space";
+			
+			spaceNode.children.add(leafNode);
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: You are missing a space");
+		}
+		
+		System.out.println("Exited Space");
 	}
 }
