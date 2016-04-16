@@ -53,6 +53,7 @@ public class SyntaxAnalyzer {
 	Node<String> valueNode = null;
 	Node<String> constantNode = null;
 	Node<String> booleanConstantNode = null;
+	Node<String> spaceNode = null;
 	Node<String> leafNode = null;
 	Token nextToken = null;
 	
@@ -68,7 +69,7 @@ public class SyntaxAnalyzer {
 		syntaxNode.data = "<PARENT>";
 		while (tokenCount < token.length)
 		{
-			System.out.println(token[tokenCount].getTokenName());
+			//System.out.println(token[tokenCount].getTokenName());
 			if((token[tokenCount].getTokenName()).equals("RESERVEDWORD_INTEGER"))
 			{
 				System.out.println("hello");
@@ -92,12 +93,16 @@ public class SyntaxAnalyzer {
 			if(nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE"))
 			{
 				
-				//System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
+				System.out.println("IDENTIFIER: "+ token[tokenCount-3].getTokenAttribute() +" VarName: "+ token[tokenCount-1].getTokenAttribute());
 			}
-			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("ERROR") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
+			else if(token[tokenCount].getTokenName().equals("SPACE") && nextToken().getTokenAttribute().equals("=") && nextToken().getTokenName().equals("SPACE") && nextToken().getTokenName().equals("INTEGER") && (nextToken().getTokenAttribute().equals(";") || token[tokenCount].getTokenName().equals("NEWLINE")))
 			{
 				
-				//System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+				System.out.println("IDENTIFIER: "+ token[tokenCount-7].getTokenAttribute() +" VarName: "+ token[tokenCount-5].getTokenAttribute() +" Value: "+ token[tokenCount-1].getTokenAttribute());
+			}
+			else
+			{
+				System.out.println("Syntax Analyzer: Invalid symbol detected");
 			}
 		}
 	}
@@ -180,6 +185,8 @@ public class SyntaxAnalyzer {
 			expressionsNode.children.add(leafNode);
 			
 			nextToken = nextToken();
+			space(forStatementNode);
+			nextToken = nextToken();
 			
 			mathExpression(expressionsNode);
 		}
@@ -238,12 +245,16 @@ public class SyntaxAnalyzer {
 			leafNode.data = "KEYWORD_FOR";
 			forStatementNode.children.add(leafNode);
 			nextToken = nextToken();
+			space(forStatementNode);
+			nextToken = nextToken();
 			
 			if (nextToken.getTokenName().equals("DELIM_LEFT_PAREN"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = "DELIM_LEFT_PAREN";
 				forStatementNode.children.add(leafNode);
+				nextToken = nextToken();
+				space(forStatementNode);
 				nextToken = nextToken();
 				
 				if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
@@ -256,14 +267,22 @@ public class SyntaxAnalyzer {
 						leafNode.data = "DELIM_SEMICOLON";
 						forStatementNode.children.add(leafNode);
 						nextToken = nextToken();
+						space(forStatementNode);
+						nextToken = nextToken();
 						relationalExpression(forStatementNode);
 						nextToken = nextToken();
+						space(forStatementNode);
+						nextToken = nextToken();
 						mathExpression(forStatementNode);
+						space(forStatementNode);
+						nextToken = nextToken();
 						if(nextToken.getTokenName().equals("DELIM_RIGHT_PAREN"))
 						{
 							leafNode = new Node<String>();
 							leafNode.data = "DELIM_RIGHT_PAREN";
 							forStatementNode.children.add(leafNode);
+							nextToken = nextToken();
+							space(forStatementNode);
 							nextToken = nextToken();
 							while(nextToken.getTokenName().equals("INDENT"))
 							{
@@ -335,6 +354,8 @@ public class SyntaxAnalyzer {
 		{
 			mathConstant(postIncrementNode);
 			nextToken = nextToken();
+			space(postIncrementNode);
+			nextToken = nextToken();
 			
 			if (nextToken.getTokenName().equals("ARITH_OP_INCREMENT"))
 			{
@@ -362,7 +383,11 @@ public class SyntaxAnalyzer {
 			mathConstant(postIncrementNode);
 			nextToken = nextToken();
 			
-			if (nextToken.getTokenName().equals("ARITH_OP_DECREEMENT"))
+			space(postIncrementNode);
+			
+			nextToken = nextToken();
+			
+			if (nextToken.getTokenName().equals("ARITH_OP_DECREMENT"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = nextToken.getTokenAttribute();
@@ -385,6 +410,8 @@ public class SyntaxAnalyzer {
 		
 		mathConstant(mathExpressionNode);
 		nextToken = nextToken();
+		space(mathExpressionNode);
+		nextToken = nextToken();
 		
 		if (nextToken.getTokenName().equals("ARITH_OP_ADD") || nextToken.getTokenName().equals("ARITH_OP_SUBTRACT"))
 		{
@@ -392,6 +419,8 @@ public class SyntaxAnalyzer {
 			leafNode.data = nextToken.getTokenAttribute();
 			mathExpressionNode.children.add(leafNode);
 			
+			nextToken = nextToken();
+			space(mathExpressionNode);
 			nextToken = nextToken();
 			
 			mathExpression(mathExpressionNode);
@@ -422,7 +451,8 @@ public class SyntaxAnalyzer {
 			mathExpression2Node.children.add(leafNode);
 			
 			nextToken = nextToken();
-			
+			space(mathExpression2Node);
+			nextToken = nextToken();
 			mathExpression2(mathExpression2Node);
 		}
 		else if (nextToken.getTokenName().equals("ARITH_OP_EXPONENT") || nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
@@ -451,7 +481,8 @@ public class SyntaxAnalyzer {
 			mathExpression3Node.children.add(leafNode);
 			
 			nextToken = nextToken();
-			
+			space(mathExpression3Node);
+			nextToken = nextToken();
 			mathExpression3(mathExpression3Node);
 		}
 		else if (nextToken.getTokenName().equals("DELIM_LEFT_PAREN") || nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL"))
@@ -481,6 +512,8 @@ public class SyntaxAnalyzer {
 				leafNode.data = nextToken.getTokenAttribute();
 				
 				nextToken = nextToken();
+				space(mathExpression4Node);
+				nextToken = nextToken();
 			}
 			
 			mathExpression(mathExpression4Node);
@@ -490,6 +523,8 @@ public class SyntaxAnalyzer {
 				leafNode = new Node<String>();
 				leafNode.data = nextToken.getTokenAttribute();
 				
+				nextToken = nextToken();
+				space(mathExpression4Node);
 				nextToken = nextToken();
 			}
 		} 
@@ -514,6 +549,8 @@ public class SyntaxAnalyzer {
 			leafNode.data = nextToken.getTokenAttribute();
 			relationalExpressionNode.children.add(leafNode);
 			
+			nextToken = nextToken();
+			space(relationalExpressionNode);
 			nextToken = nextToken();
 			
 			relationalExpression(relationalExpressionNode);
@@ -540,6 +577,8 @@ public class SyntaxAnalyzer {
 			relationalExpression2Node.children.add(leafNode);
 			
 			nextToken = nextToken();
+			space(relationalExpression2Node);
+			nextToken = nextToken();
 			
 			relationalExpression2(relationalExpression2Node);
 		}
@@ -565,6 +604,8 @@ public class SyntaxAnalyzer {
 			relationalExpression3Node.children.add(leafNode);
 			
 			nextToken = nextToken();
+			space(relationalExpression3Node);
+			nextToken = nextToken();
 			
 			relationalExpression3(relationalExpression3Node);
 		}
@@ -582,6 +623,7 @@ public class SyntaxAnalyzer {
 		relationalExpression4Node.data = "<REL_EXPR4>";
 		
 		parent.children.add(relationalExpression4Node);
+
 		
 		if (nextToken.getTokenName().equals("GREAT_OP") || nextToken.getTokenName().equals("LESS_OP") || nextToken.getTokenName().equals("GREAT_EQ_OP") || nextToken.getTokenName().equals("LESS_EQ_OP"))
 		{
@@ -589,6 +631,8 @@ public class SyntaxAnalyzer {
 			leafNode.data = nextToken.getTokenAttribute();
 			relationalExpression4Node.children.add(leafNode);
 			
+			nextToken = nextToken();
+			space(relationalExpression4Node);
 			nextToken = nextToken();
 			
 			relationalExpression4(relationalExpression4Node);
@@ -610,6 +654,8 @@ public class SyntaxAnalyzer {
 		
 		if (nextToken.getTokenName().equals("LOG_OP_NOT"))
 		{
+			nextToken = nextToken();
+			space(relationalExpression5Node);
 			nextToken = nextToken();
 			// relationalExpressionNode(relationalExpression5Node);		
 		}
@@ -696,7 +742,7 @@ public class SyntaxAnalyzer {
 		booleanConstantNode = new Node<String>();
 		booleanConstantNode.data = "<BOOL_CONST>";
 		parent.children.add(booleanConstantNode);
-		 
+		
 		if (nextToken.getTokenName().equals("KEYWORD_BOOLEAN_TRUE") || nextToken.getTokenName().equals("KEYWORD_BOOLEAN_FALSE"))
 		{
 			leafNode = new Node<String>();
@@ -709,5 +755,27 @@ public class SyntaxAnalyzer {
 		}
 		
 		System.out.println("Exited Boolean Constant");
+	}
+	
+	public void space(Node<String> parent)
+	{
+		spaceNode = new Node<String>();
+		spaceNode.data = "<SPACE>";
+		
+		parent.children.add(spaceNode);
+		
+		if (nextToken.getTokenName().equals("SPACE"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = "space";
+			
+			spaceNode.children.add(leafNode);
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: You are missing a space");
+		}
+		
+		System.out.println("Exited Space");
 	}
 }
