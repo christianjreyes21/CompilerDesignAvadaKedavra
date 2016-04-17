@@ -88,8 +88,9 @@ public class LexRecognizer {
 				token.tokenName = "ARITH_OP_EXPON";
 			} else if (str.charAt(0) == '=') {
 				token.tokenName = "ARITH_OP_ASSIGN";
-			} else if (str.charAt(0) == '=' && str.charAt(1) == '=') {
-				token.tokenName = "REL_OP_EQUALTO";
+				if ((str.length() == 2) && (str.charAt(0) == '=' && str.charAt(1) == '=')) {
+					token.tokenName = "REL_OP_EQUALTO";
+			}
 			} else if (str.charAt(0) == '<') {
 				token.tokenName = "REL_OP_LESS";
 				if ((str.length() == 2)
@@ -555,6 +556,9 @@ public class LexRecognizer {
 					token.tokenName = "INTEGER";
 				else if (dotCounter == 1)
 					token.tokenName = "DECIMAL";
+					if((dotCounter == 1) && (str.charAt(str.length()-1) == '.')){
+						token.tokenName = "ERROR";
+					}
 			}
 		}
 
@@ -666,7 +670,7 @@ public class LexRecognizer {
 						|| str.charAt(i) == '(' || str.charAt(i) == '*'
 						|| str.charAt(i) == ' ' || str.charAt(i) == ')'
 						|| str.charAt(i) == '.' || str.charAt(i) == '_'
-						|| str.charAt(i) == '!' || str.charAt(i) == ',') && str.charAt(str.length() - 1) == '\'') {
+						|| str.charAt(i) == '!' || str.charAt(i) == ',') && str.charAt(str.length() - 1) == '\"') {
 					//valid = false;
 					//break;
 					token.tokenName = "STRING";

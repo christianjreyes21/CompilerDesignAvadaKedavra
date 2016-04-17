@@ -1,0 +1,32 @@
+#INTEGER hello = 1
+#DECIMAL DECIMALVAR
+#INTEGER #DECIMAL #CHARACTER #STRING #BOOLEAN 
+%SWITCH %CASE %STOP %DEFAULT %FOR %OUTPUT.PRINT %OUTPUT.PRINTLN %INPUT.GET
+%TRUE %FALSE
+< > <= >= == !=
++ - * / ^ 
+$MOD $DIV
+&AND &OR &NOT 
+:/Single line comment
+(: Multi-line comment :)
+?GOTO
+( ) " ' , ; 
+	:/Tab
+0 1 2 3 4 5 6 7 8 9 1.02 1.
+ :/Space
+:/Newline
+
+
+
+@IDENTIFIER @P____ @O-
+
+:/ Thank you for checking out our Lexical Analyzer! :)
+
+#DECIMAL @DEC = 1.1
+#INTEGER @IN = 2
+#BOOLEAN @X = %TRUE
+#STRING @STR = " HELLO "
+#CHARACTER @CHAR = 'S'
+
+?GO
+?GOTO

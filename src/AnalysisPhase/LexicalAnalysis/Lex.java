@@ -209,8 +209,11 @@ public class Lex {
 			{
 				//System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
 			}
+			try{
 			InputOutput.writeText(symbolTable);
 			syntax.analyze();
+			} catch(Exception e){}
+			
 		}
 		else
 			System.out.println("INVALID FILE. PLEASE ENTER A .HP FILE");	
