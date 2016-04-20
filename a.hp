@@ -1,3 +1,13 @@
+%INPUT.GET @Aaa
+
+%OUTPUT.PRINTLN @Aaa
+
+@aaa = 1 + 1
+
 %SWITCH ( @a = 1 )
 %CASE @aaa = 1 + 1 %STOP
  
+%FOR ( @b = 1 ; @b < 10 ; @b = @b + 1 )
+	%OUTPUT.PRINTLN @Aaa
+	
+#INTEGER @ccc
