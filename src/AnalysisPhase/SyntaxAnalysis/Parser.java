@@ -47,13 +47,8 @@ public class Parser {
 		Node<String> syntaxNode = new Node<String>();
 		syntaxNode.data = "<PROGRAM>";
 		//nextToken = nextToken();
-		while (tokenCount < token.length)
-		{
-			System.out.println("got: "+ nextToken.getTokenName());
-			statement(syntaxNode);
-			System.out.println("tapos na");
-			nextToken = nextToken();
-		}
+
+		statement(syntaxNode);
 	}
 	
 	public void statement (Node<String> parent)
@@ -111,6 +106,14 @@ public class Parser {
 		{
 			System.out.println("pumasok sa input");
 			input(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else if (nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL") || nextToken.getTokenName().equals("STRING") || nextToken.getTokenName().equals("CHARACTER") || nextToken.getTokenName().equals("KEYWORD_BOOLEAN_TRUE") || nextToken.getTokenName().equals("KEYWORD_BOOLEAN_FALSE"))
+		{
+			System.out.println("pumasok sa expression");
+			expression(statementNode);
 			nextToken = nextToken();
 			space(statementNode);
 			nextToken = nextToken();
@@ -197,7 +200,7 @@ public class Parser {
 		inputNode.data = "<INPUT_STMT>";
 		parent.children.add(inputNode);
 		
-		nextToken = nextToken();
+		//nextToken = nextToken();
 		if(nextToken.getTokenName().equals("KEYWORD_INPUT"))
 		{
 			leafNode = new Node<String>();
@@ -504,7 +507,24 @@ public class Parser {
 	
 	public void expression (Node<String> parent)
 	{
-		//GAWIN ITO
+		expressionNode = new Node<String>();
+		expressionNode.data = "<EXPR>";
+		
+		parent.children.add(expressionNode);
+		
+		nextToken = nextToken(); // space
+		nextToken = nextToken(); // operator
+		
+		if (nextToken.getTokenName().equals("ARITH_OP_ADD") || nextToken.getTokenName().equals("ARITH_OP_SUBT") || nextToken.getTokenName().equals("ARITH_OP_MULT") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_MOD") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_EXPON"))
+		{
+			tokenCount -= 2;
+			nextToken = token[tokenCount];
+			mathExpression(expressionNode);
+		}
+		/*else if () ikaw bahala sa operators mo here sa rel since di mo pa nagagawa. HAHAHA
+		{
+			
+		}*/
 	}
 	
 	public void mathExpression(Node<String> parent)
@@ -534,10 +554,6 @@ public class Parser {
 		else if (nextToken.getTokenName().equals("ARITH_OP_MULT") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_MOD") || nextToken.getTokenName().equals("ARITH_OP_DIV") || nextToken.getTokenName().equals("ARITH_OP_EXPON") || nextToken.getTokenName().equals("INTEGER") || nextToken.getTokenName().equals("DECIMAL"))
 		{
 			term(mathExpressionNode);
-		}
-		else
-		{
-			System.out.println("Syntax Analyzer: Invalid symbol detected");
 		}
 		
 		System.out.println("Exited Math Expression");
@@ -784,7 +800,7 @@ public class Parser {
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
 			
-			spaceNode.children.add(leafNode);
+			dataTypeNode.children.add(leafNode);
 		}
 		else
 		{
