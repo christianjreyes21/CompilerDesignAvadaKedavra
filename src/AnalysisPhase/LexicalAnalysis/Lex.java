@@ -2,6 +2,7 @@ package AnalysisPhase.LexicalAnalysis;
 
 import javax.swing.JOptionPane;
 
+import AnalysisPhase.SyntaxAnalysis.Parser;
 import AnalysisPhase.SyntaxAnalysis.SyntaxAnalyzer;
 
 public class Lex {
@@ -200,7 +201,7 @@ public class Lex {
 		String file = JOptionPane.showInputDialog("Please enter the full path of the file");
 		Token[] symbolTable;
 		//System.out.println(file);
-		SyntaxAnalyzer syntax = new SyntaxAnalyzer();
+		Parser syntax = new Parser();
 		if (file.charAt(file.length() - 2) == 'h' && file.charAt(file.length() - 1) == 'p')
 		{
 			symbolTable = Lex(InputOutput.getText(file));
@@ -209,10 +210,11 @@ public class Lex {
 			{
 				//System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
 			}
-			try{
+			//try{
 			InputOutput.writeText(symbolTable);
-			syntax.analyze();
-			} catch(Exception e){}
+			syntax.parse();
+			
+			//} catch(Exception e){}
 			
 		}
 		else

@@ -9,5 +9,3 @@
  
 %FOR ( @b = 1 ; @b < 10 ; @b = @b + 1 )
 	%OUTPUT.PRINTLN @Aaa
-	
-#INTEGER @ccc

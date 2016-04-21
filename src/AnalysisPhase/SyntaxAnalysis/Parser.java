@@ -1,5 +1,7 @@
 package AnalysisPhase.SyntaxAnalysis;
 
+import AnalysisPhase.LexicalAnalysis.InputOutput;
+import AnalysisPhase.LexicalAnalysis.Lex;
 import AnalysisPhase.LexicalAnalysis.Token;
 import Utilities.Node;
 
@@ -30,19 +32,38 @@ public class Parser {
 	Node<String> charConstNode = null;
 	Node<String> stringConstNode = null;
 	Node<String> spaceNode = null;
+	Node<String> dataTypeNode = null;
 	Node<String> leafNode = null;
 	Token nextToken = null;
 	
 	Token[] token;
 	int tokenCount = 0;
 	
+	public void parse()
+	{
+		token = Lex.Lex(InputOutput.getText("a.hp"));
+		System.out.println("analyze"+token.length);
+		nextToken = token[tokenCount];
+		Node<String> syntaxNode = new Node<String>();
+		syntaxNode.data = "<PROGRAM>";
+		//nextToken = nextToken();
+		while (tokenCount < token.length)
+		{
+			System.out.println("got: "+ nextToken.getTokenName());
+			statement(syntaxNode);
+			System.out.println("tapos na");
+			nextToken = nextToken();
+		}
+	}
+	
 	public void statement (Node<String> parent)
 	{
 		Node<String> statementNode = new Node<String>();
-		assignNode.data = "<STATEMENT>";
+		statementNode.data = "<STATEMENT>";
 		parent.children.add(statementNode);
 		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
 		{
+			System.out.println("pumasok sa declaration");
 			declaration(statementNode);
 			nextToken = nextToken();
 			space(statementNode);
@@ -52,8 +73,11 @@ public class Parser {
 		{
 			input(statementNode);
 			nextToken = nextToken();
-			space(statementNode);
-			nextToken = nextToken();
+			if(nextToken.getTokenName().equals("SPACE"))
+			{
+				space(statementNode);
+				nextToken = nextToken();
+			}
 		}
 		else if (nextToken.getTokenName().equals("KEYWORD_OUTPUT.PRINT") || nextToken.getTokenName().equals("KEYWORD_OUTPUT.PRINTLN"))
 		{
@@ -83,6 +107,14 @@ public class Parser {
 			space(statementNode);
 			nextToken = nextToken();
 		}
+		else if(nextToken.getTokenName().equals("KEYWORD_INPUT.GET"))
+		{
+			System.out.println("pumasok sa input");
+			input(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
 		else
 		{
 			System.out.println("Syntax Analyzer: Statement Syntax Error; Line Number: " + nextToken.getLineNumber());
@@ -93,21 +125,21 @@ public class Parser {
 	public void declaration (Node<String> parent)
 	{
 		Node<String> declarationNode = new Node<String>();
-		assignNode.data = "<DECLARATION_STMT>";
+		declarationNode.data = "<DECLARATION_STMT>";
 		parent.children.add(declarationNode);
 		
 		//nextToken = nextToken();
 		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
 		{
-			dataType(assignNode);
+			dataType(declarationNode);
 			nextToken = nextToken();
-			space(assignNode);
+			space(declarationNode);
 			nextToken = nextToken();
 			if (nextToken.getTokenName().equals("IDENT"))
 			{
-				var(assignNode);
+				var(declarationNode);
 				nextToken = nextToken();
-				space(assignNode);
+				space(declarationNode);
 				nextToken = nextToken();
 			}
 			else
@@ -166,7 +198,7 @@ public class Parser {
 		parent.children.add(inputNode);
 		
 		nextToken = nextToken();
-		if(nextToken.getTokenName().equals("IDENTIFIER"))
+		if(nextToken.getTokenName().equals("KEYWORD_INPUT"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = nextToken.getTokenAttribute();
@@ -742,10 +774,10 @@ public class Parser {
 	
 	public void dataType(Node<String> parent)
 	{
-		spaceNode = new Node<String>();
-		spaceNode.data = "<DATA_TYPE>";
-		
-		parent.children.add(spaceNode);
+		dataTypeNode = new Node<String>();
+		dataTypeNode.data = "<DATA_TYPE>";
+
+		parent.children.add(dataTypeNode);
 		
 		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
 		{
