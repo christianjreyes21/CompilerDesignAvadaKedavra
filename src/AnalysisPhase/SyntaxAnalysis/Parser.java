@@ -36,6 +36,129 @@ public class Parser {
 	Token[] token;
 	int tokenCount = 0;
 	
+	public void statement (Node<String> parent)
+	{
+		Node<String> statementNode = new Node<String>();
+		assignNode.data = "<STATEMENT>";
+		parent.children.add(statementNode);
+		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
+		{
+			declaration(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else if(nextToken.getTokenName().equals("IDENTIFIER"))
+		{
+			input(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else if (nextToken.getTokenName().equals("KEYWORD_OUTPUT.PRINT") || nextToken.getTokenName().equals("KEYWORD_OUTPUT.PRINTLN"))
+		{
+			output(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else if (nextToken.getTokenName().equals("KEYWORD_FOR"))
+		{
+			forLoop(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else if (nextToken.getTokenName().equals("KEYWORD_SWITCH"))
+		{
+			switchCase(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN") || nextToken.getTokenName().equals("IDENT"))
+		{
+			assign(statementNode);
+			nextToken = nextToken();
+			space(statementNode);
+			nextToken = nextToken();
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Statement Syntax Error; Line Number: " + nextToken.getLineNumber());
+		}
+		
+	}
+	
+	public void declaration (Node<String> parent)
+	{
+		Node<String> declarationNode = new Node<String>();
+		assignNode.data = "<DECLARATION_STMT>";
+		parent.children.add(declarationNode);
+		
+		//nextToken = nextToken();
+		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
+		{
+			dataType(assignNode);
+			nextToken = nextToken();
+			space(assignNode);
+			nextToken = nextToken();
+			if (nextToken.getTokenName().equals("IDENT"))
+			{
+				var(assignNode);
+				nextToken = nextToken();
+				space(assignNode);
+				nextToken = nextToken();
+			}
+			else
+			{
+				System.out.println("Syntax Analyzer: Assignment Syntax Error; Identifier Expected; Line Number: " + nextToken.getLineNumber());
+			}
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Assignment Syntax Error; DataType Expected; Line Number: " + nextToken.getLineNumber());
+		}
+		
+		
+	}
+	
+	public void assign (Node<String> parent)
+	{
+		Node<String> assignNode = new Node<String>();
+		assignNode.data = "<ASSIGN_STMT>";
+		parent.children.add(assignNode);
+		
+		
+		//nextToken = nextToken();
+		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
+		{
+			dataType(assignNode);
+			nextToken = nextToken();
+			space(assignNode);
+			nextToken = nextToken();
+		}
+		if (nextToken.getTokenName().equals("IDENT"))
+		{
+			var(assignNode);
+			nextToken = nextToken();
+			space(assignNode);
+			nextToken = nextToken();
+			if (nextToken.getTokenName().equals("IDENT"))//IF NG MGA EXPRESSION
+			{
+				expression(assignNode);
+			}
+			else
+			{
+				System.out.println("Syntax Analyzer: Assignment Syntax Error; Identifier Expected; Line Number: " + nextToken.getLineNumber());
+			}
+		}
+		else
+		{
+			System.out.println("Syntax Analyzer: Assignment Syntax Error; Line Number: " + nextToken.getLineNumber());
+		}
+	}
+	
 	public void input (Node<String> parent)
 	{
 		Node<String> inputNode = new Node<String>();
@@ -347,6 +470,11 @@ public class Parser {
 		System.out.println("Exited Default");
 	}
 	
+	public void expression (Node<String> parent)
+	{
+		//GAWIN ITO
+	}
+	
 	public void mathExpression(Node<String> parent)
 	{
 		mathExpressionNode = new Node<String>();
@@ -607,6 +735,28 @@ public class Parser {
 		else
 		{
 			System.out.println("Syntax Analyzer: You are missing a space; Line Number: " + nextToken.getLineNumber());
+		}
+		
+		System.out.println("Exited Space");
+	}
+	
+	public void dataType(Node<String> parent)
+	{
+		spaceNode = new Node<String>();
+		spaceNode.data = "<DATA_TYPE>";
+		
+		parent.children.add(spaceNode);
+		
+		if (nextToken.getTokenName().equals("RESERVEDWORD_INTEGER") || nextToken.getTokenName().equals("RESERVEDWORD_DECIMAL") || nextToken.getTokenName().equals("RESERVEDWORD_CHARACTER") || nextToken.getTokenName().equals("RESERVEDWORD_STRING") || nextToken.getTokenName().equals("RESERVEDWORD_BOOLEAN"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = nextToken.getTokenAttribute();
+			
+			spaceNode.children.add(leafNode);
+		}
+		else
+		{
+		//	System.out.println("Syntax Analyzer: Syntax Error on Data Type; Line Number: " + nextToken.getLineNumber());
 		}
 		
 		System.out.println("Exited Space");
