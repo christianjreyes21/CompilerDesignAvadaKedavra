@@ -46,7 +46,7 @@ public class AvadaKedavraParser {
 	public void nextToken()
 	{
 		token = lexer.nextToken();
-		System.out.println(token.getLineNumber() + " " + token.getTokenName());
+		if (token != null) System.out.println(token.getLineNumber() + " " + token.getTokenName());
 	}
 	
 	public static void main(String args[])
@@ -71,96 +71,136 @@ public class AvadaKedavraParser {
 		parent.children.add(statementNode);
 		
 		nextToken();
-		switch (token.getTokenName())
+		if (token != null)
 		{
-			case "RESERVEDWORD_INTEGER":
-			case "RESERVEDWORD_STRING":
-			case "RESERVEDWORD_CHARACTER":
-			case "RESERVEDWORD_DECIMAL":
-			case "RESERVEDWORD_BOOLEAN":
-				// declaration()
-				break;
-			case "KEYWORD_INPUT.GET":
-				// input();
-				break;
-			case "KEYWORD_OUTPUT.PRINT":
-			case "KEYWORD_OUTPUT.PRINTLN":
-				// output();
-				break;
-			case "KEYWORD_FOR":
-				// for();
-				break;
-			case "KEYWORD_SWITCH":
-				// switch();
-				break;
-			case "IDENTIFIER":
-				// assign();
-				break;
-			case "NOISE_GO":
-				// go();
-				break;
-			default:
-				System.out.println("Line: " + token.getLineNumber() + " | Error: Invalid start of statement.");
-				break;
+			switch (token.getTokenName())
+			{
+				case "RESERVEDWORD_INTEGER":
+				case "RESERVEDWORD_STRING":
+				case "RESERVEDWORD_CHARACTER":
+				case "RESERVEDWORD_DECIMAL":
+				case "RESERVEDWORD_BOOLEAN":
+					declaration(statementNode);
+					break;
+				case "KEYWORD_INPUT.GET":
+					// input();
+					break;
+				case "KEYWORD_OUTPUT.PRINT":
+				case "KEYWORD_OUTPUT.PRINTLN":
+					// output();
+					break;
+				case "KEYWORD_FOR":
+					// for();
+					break;
+				case "KEYWORD_SWITCH":
+					// switch();
+					break;
+				case "IDENTIFIER":
+					// assign();
+					break;
+				case "NOISE_GO":
+					// go();
+					break;
+				default:
+					System.out.println("Line: " + token.getLineNumber() + " | Error: Invalid start of statement.");
+					break;
+			}
 		}
 	}
 	
 	public void declaration(Node<String> parent)
 	{
-		declarationNode = new Node<String>();
-		declarationNode.data = "<DECLARATION>";
-		parent.children.add(declarationNode);
-		
-		/// ADD DATA TYPE TO THE LEAF NODE
-		leafNode = new Node<String>();
-		leafNode.data = token.getTokenAttribute();
-		declarationNode.children.add(leafNode);
-		/// SPACE
-		nextToken();
-		space(declarationNode);
-		/// VARIABLE
-		nextToken();
+		if (token != null)
+		{
+			declarationNode = new Node<String>();
+			declarationNode.data = "<DECLARATION>";
+			parent.children.add(declarationNode);
+			
+			/// ADD DATA TYPE TO THE LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			declarationNode.children.add(leafNode);
+			/// SPACE
+			nextToken();
+			space(declarationNode);
+			/// VARIABLE
+			nextToken();
+			var(declarationNode);
+			nextToken();
+			newline(declarationNode);
+			statement(programNode);
+		}
+	}
+	
+	public void var(Node<String> parent)
+	{
+		if (token != null)
+		{
+			varNode = new Node<String>();
+			varNode.data = "<VAR>";
+			parent.children.add(varNode);
+			
+			
+			//// ADD IDENTIFIER TO THE LEAF NODE
+			if (token.getTokenName().equals("IDENT"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				varNode.children.add(varNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Identifier missing");
+			}
+		}
 	}
 	
 	public void space(Node<String> parent)
 	{
-		spaceNode = new Node<String>();
-		spaceNode.data = "<SPACE>";
-		
-		parent.children.add(spaceNode);
-		
-		if (token.getTokenName().equals("SPACE"))
+		if (token != null)
 		{
-			leafNode = new Node<String>();
-			leafNode.data = "space";
+			spaceNode = new Node<String>();
+			spaceNode.data = "<SPACE>";
 			
-			spaceNode.children.add(leafNode);
-		}
-		else
-		{
-			System.out.println("Line: " + token.getLineNumber() + " | Error: Space missing");
+			parent.children.add(spaceNode);
+			
+			//// ADD SPACE TO THE SPACENODE
+			if (token.getTokenName().equals("SPACE"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = "space";
+				
+				spaceNode.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Space missing");
+			}
 		}
 	}
 	
 	public void newline(Node<String> parent)
 	{
-		spaceNode = new Node<String>();
-		spaceNode.data = "<NEWLINE>";
-		
-		parent.children.add(spaceNode);
-		
-		if (token.getTokenName().equals("NEWLINE"))
+		if (token != null)
 		{
-			leafNode = new Node<String>();
-			leafNode.data = "newline";
+			spaceNode = new Node<String>();
+			spaceNode.data = "<NEWLINE>";
 			
-			spaceNode.children.add(leafNode);
-		}
-		else
-		{
-			System.out.println("Line: " + token.getLineNumber() + " | Error: Newline missing");
+			parent.children.add(spaceNode);
+			
+			/// ADD NEWLINE TO THE NEWLINENODE
+			if (token.getTokenName().equals("NEWLINE"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = "newline";
+				
+				spaceNode.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Newline missing");
+			}
 		}
 	}
-	
-	//public void
 }
