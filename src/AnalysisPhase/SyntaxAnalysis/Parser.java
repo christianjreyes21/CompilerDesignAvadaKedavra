@@ -39,9 +39,9 @@ public class Parser {
 	Token[] token;
 	int tokenCount = 0;
 	
-	public void parse()
+	public void parse(String fileName)
 	{
-		token = Lex.Lex(InputOutput.getText("a.hp"));
+		token = Lex.Lex(InputOutput.getText(fileName));
 		System.out.println("analyze"+token.length);
 		nextToken = token[tokenCount];
 		Node<String> syntaxNode = new Node<String>();

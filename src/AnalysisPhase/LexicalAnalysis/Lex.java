@@ -216,7 +216,7 @@ public class Lex {
 			}
 			//try{
 			InputOutput.writeText(symbolTable);
-			syntax.parse();
+			syntax.parse(file);
 			
 			//} catch(Exception e){}
 			
