@@ -106,6 +106,10 @@ public class AvadaKedavraParser {
 					break;
 			}
 		}
+		else
+		{
+			System.out.println(programNode.toString());
+		}
 	}
 	
 	public void declaration(Node<String> parent)
@@ -129,6 +133,28 @@ public class AvadaKedavraParser {
 			nextToken();
 			newline(declarationNode);
 			statement(programNode);
+		}
+		else
+		{
+			System.out.println(programNode.toString());
+		}
+	}
+	
+	public void input(Node<String> parent)
+	{
+		if (token != null)
+		{
+			inputNode = new Node<String>();
+			inputNode.data = "<INPUT_STMT>";
+			
+			parent.children.add(inputNode);
+			
+			//// ADD INPUT KEYWORD TO LEAF NODE
+			
+		}
+		else
+		{
+			System.out.println(programNode.toString());
 		}
 	}
 	
@@ -154,6 +180,10 @@ public class AvadaKedavraParser {
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Identifier missing");
 			}
 		}
+		else
+		{
+			System.out.println(programNode.toString());
+		}
 	}
 	
 	public void space(Node<String> parent)
@@ -178,6 +208,10 @@ public class AvadaKedavraParser {
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Space missing");
 			}
 		}
+		else
+		{
+			System.out.println(programNode.toString());
+		}
 	}
 	
 	public void newline(Node<String> parent)
@@ -201,6 +235,10 @@ public class AvadaKedavraParser {
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Newline missing");
 			}
+		}
+		else
+		{
+			System.out.println(programNode.toString());
 		}
 	}
 }
