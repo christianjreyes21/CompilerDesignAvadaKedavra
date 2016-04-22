@@ -11,17 +11,18 @@ public class Node<T> {
     public String toString() {
         String details="[";
         if(data!=null)
+        {
             details+=data.toString();
+           // System.out.println(data.toString());
+        }
         else
             details+="";
 
         if(!children.isEmpty()){
             for (Node<T> treeNode : children) {
-                //System.out.println(token.getLexeme());
+            	//System.out.println(treeNode.toString());
                 details += treeNode.toString();
             }
-        } else {
-            //details += "]";
         }
         details += "]";
         return details;

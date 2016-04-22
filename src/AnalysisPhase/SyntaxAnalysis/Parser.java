@@ -1,9 +1,14 @@
 package AnalysisPhase.SyntaxAnalysis;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import AnalysisPhase.LexicalAnalysis.InputOutput;
 import AnalysisPhase.LexicalAnalysis.Lex;
 import AnalysisPhase.LexicalAnalysis.Token;
 import Utilities.Node;
+import Utilities.ParseTreeGenerator;
 
 public class Parser {
 
@@ -39,7 +44,7 @@ public class Parser {
 	Token[] token;
 	int tokenCount = 0;
 	
-	public void parse(String fileName)
+	public void parse(String fileName) throws IOException
 	{
 		token = Lex.Lex(InputOutput.getText(fileName));
 		System.out.println("analyze"+token.length);
@@ -50,6 +55,8 @@ public class Parser {
 
 		statement(syntaxNode);
 		System.out.println(syntaxNode.toString());
+		ParseTreeGenerator ptg = new ParseTreeGenerator();
+		ptg.generateTree(syntaxNode);
 	}
 	
 	public void statement (Node<String> parent)
