@@ -49,6 +49,8 @@ public class Parser {
 		//nextToken = nextToken();
 
 		statement(syntaxNode);
+		
+		System.out.println(syntaxNode.toString());
 	}
 	
 	public void statement (Node<String> parent)
