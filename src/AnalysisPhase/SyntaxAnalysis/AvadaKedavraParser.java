@@ -35,6 +35,7 @@ public class AvadaKedavraParser {
 	Node<String> stringConstNode = null;
 	Node<String> spaceNode = null;
 	Node<String> dataTypeNode = null;
+	Node<String> goNode = null;
 	Node<String> leafNode = null;
 	
 	public AvadaKedavraParser ()
@@ -83,11 +84,11 @@ public class AvadaKedavraParser {
 					declaration(statementNode);
 					break;
 				case "KEYWORD_INPUT.GET":
-					// input();
+					input(statementNode);
 					break;
 				case "KEYWORD_OUTPUT.PRINT":
 				case "KEYWORD_OUTPUT.PRINTLN":
-					// output();
+					output(statementNode);
 					break;
 				case "KEYWORD_FOR":
 					// for();
@@ -95,20 +96,16 @@ public class AvadaKedavraParser {
 				case "KEYWORD_SWITCH":
 					// switch();
 					break;
-				case "IDENTIFIER":
-					// assign();
+				case "IDENT":
+					assign(statementNode);
 					break;
 				case "NOISE_GO":
-					// go();
+					go(statementNode);
 					break;
 				default:
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Invalid start of statement.");
 					break;
 			}
-		}
-		else
-		{
-			System.out.println(programNode.toString());
 		}
 	}
 	
@@ -127,16 +124,12 @@ public class AvadaKedavraParser {
 			/// SPACE
 			nextToken();
 			space(declarationNode);
-			/// VARIABLE
 			nextToken();
+			/// VARIABLE
 			var(declarationNode);
 			nextToken();
 			newline(declarationNode);
 			statement(programNode);
-		}
-		else
-		{
-			System.out.println(programNode.toString());
 		}
 	}
 	
@@ -150,11 +143,363 @@ public class AvadaKedavraParser {
 			parent.children.add(inputNode);
 			
 			//// ADD INPUT KEYWORD TO LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
 			
+			inputNode.children.add(leafNode);
+			//// SPACE
+			nextToken();
+			space(inputNode);
+			nextToken();
+			//// LEFT PARENTHESIS
+			lparen(inputNode);
+			nextToken();
+			//// SPACE
+			space(inputNode);
+			nextToken();
+			///// VAR
+			var(inputNode);
+			nextToken();
+			///// SPACE
+			space(inputNode);
+			nextToken();
+			///// RIGHT PARENTHESIS
+			rparen(inputNode);
+			nextToken();
+			///// NEWLINE
+			newline(inputNode);
+			statement(programNode);
+		}
+	}
+	
+	public void output(Node<String> parent)
+	{
+		if (token != null)
+		{
+			inputNode = new Node<String>();
+			inputNode.data = "<OUTPUT_STMT>";
+			
+			parent.children.add(inputNode);
+			
+			//// ADD INPUT KEYWORD TO LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			
+			inputNode.children.add(leafNode);
+			//// SPACE
+			nextToken();
+			space(inputNode);
+			nextToken();
+			//// LEFT PARENTHESIS
+			lparen(inputNode);
+			nextToken();
+			//// SPACE
+			space(inputNode);
+			nextToken();
+			///// VAR
+			var(inputNode);
+			nextToken();
+			///// SPACE
+			space(inputNode);
+			nextToken();
+			///// RIGHT PARENTHESIS
+			rparen(inputNode);
+			nextToken();
+			///// NEWLINE
+			newline(inputNode);
+			statement(programNode);
+		}
+	}
+	
+	public void go(Node<String> parent)
+	{
+		if (token != null)
+		{
+			goNode = new Node<String>();
+			goNode.data = "<GOTO_STMT>";
+			
+			parent.children.add(goNode);
+
+			///// ADD GO STATEMENT TO LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			
+			goNode.children.add(leafNode);
+			/// SPACE
+			nextToken();
+			space(goNode);
+			//// VAR
+			nextToken();
+			var(goNode);
+			//// NEWLINE
+			nextToken();
+			newline(goNode);
+			statement(programNode);
+		}
+	}
+	
+	public void assign(Node<String> parent)
+	{
+		if (token != null)
+		{
+			assignNode = new Node<String>();
+			assignNode.data = "<ASSIGN_STMT>";
+			
+			parent.children.add(assignNode);
+			
+			///// ADD VAR TO ASSIGN NODE\
+			var(assignNode);
+			nextToken();
+			///// SPACE
+			space(assignNode);
+			nextToken();
+			///// ADD EQUAL_OP TO ASSIGN NODE
+			equal(assignNode);
+			nextToken();
+			//// SPACE
+			space(assignNode);
+			nextToken();
+			//// VAR, EXPR, CONST
+			//switch (lexer.lookahead().getTokenName())
+			//{
+				//case "SPACE":
+					// expression();
+				//	break;
+			//	case "NEWLINE":
+					var(assignNode);
+					nextToken();
+				//	break;
+			//}
+			////// NEWLINE
+			newline(assignNode);
+			statement(programNode);
+		}
+	}
+	
+	public void expression(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// DECIDE IF MATH OR LOGICAL
+			switch (lexer.lookahead2().getTokenName())
+			{
+				case "ARITH_OP_ADD":
+				case "ARITH_OP_SUBT":
+				case "ARITH_OP_MULT":
+				case "ARITH_OP_DIVIDE":
+				case "ARITH_OP_MOD":
+				case "ARITH_OP_DIV":
+				case "ARITH_OP_EXPON":
+					/// math expression
+					break;
+				case "REL_OP_LESS":
+				case "REL_OP_GREATER":
+				case "REL_OP_LESSEQUAL":
+				case "REL_OP_GREATEREQUAL":
+				case "REL_OP_EQUALTO":
+				case "REL_OP_NOTEQUAL":
+				case "LOG_OP_OR":
+				case "LOG_OP_AND":
+					//// relational expression
+					break;
+			}
+		}
+	}
+	
+	public void mathExpression(Node<String> parent)
+	{
+		mathExpressionNode = new Node<String>();
+		mathExpressionNode.data = "<MATH_EXPR>";
+		
+		parent.children.add(mathExpressionNode);
+		
+		//// ADDING LEAF OR CONSTANT TO THE LEAF NODe
+		switch (token.getTokenName())
+		{
+			case "DECIMAL":
+			case "INTEGER":
+				constant(mathExpressionNode);
+				break;
+			case "IDENT":
+				var(mathExpressionNode);
+				break;
+		}
+		//// SPACE
+		nextToken();
+		space(mathExpressionNode);
+		//// ADD OR SUBTRACT OR OTHERS
+		nextToken();
+		switch(token.getTokenName())
+		{
+			case "ARITH_OP_ADD":
+			case "ARITH_OP_SUBT":
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				mathExpressionNode.children.add(leafNode);
+				/// SPACE
+				nextToken();
+				if (token.getTokenName().equals("SPACE"))
+				{
+					nextToken();
+					mathExpression(mathExpressionNode);
+				}
+				break;
+			case "ARITH_OP_MULT":
+			case "ARITH_OP_DIVIDE":
+			case "ARITH_OP_MOD":
+			case "ARITH_OP_DIV":
+			case "INTEGER":
+			case "DECIMAL":
+			case "IDENT":
+				term(mathExpressionNode);
+				break;
+		}
+	}
+	
+	public void term(Node<String> parent)
+	{
+		termNode = new Node<String>();
+		termNode.data = "<TERM>";
+		
+		parent.children.add(termNode);
+		
+		switch(token.getTokenName())
+		{	
+			case "ARITH_OP_MULT":
+			case "ARITH_OP_DIVIDE":
+			case "ARITH_OP_MOD":
+			case "ARITH_OP_DIV":
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				termNode.children.add(leafNode);
+				/// SPACE
+				nextToken();
+				if (token.getTokenName().equals("SPACE"))
+				{
+					nextToken();
+					term(termNode);
+				}
+				break;
+			case "ARITH_OP_EXPON":
+			case "INTEGER":
+			case "DECIMAL":
+			case "IDENT":
+				factor(termNode);
+				break;
+		}
+	}
+	
+	public void factor(Node<String> parent)
+	{
+		factorNode = new Node<String>();
+		factorNode.data = "<FACTOR>";
+		
+		parent.children.add(factorNode);
+		
+		switch(token.getTokenName())
+		{	
+			case "ARITH_OP_EXPON":
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				factorNode.children.add(leafNode);
+				/// SPACE
+				nextToken();
+				if (token.getTokenName().equals("SPACE"))
+				{
+					nextToken();
+					factor(factorNode);
+				}
+				break;
+			case "INTEGER":
+			case "DECIMAL":
+				constant(factorNode);
+				nextToken();
+				break;
+			case "IDENT":
+				var(factorNode);
+				nextToken();
+				break;
+			case "ARITH_OP_ADD":
+			case "ARITH_OP_SUBT":
+			case "ARITH_OP_MULT":
+			case "ARITH_OP_DIVIDE":
+			case "ARITH_OP_MOD":
+			case "ARITH_OP_DIV":	
+				mathExpression(factorNode);
+				
+		}
+	}
+	
+	public void equal(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// ADD PARENTHESIS TO THE LEAF NODE
+			if (token.getTokenName().equals("ARITH_OP_ASSIGN"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				parent.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Equal operator expected");
+			}
+		}
+	}
+	
+	public void constant(Node<String> parent)
+	{
+		if (token != null)
+		{
+			/// ADD CONSTANT TO LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			
+			parent.children.add(leafNode);
 		}
 		else
 		{
-			System.out.println(programNode.toString());
+			System.out.println("Line: " + token.getLineNumber() + " | Error: Constant expected");
+		}
+	}
+	
+	public void lparen(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// ADD PARENTHESIS TO THE LEAF NODE
+			if (token.getTokenName().equals("DELIM_LPAREN"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				parent.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Left parenthesis expected");
+			}
+		}
+	}
+	
+	public void rparen(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// ADD PARENTHESIS TO THE LEAF NODE
+			if (token.getTokenName().equals("DELIM_RPAREN"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				parent.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Right parenthesis expected");
+			}
 		}
 	}
 	
@@ -173,16 +518,12 @@ public class AvadaKedavraParser {
 				leafNode = new Node<String>();
 				leafNode.data = token.getTokenAttribute();
 				
-				varNode.children.add(varNode);
+				varNode.children.add(leafNode);
 			}
 			else
 			{
-				System.out.println("Line: " + token.getLineNumber() + " | Error: Identifier missing");
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Identifier expected");
 			}
-		}
-		else
-		{
-			System.out.println(programNode.toString());
 		}
 	}
 	
@@ -190,27 +531,18 @@ public class AvadaKedavraParser {
 	{
 		if (token != null)
 		{
-			spaceNode = new Node<String>();
-			spaceNode.data = "<SPACE>";
-			
-			parent.children.add(spaceNode);
-			
 			//// ADD SPACE TO THE SPACENODE
 			if (token.getTokenName().equals("SPACE"))
 			{
 				leafNode = new Node<String>();
-				leafNode.data = "space";
+				leafNode.data = "SPACE";
 				
-				spaceNode.children.add(leafNode);
+				parent.children.add(leafNode);
 			}
 			else
 			{
-				System.out.println("Line: " + token.getLineNumber() + " | Error: Space missing");
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Space expected");
 			}
-		}
-		else
-		{
-			System.out.println(programNode.toString());
 		}
 	}
 	
@@ -218,27 +550,18 @@ public class AvadaKedavraParser {
 	{
 		if (token != null)
 		{
-			spaceNode = new Node<String>();
-			spaceNode.data = "<NEWLINE>";
-			
-			parent.children.add(spaceNode);
-			
 			/// ADD NEWLINE TO THE NEWLINENODE
 			if (token.getTokenName().equals("NEWLINE"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = "newline";
 				
-				spaceNode.children.add(leafNode);
+				parent.children.add(leafNode);
 			}
 			else
 			{
-				System.out.println("Line: " + token.getLineNumber() + " | Error: Newline missing");
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Newline expected");
 			}
-		}
-		else
-		{
-			System.out.println(programNode.toString());
 		}
 	}
 }

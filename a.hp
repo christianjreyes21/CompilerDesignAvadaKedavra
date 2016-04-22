@@ -1,1 +1,11 @@
+%INPUT.GET ( @ccc )
+%OUTPUT.PRINT ( @ccc )
+%OUTPUT.PRINTLN ( @ccc )
+?GO @a
+?GOTO @b
 #INTEGER @ccc
+@a = @a
+@a = 1
+@a = 'C'
+@b = "STRINGzzz"
+@a = 1 + 1

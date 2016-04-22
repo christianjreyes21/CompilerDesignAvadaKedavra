@@ -102,6 +102,10 @@ public class Lex {
 						
 						maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
 					}
+					else if (possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '\"')
+					{
+						maxTokens[numTokens] = LexRecognizer.charOrString(possibleToken, line);
+					}
 					else
 						maxTokens[numTokens] = LexRecognizer.delim(possibleToken, line);
 					
@@ -176,7 +180,10 @@ public class Lex {
 				else if ((possibleToken.charAt(0) == 'A' || possibleToken.charAt(0) == 'B' || possibleToken.charAt(0) == 'C' || possibleToken.charAt(0) == 'D' || possibleToken.charAt(0) == 'E' || possibleToken.charAt(0) == 'F' || possibleToken.charAt(0) == 'G' || possibleToken.charAt(0) == 'H' || possibleToken.charAt(0) == 'I' || possibleToken.charAt(0) == 'J' || possibleToken.charAt(0) == 'K' || possibleToken.charAt(0) == 'L' || possibleToken.charAt(0) == 'M' || possibleToken.charAt(0) == 'N' || possibleToken.charAt(0) == 'O' || possibleToken.charAt(0) == 'P' || possibleToken.charAt(0) == 'Q' || possibleToken.charAt(0) == 'R' || possibleToken.charAt(0) == 'S' || possibleToken.charAt(0) == 'T' || possibleToken.charAt(0) == 'U' || possibleToken.charAt(0) == 'V' || possibleToken.charAt(0) == 'W' || possibleToken.charAt(0) == 'X' || possibleToken.charAt(0) == 'Y' || possibleToken.charAt(0) == 'Z' || possibleToken.charAt(0) == 'a' || possibleToken.charAt(0) == 'b' || possibleToken.charAt(0) == 'c' || possibleToken.charAt(0) == 'd' || possibleToken.charAt(0) == 'e' || possibleToken.charAt(0) == 'f' || possibleToken.charAt(0) == 'g' || possibleToken.charAt(0) == 'h' || possibleToken.charAt(0) == 'i' || possibleToken.charAt(0) == 'j' || possibleToken.charAt(0) == 'k' || possibleToken.charAt(0) == 'l' || possibleToken.charAt(0) == 'm' || possibleToken.charAt(0) == 'n' || possibleToken.charAt(0) == 'o' || possibleToken.charAt(0) == 'p' || possibleToken.charAt(0) == 'q' || possibleToken.charAt(0) == 'r' || possibleToken.charAt(0) == 's' || possibleToken.charAt(0) == 't' || possibleToken.charAt(0) == 'u' || possibleToken.charAt(0) == 'v' || possibleToken.charAt(0) == 'w' || possibleToken.charAt(0) == 'x' || possibleToken.charAt(0) == 'y' || possibleToken.charAt(0) == 'z'))
 				{
 					Token error = new Token();
-					maxTokens[numTokens] = LexRecognizer.charOrString(possibleToken, line);
+					error.lineNumber = line;
+					error.tokenName = "ERROR";
+					error.tokenAttribute = possibleToken;
+					maxTokens[numTokens] = error;
 					numTokens++;
 					possibleToken = "";
 				}
@@ -236,5 +243,25 @@ public class Lex {
 			return null;
 		tokenCount++;
 		return t;
+	}
+	
+	public static Token lookahead2()
+	{
+		Token t = null;
+		if (tokenCount + 2 < tokens.length)
+			t = tokens[tokenCount + 2];
+		else
+			return null;
+		return t;
+	}
+	
+	public static Token lookahead()
+	{
+		Token t = null;
+		if (tokenCount + 1 < tokens.length)
+			t = tokens[tokenCount + 1];
+		else
+			return null;
+		return t;			
 	}
 }
