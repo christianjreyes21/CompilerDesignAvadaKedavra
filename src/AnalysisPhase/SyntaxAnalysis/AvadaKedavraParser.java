@@ -1,6 +1,9 @@
 package AnalysisPhase.SyntaxAnalysis;
 
+import java.io.IOException;
+
 import Utilities.Node;
+import Utilities.ParseTreeGenerator;
 import AnalysisPhase.LexicalAnalysis.InputOutput;
 import AnalysisPhase.LexicalAnalysis.Lex;
 import AnalysisPhase.LexicalAnalysis.Token;
@@ -49,19 +52,22 @@ public class AvadaKedavraParser {
 		if (token != null) System.out.println(token.getLineNumber() + " " + token.getTokenName());
 	}
 	
-	public static void main(String args[])
+	public static void main(String args[]) throws IOException
 	{
 		AvadaKedavraParser akp = new AvadaKedavraParser();
 		akp.program();
 	}
 
 	//// START PARSING FROM HERE <3
-	public void program()
+	public void program() throws IOException
 	{
 		programNode = new Node<String>();
 		programNode.data = "<PROGRAM>";
 		
 		statement(programNode);
+		//System.out.println(programNode.toString());
+		ParseTreeGenerator ptg = new ParseTreeGenerator();
+		ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
@@ -108,7 +114,7 @@ public class AvadaKedavraParser {
 		}
 		else
 		{
-			System.out.println(programNode.toString());
+			//System.out.println(programNode.toString());
 		}
 	}
 	
@@ -119,17 +125,19 @@ public class AvadaKedavraParser {
 			declarationNode = new Node<String>();
 			declarationNode.data = "<DECLARATION>";
 			parent.children.add(declarationNode);
-			
+
 			/// ADD DATA TYPE TO THE LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
 			declarationNode.children.add(leafNode);
+			
 			/// SPACE
 			nextToken();
 			space(declarationNode);
 			/// VARIABLE
 			nextToken();
 			var(declarationNode);
+			
 			nextToken();
 			newline(declarationNode);
 			statement(programNode);
@@ -173,7 +181,7 @@ public class AvadaKedavraParser {
 				leafNode = new Node<String>();
 				leafNode.data = token.getTokenAttribute();
 				
-				varNode.children.add(varNode);
+				varNode.children.add(leafNode);
 			}
 			else
 			{
@@ -182,8 +190,9 @@ public class AvadaKedavraParser {
 		}
 		else
 		{
-			System.out.println(programNode.toString());
+			//System.out.println(programNode.toString());
 		}
+		
 	}
 	
 	public void space(Node<String> parent)

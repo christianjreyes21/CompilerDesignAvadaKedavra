@@ -1,5 +1,7 @@
 package AnalysisPhase.LexicalAnalysis;
 
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 import AnalysisPhase.SyntaxAnalysis.Parser;
@@ -216,7 +218,12 @@ public class Lex {
 			}
 			//try{
 			InputOutput.writeText(symbolTable);
-			syntax.parse(file);
+			try {
+				syntax.parse(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			//} catch(Exception e){}
 			
