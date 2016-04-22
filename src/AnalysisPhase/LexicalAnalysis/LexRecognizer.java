@@ -520,7 +520,14 @@ public class LexRecognizer {
 		token.tokenName = "DELIM";
 		token.tokenAttribute = str;
 		token.lineNumber = line;
-		
+		if(str.charAt(0)=='(')
+		{
+			token.tokenName = "DELIM_LPAREN";
+		}
+		else if(str.charAt(0)==')')
+		{
+			token.tokenName = "DELIM_RPAREN";
+		}
 		  if (str.length() != 1) {
 			  token.tokenName = "ERROR";
 		  }

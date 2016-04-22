@@ -49,6 +49,7 @@ public class Parser {
 		//nextToken = nextToken();
 
 		statement(syntaxNode);
+		System.out.println(syntaxNode.toString());
 	}
 	
 	public void statement (Node<String> parent)
@@ -251,7 +252,7 @@ public class Parser {
 			space(forNode);
 			nextToken = nextToken();
 			
-			if (nextToken.getTokenName().equals("DELIM"))
+			if (nextToken.getTokenName().equals("DELIM_LPAREN"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = nextToken.getTokenAttribute();
@@ -287,7 +288,7 @@ public class Parser {
 						space(forNode);
 						nextToken = nextToken();
 						
-						if (nextToken.getTokenName().equals("DELIM"))
+						if (nextToken.getTokenName().equals("DELIM_RPAREN"))
 						{
 							leafNode = new Node<String>();
 							leafNode.data = nextToken.getTokenAttribute();
@@ -335,7 +336,7 @@ public class Parser {
 			space(switchNode);
 			nextToken = nextToken();
 			
-			if (nextToken.getTokenName().equals("DELIM"))
+			if (nextToken.getTokenName().equals("DELIM_LPAREN"))
 			{
 				leafNode = new Node<String>();
 				leafNode.data = nextToken.getTokenAttribute();
@@ -351,7 +352,7 @@ public class Parser {
 				space(switchNode);
 				nextToken = nextToken();
 				
-				if (nextToken.getTokenName().equals("DELIM"))
+				if (nextToken.getTokenName().equals("DELIM_RPAREN"))
 				{
 					nextToken = nextToken();
 					space(switchNode);
