@@ -117,7 +117,9 @@ public class AvadaKedavraParser {
 		declarationNode.children.add(leafNode);
 		/// SPACE
 		nextToken();
-		
+		space(declarationNode);
+		/// VARIABLE
+		nextToken();
 	}
 	
 	public void space(Node<String> parent)
@@ -127,7 +129,7 @@ public class AvadaKedavraParser {
 		
 		parent.children.add(spaceNode);
 		
-		if (token.getTokenName().equals("SPACE") || token.getTokenName().equals("NEWLINE"))
+		if (token.getTokenName().equals("SPACE"))
 		{
 			leafNode = new Node<String>();
 			leafNode.data = "space";
@@ -138,8 +140,26 @@ public class AvadaKedavraParser {
 		{
 			System.out.println("Line: " + token.getLineNumber() + " | Error: Space missing");
 		}
+	}
+	
+	public void newline(Node<String> parent)
+	{
+		spaceNode = new Node<String>();
+		spaceNode.data = "<NEWLINE>";
 		
-		System.out.println("Exited Space");
+		parent.children.add(spaceNode);
+		
+		if (token.getTokenName().equals("NEWLINE"))
+		{
+			leafNode = new Node<String>();
+			leafNode.data = "newline";
+			
+			spaceNode.children.add(leafNode);
+		}
+		else
+		{
+			System.out.println("Line: " + token.getLineNumber() + " | Error: Newline missing");
+		}
 	}
 	
 	//public void
