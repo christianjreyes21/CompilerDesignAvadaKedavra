@@ -23,6 +23,8 @@ public class Lex {
 							"NEWLINE",
 							"ERROR" // error or unrecognized lexemes
 							};
+	public static Token tokens[];
+	public static int tokenCount = 0;
 	
 	public static Token[] Lex(String file)
 	{
@@ -40,7 +42,7 @@ public class Lex {
 			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n' || file.charAt(i) == '\t'))
 				possibleToken += file.charAt(i);
 			// reads tab (indent)
-			System.out.println(possibleToken);
+			//System.out.println(possibleToken);
 			if (file.charAt(i) == '\t')
 			{
 				maxTokens[numTokens] = LexRecognizer.indent("", line);
@@ -72,7 +74,7 @@ public class Lex {
 						{
 							while (i < file.length() - 2)
 							{
-								System.out.println(possibleToken);
+							//	System.out.println(possibleToken);
 								// pag may newline sa comment diba. para madagdagan parin yung line counter
 								if (file.charAt(i) == '\n')
 									line++;
@@ -82,7 +84,7 @@ public class Lex {
 									possibleToken += file.charAt(i);
 									possibleToken += file.charAt(i + 1);
 									i = i + 2;
-									System.out.println(possibleToken);
+									//System.out.println(possibleToken);
 									break;
 								}
 								possibleToken += file.charAt(i);
@@ -193,6 +195,7 @@ public class Lex {
 		for (int i = 0; i < numTokens; i++)
 			trimmedTokens[i] = maxTokens[i];
 		
+		tokens = trimmedTokens;
 		return trimmedTokens;
 	}
 	
@@ -202,10 +205,11 @@ public class Lex {
 		Token[] symbolTable;
 		//System.out.println(file);
 		Parser syntax = new Parser();
+		
 		if (file.charAt(file.length() - 2) == 'h' && file.charAt(file.length() - 1) == 'p')
 		{
 			symbolTable = Lex(InputOutput.getText(file));
-
+			tokens = symbolTable;
 			for (int i = 0; i < symbolTable.length; i++)
 			{
 				//System.out.println(symbolTable[i].lineNumber + " " + symbolTable[i].tokenName + " " + symbolTable[i].tokenAttribute);
@@ -221,5 +225,16 @@ public class Lex {
 			System.out.println("INVALID FILE. PLEASE ENTER A .HP FILE");	
 		
 		
+	}
+	
+	public static Token nextToken()
+	{
+		Token t = null;
+		if (tokenCount < tokens.length)
+			t = tokens[tokenCount];
+		else
+			return null;
+		tokenCount++;
+		return t;
 	}
 }

@@ -591,7 +591,7 @@ public class LexRecognizer {
 		token.lineNumber = line;
 		boolean valid = true;
 
-		System.out.println(str.charAt(0) + " " + str.charAt(1) + " " + str.charAt(2));
+//		System.out.println(str.charAt(0) + " " + str.charAt(1) + " " + str.charAt(2));
 		if ((str.length() == 3)
 				&& (str.charAt(1) == 'A' || str.charAt(1) == 'B'
 						|| str.charAt(1) == 'C' || str.charAt(1) == 'D'
