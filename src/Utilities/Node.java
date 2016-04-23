@@ -13,7 +13,7 @@ public class Node<T> {
         if(data!=null)
         {
             details+=data.toString();
-           // System.out.println(data.toString());
+            //System.out.println(data.toString());
         }
         else
             details+="";

@@ -71,7 +71,7 @@ public class AvadaKedavraParser {
 		statement(programNode);
 		//System.out.println(programNode.toString());
 		ParseTreeGenerator ptg = new ParseTreeGenerator();
-		//ptg.generateTree(programNode);
+		ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
@@ -584,7 +584,7 @@ public class AvadaKedavraParser {
 			//// ADDING FOR STATEMENT TO LEAF NODE %FOR
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
-			forNode.children.add(forNode);
+			forNode.children.add(leafNode);
 			/// SPACE                      " "
 			nextToken();
 			space(forNode);

@@ -10,7 +10,6 @@ import java.net.URLEncoder;
 
 public class ParseTreeGenerator {
 	
-	// creates w3c conform redirect HTML page
 	public String createRedirectPage(String url){
 	    return  "<!DOCTYPE HTML>" +
 	            "<meta charset=\"UTF-8\">" +
@@ -23,16 +22,12 @@ public class ParseTreeGenerator {
 	            "If you are not redirected automatically, follow the <a href='" + url + "'>link</a>";
 	}
 
-	// creates temporary file with content of redirect HTML page
 	public URI createRedirectTempFile(String url) {        
 	    BufferedWriter writer = null;
 	    File tmpFile = null;
 	    try {
-	        // creates temporary file
 	        tmpFile = File.createTempFile("pophelp", ".html", null);
-	        // deletes file when the virtual machine terminate
 	        tmpFile.deleteOnExit(); 
-	        // writes redirect page content to file 
 	        writer = new BufferedWriter(new FileWriter(tmpFile));
 	        writer.write(createRedirectPage(url));
 	        writer.close();
