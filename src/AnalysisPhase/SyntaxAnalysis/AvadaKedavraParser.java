@@ -68,7 +68,9 @@ public class AvadaKedavraParser {
 		programNode = new Node<String>();
 		programNode.data = "<PROGRAM>";
 		
-		statement(programNode);
+		token = new Token();
+		while (token != null)
+			statement(programNode);
 		System.out.println(programNode.toString());
 		//ParseTreeGenerator ptg = new ParseTreeGenerator();
 		//ptg.generateTree(programNode);
@@ -104,7 +106,7 @@ public class AvadaKedavraParser {
 					forLoop(statementNode);
 					break;
 				case "KEYWORD_SWITCH":
-					// switch();
+					switchCase(statementNode);
 					break;
 				case "IDENT":
 					switch (lexer.lookahead2().getTokenName())
@@ -125,9 +127,10 @@ public class AvadaKedavraParser {
 					break;
 				default:
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Invalid start of statement.");
+					genericErrorRecovery();
 					break;
 			}
-			nextToken();
+			//nextToken();
 			newline(statementNode);
 		}
 	}
@@ -151,7 +154,7 @@ public class AvadaKedavraParser {
 			nextToken();
 			/// VARIABLE
 			var(declarationNode);
-			
+			//nextToken();
 			//nextToken();
 			//newline(declarationNode);
 			////statement(parent);
@@ -259,7 +262,8 @@ public class AvadaKedavraParser {
 			///// SPACE
 			///// RIGHT PARENTHESIS
 			rparen(outputNode);
-			//nextToken();
+			
+			nextToken();
 			///// NEWLINE
 			//newline(inputNode);
 			//////statement(parent);
@@ -286,8 +290,8 @@ public class AvadaKedavraParser {
 			//// VAR
 			nextToken();
 			var(goNode);
-			//// NEWLINE
 			nextToken();
+			//// NEWLINE
 			//newline(goNode);
 			/////statement(parent);
 		}
@@ -348,6 +352,8 @@ public class AvadaKedavraParser {
 							var(assignNode);
 							break;
 					}
+					nextToken();
+					break;
 			}
 			////// NEWLINE
 			//newline(assignNode);
@@ -628,7 +634,6 @@ public class AvadaKedavraParser {
 			nextToken();
 			assign(forNode);
 			/// SPACE                       " "
-			nextToken();
 			space(forNode);
 			////// SEMICOLON 				;
 			nextToken();
@@ -670,6 +675,7 @@ public class AvadaKedavraParser {
 					break;
 				default:
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Relational expression expected");
+					genericErrorRecovery();
 			}
 			/////// SPACE					" "
 			///// SEMICOLON					;
@@ -690,6 +696,7 @@ public class AvadaKedavraParser {
 					break;
 				default:
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Increment or decrement statement expected");
+					genericErrorRecovery();
 			}
 			System.out.println(token.getTokenName());
 			//// SPACE
@@ -713,7 +720,6 @@ public class AvadaKedavraParser {
 				if (token == null)
 					break;
 			}
-			nextToken();
 		}
 	}
 	
@@ -777,6 +783,134 @@ public class AvadaKedavraParser {
 		}
 	}
 	
+	public void switchCase(Node<String> parent)
+	{
+		if (token != null)
+		{
+			switchNode = new Node<String>();
+			switchNode.data = "<SWITCH_STMT>";
+			parent.children.add(switchNode);
+			
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			switchNode.children.add(leafNode);
+			
+			/// SPACE
+			nextToken();
+			space(switchNode);
+			///// LEFT PARENTHESIS
+			nextToken();
+			lparen(switchNode);
+			///// SPACE
+			nextToken();
+			space(switchNode);
+			////// IDENTIFIER
+			nextToken();
+			var(switchNode);
+			////// SPACE
+			nextToken();
+			space(switchNode);
+			///// RIGHT PARENTHESIS
+			nextToken();
+			rparen(switchNode);
+			///// NEWLINE
+			nextToken();
+			newline(switchNode);
+			////// STATEMENTS
+			nextToken();
+			while (token.getTokenName().equals("INDENT"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = "INDENT";
+				switchNode.children.add(leafNode);
+				
+				nextToken();
+				caseStatement(switchNode);
+				leafNode = new Node<String>();
+				leafNode.data = "INDENT";
+				switchNode.children.add(leafNode);
+				nextToken();
+				stop(switchNode);
+				nextToken();
+				if (token == null)
+					break;
+			}
+		}
+	}
+	
+	public void caseStatement(Node<String> parent)
+	{
+		if (token != null)
+		{
+			caseNode = new Node<String>();
+			caseNode.data = "<CASE>";
+			parent.children.add(caseNode);
+			
+			if (token.getTokenName().equals("KEYWORD_CASE"))
+			{
+				/// ADD CASE KEYWORD TO THE LEAF NODE
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				caseNode.children.add(leafNode);
+				
+				//// SPACE
+				nextToken();
+				space(caseNode);
+				////// CONSTANT
+				nextToken();
+				switch (token.getTokenName())
+				{
+					case "INTEGER":
+					case "DECIMAL":
+					case "STRING":
+					case "BOOLEAN":
+					case "CHARACTER":
+						constant(caseNode);
+						break;
+					default:
+						System.out.println("Line: " + token.getLineNumber() + " | Error: Constant expected");
+						genericErrorRecovery();
+				}
+				//// SPACE
+				nextToken();
+				space(caseNode);
+				///// COLON
+				nextToken();
+				colon(caseNode);
+				///// SPACE
+				nextToken();
+				space(caseNode);
+				///// STATEMENTS
+				statement(caseNode);
+				////// NEXT ITERATION
+				nextToken();
+			}
+		}
+	}
+	
+	public void stop(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// ADD PARENTHESIS TO THE LEAF NODE
+			if (token.getTokenName().equals("KEYWORD_STOP"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				parent.children.add(leafNode);
+				
+				nextToken();
+				newline(parent);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Stop expected");
+				genericErrorRecovery();
+			}
+		}
+	}
+	
 	public void equal(Node<String> parent)
 	{
 		if (token != null)
@@ -792,6 +926,7 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Equal operator expected");
+				genericErrorRecovery();
 			}
 		}
 	}
@@ -811,6 +946,27 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Semicolon expected");
+				genericErrorRecovery();
+			}
+		}
+	}
+	
+	public void colon(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// ADD PARENTHESIS TO THE LEAF NODE
+			if (token.getTokenName().equals("DELIM"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				parent.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Colon expected");
+				genericErrorRecovery();
 			}
 		}
 	}
@@ -828,6 +984,7 @@ public class AvadaKedavraParser {
 		else
 		{
 			System.out.println("Line: " + token.getLineNumber() + " | Error: Constant expected");
+			genericErrorRecovery();
 		}
 	}
 	
@@ -846,6 +1003,7 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Left parenthesis expected");
+				genericErrorRecovery();
 			}
 		}
 	}
@@ -865,6 +1023,7 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Right parenthesis expected");
+				genericErrorRecovery();
 			}
 		}
 	}
@@ -889,6 +1048,7 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Identifier expected");
+				genericErrorRecovery();
 			}
 		}
 	}
@@ -908,6 +1068,7 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Space expected");
+				genericErrorRecovery();
 			}
 		}
 	}
@@ -927,7 +1088,15 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Newline expected");
+				genericErrorRecovery();
 			}
 		}
+	}
+	
+	public void genericErrorRecovery()
+	{
+		while (!token.getTokenName().equals("NEWLINE"))
+			nextToken();
+		statement(programNode);
 	}
 }

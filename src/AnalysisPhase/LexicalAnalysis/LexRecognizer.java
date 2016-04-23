@@ -195,7 +195,7 @@ public class LexRecognizer {
 				if (str.charAt(2) == 'A') {
 					if (str.charAt(3) == 'S') {
 						if (str.charAt(4) == 'E') {
-							token.tokenName = "KEYWORD_STOP";
+							token.tokenName = "KEYWORD_CASE";
 						}
 					}
 				}

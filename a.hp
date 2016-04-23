@@ -1,2 +1,12 @@
+%SWITCH ( @aaa )
+	%CASE 1 : %INPUT.GET ( @b )
+	%STOP
+	%CASE 2 : @c = 3 - 2 + 1
+	%STOP
+	%CASE "Three" : %OUTPUT.PRINTLN ( 1 + 1 )
+	%STOP
 %FOR ( @a = 1 ; 3 < 4 &AND 4 < 5 ; @a ++ )
 	%OUTPUT.PRINTLN ( @a + 3 - 2 )
+%OUTPUT.PRINTLN ( "HELLO" )
+#INTEGER @ccc
+#ccc = 21 * 3 / 4 + 1
