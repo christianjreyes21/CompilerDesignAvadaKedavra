@@ -1,2 +1,1 @@
-%FOR ( @a = 1 ; 3 < 4 &AND 4 < 5 ; @a ++ )
-	%OUTPUT.PRINTLN ( @a + 3 - 2 )
+@a = 1 + 1 - 1 * 1 + 1 / @bbb $DIV 3 $MOD 1

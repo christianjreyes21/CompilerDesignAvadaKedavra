@@ -45,7 +45,7 @@ public class ParseTreeGenerator {
 		if (Desktop.isDesktopSupported()) {
 		    Desktop desktop = Desktop.getDesktop();
 		    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-		        desktop.browse(createRedirectTempFile(url.replace(" ", "%20")));
+		        desktop.browse(createRedirectTempFile(url.replace("%2B", "STRINGPLUS")));
 		    }
 		}
 	}

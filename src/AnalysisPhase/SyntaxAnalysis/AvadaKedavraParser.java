@@ -70,8 +70,8 @@ public class AvadaKedavraParser {
 		
 		statement(programNode);
 		System.out.println(programNode.toString());
-		//ParseTreeGenerator ptg = new ParseTreeGenerator();
-		//ptg.generateTree(programNode);
+		ParseTreeGenerator ptg = new ParseTreeGenerator();
+		ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
