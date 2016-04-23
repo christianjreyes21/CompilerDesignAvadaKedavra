@@ -31,7 +31,10 @@ public class AvadaKedavraParser {
 	Node<String> relExpressionNode = null;
 	Node<String> relExpression2Node = null;
 	Node<String> relExpression3Node = null;
+	Node<String> relExpression4Node = null;
 	Node<String> varNode = null;
+	Node<String> postIncrementNode = null;
+	Node<String> postDecrementNode = null;
 	Node<String> boolConstNode = null;
 	Node<String> mathConstNode = null;
 	Node<String> charConstNode = null;
@@ -68,13 +71,14 @@ public class AvadaKedavraParser {
 		statement(programNode);
 		//System.out.println(programNode.toString());
 		ParseTreeGenerator ptg = new ParseTreeGenerator();
-		ptg.generateTree(programNode);
+		//ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
 	{
 		statementNode = new Node<String>();
-		statementNode.data = "<STATEMENT>";
+		statementNode.parent = parent;
+		statementNode.data = "<STATEMENTS>";
 		parent.children.add(statementNode);
 		
 		nextToken();
@@ -97,13 +101,24 @@ public class AvadaKedavraParser {
 					output(statementNode);
 					break;
 				case "KEYWORD_FOR":
-					// for();
+					forLoop(statementNode);
 					break;
 				case "KEYWORD_SWITCH":
 					// switch();
 					break;
 				case "IDENT":
-					assign(statementNode);
+					switch (lexer.lookahead2().getTokenName())
+					{
+						case "ARITH_OP_ASSIGN":
+							assign(statementNode);
+							break;
+						case "ARITH_OP_INCRE":
+							postIncrement(statementNode);
+							break;
+						case "ARITH_OP_DECRE":
+							postDecrement(statementNode);
+							break;
+					}
 					break;
 				case "NOISE_GO":
 					go(statementNode);
@@ -112,6 +127,7 @@ public class AvadaKedavraParser {
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Invalid start of statement.");
 					break;
 			}
+			newline(statementNode);
 		}
 	}
 	
@@ -135,9 +151,9 @@ public class AvadaKedavraParser {
 			/// VARIABLE
 			var(declarationNode);
 			
-			nextToken();
-			newline(declarationNode);
-			statement(programNode);
+			//nextToken();
+			//newline(declarationNode);
+			////statement(parent);
 		}
 	}
 	
@@ -175,8 +191,8 @@ public class AvadaKedavraParser {
 			rparen(inputNode);
 			nextToken();
 			///// NEWLINE
-			newline(inputNode);
-			statement(programNode);
+			//newline(inputNode);
+			/////statement(parent);
 		}
 	}
 	
@@ -213,9 +229,10 @@ public class AvadaKedavraParser {
 			///// RIGHT PARENTHESIS
 			rparen(inputNode);
 			nextToken();
+			//nextToken();
 			///// NEWLINE
-			newline(inputNode);
-			statement(programNode);
+			//newline(inputNode);
+			//////statement(parent);
 		}
 	}
 	
@@ -241,8 +258,8 @@ public class AvadaKedavraParser {
 			var(goNode);
 			//// NEWLINE
 			nextToken();
-			newline(goNode);
-			statement(programNode);
+			//newline(goNode);
+			/////statement(parent);
 		}
 	}
 	
@@ -268,24 +285,52 @@ public class AvadaKedavraParser {
 			space(assignNode);
 			nextToken();
 			//// VAR, EXPR, CONST
-			//switch (lexer.lookahead().getTokenName())
-			//{
-				//case "SPACE":
-					// expression();
-				//	break;
-			//	case "NEWLINE":
-					var(assignNode);
-					nextToken();
-				//	break;
-			//}
+			switch (lexer.lookahead2().getTokenName())
+			{
+				case "ARITH_OP_ADD":
+				case "ARITH_OP_SUBT":
+				case "ARITH_OP_MULT":
+				case "ARITH_OP_DIVIDE":
+				case "ARITH_OP_MOD":
+				case "ARITH_OP_DIV":
+				case "ARITH_OP_EXPON":
+				case "REL_OP_LESS":
+				case "REL_OP_GREATER":
+				case "REL_OP_LESSEQUAL":
+				case "REL_OP_GREATEREQUAL":
+				case "REL_OP_EQUALTO":
+				case "REL_OP_NOTEQUAL":
+				case "LOG_OP_OR":
+				case "LOG_OP_AND":
+					expression(assignNode);
+					break;
+				default:
+					switch (token.getTokenName())
+					{
+						case "INTEGER":
+						case "BOOLEAN":
+						case "STRING":
+						case "CHARACTER":
+						case "DECIMAL":
+							constant(assignNode);
+							break;
+						case "IDENT":
+							var(assignNode);
+							break;
+					}
+			}
 			////// NEWLINE
-			newline(assignNode);
-			statement(programNode);
+			//newline(assignNode);
+			/////statement(parent);
 		}
 	}
 	
 	public void expression(Node<String> parent)
 	{
+		expressionNode = new Node<String>();
+		expressionNode.data = "<EXPR>";
+		parent.children.add(expressionNode);
+		
 		if (token != null)
 		{
 			//// DECIDE IF MATH OR LOGICAL
@@ -298,7 +343,27 @@ public class AvadaKedavraParser {
 				case "ARITH_OP_MOD":
 				case "ARITH_OP_DIV":
 				case "ARITH_OP_EXPON":
-					/// math expression
+					//// GETTING THE FIRST TOKEN OF THE EXPRESSION
+					mathExpressionNode = new Node<String>();
+					mathExpressionNode.data = "<MATH_EXPR>";
+					/// ADDING THE MATH EXPRESSION SUBTREE TO THE EXPRESSION TREE
+					expressionNode.children.add(mathExpressionNode);
+					switch (token.getTokenName())
+					{
+						case "DECIMAL":
+						case "INTEGER":
+							constant(mathExpressionNode);
+							break;
+						case "IDENT":
+							var(mathExpressionNode);
+							break;
+					}
+					nextToken();
+					/// SPACE AFTER THE FIRST TOKEN
+					space(mathExpressionNode);
+					nextToken();
+					/// FUNCTION CALLING OF ALL THE EXPRESSIONS FOR MATH
+					mathExpression(expressionNode);
 					break;
 				case "REL_OP_LESS":
 				case "REL_OP_GREATER":
@@ -308,6 +373,27 @@ public class AvadaKedavraParser {
 				case "REL_OP_NOTEQUAL":
 				case "LOG_OP_OR":
 				case "LOG_OP_AND":
+				//// GETTING THE FIRST TOKEN OF THE EXPRESSION
+					relExpressionNode = new Node<String>();
+					relExpressionNode.data = "<REL_EXPR>";
+					/// ADDING THE REL EXPRESSION SUBTREE TO THE EXPRESSION TREE
+					expressionNode.children.add(relExpressionNode);
+					switch (token.getTokenName())
+					{
+						case "DECIMAL":
+						case "INTEGER":
+							constant(relExpressionNode);
+							break;
+						case "IDENT":
+							var(relExpressionNode);
+							break;
+					}
+					nextToken();
+					/// SPACE AFTER THE FIRST TOKEN
+					space(relExpressionNode);
+					nextToken();
+					/// FUNCTION CALLING OF ALL THE EXPRESSIONS FOR MATH
+					relationalExpression(expressionNode);					
 					//// relational expression
 					break;
 			}
@@ -316,84 +402,78 @@ public class AvadaKedavraParser {
 	
 	public void mathExpression(Node<String> parent)
 	{
-		mathExpressionNode = new Node<String>();
-		mathExpressionNode.data = "<MATH_EXPR>";
-		
-		parent.children.add(mathExpressionNode);
-		
-		//// ADDING LEAF OR CONSTANT TO THE LEAF NODe
-		switch (token.getTokenName())
+		if (token != null)
 		{
-			case "DECIMAL":
-			case "INTEGER":
-				constant(mathExpressionNode);
-				break;
-			case "IDENT":
-				var(mathExpressionNode);
-				break;
-		}
-		//// SPACE
-		nextToken();
-		space(mathExpressionNode);
-		//// ADD OR SUBTRACT OR OTHERS
-		nextToken();
-		switch(token.getTokenName())
-		{
-			case "ARITH_OP_ADD":
-			case "ARITH_OP_SUBT":
+			while (token.getTokenName().equals("ARITH_OP_SUBT") || token.getTokenName().equals("ARITH_OP_ADD"))
+			{
 				leafNode = new Node<String>();
 				leafNode.data = token.getTokenAttribute();
 				mathExpressionNode.children.add(leafNode);
-				/// SPACE
+				//// SPACE
+				nextToken();
+				space(mathExpressionNode);
+				nextToken();
+				///// CONSTANTS
+				switch (token.getTokenName())
+				{
+					case "DECIMAL":
+					case "INTEGER":
+						constant(mathExpressionNode);
+						break;
+					case "IDENT":
+						var(mathExpressionNode);
+						break;
+				}
+				
 				nextToken();
 				if (token.getTokenName().equals("SPACE"))
 				{
+					space(mathExpressionNode);
 					nextToken();
-					mathExpression(mathExpressionNode);
 				}
-				break;
-			case "ARITH_OP_MULT":
-			case "ARITH_OP_DIVIDE":
-			case "ARITH_OP_MOD":
-			case "ARITH_OP_DIV":
-			case "INTEGER":
-			case "DECIMAL":
-			case "IDENT":
-				term(mathExpressionNode);
-				break;
+			}
+			
+			term(mathExpressionNode);
 		}
 	}
-	
+
 	public void term(Node<String> parent)
 	{
 		termNode = new Node<String>();
 		termNode.data = "<TERM>";
-		
 		parent.children.add(termNode);
 		
-		switch(token.getTokenName())
-		{	
-			case "ARITH_OP_MULT":
-			case "ARITH_OP_DIVIDE":
-			case "ARITH_OP_MOD":
-			case "ARITH_OP_DIV":
+		if (token != null)
+		{
+			while (token.getTokenName().equals("ARITH_OP_MOD") || token.getTokenName().equals("ARITH_OP_DIV") || token.getTokenName().equals("ARITH_OP_MULT") || token.getTokenName().equals("ARITH_OP_DIVIDE"))
+			{
 				leafNode = new Node<String>();
 				leafNode.data = token.getTokenAttribute();
 				termNode.children.add(leafNode);
-				/// SPACE
+				//// SPACE
+				nextToken();
+				space(termNode);
+				nextToken();
+				///// CONSTANTS
+				switch (token.getTokenName())
+				{
+					case "DECIMAL":
+					case "INTEGER":
+						constant(termNode);
+						break;
+					case "IDENT":
+						var(termNode);
+						break;
+				}
+				
 				nextToken();
 				if (token.getTokenName().equals("SPACE"))
 				{
+					space(termNode);
 					nextToken();
-					term(termNode);
 				}
-				break;
-			case "ARITH_OP_EXPON":
-			case "INTEGER":
-			case "DECIMAL":
-			case "IDENT":
-				factor(termNode);
-				break;
+			}
+			factor(termNode);
 		}
 	}
 	
@@ -401,40 +481,270 @@ public class AvadaKedavraParser {
 	{
 		factorNode = new Node<String>();
 		factorNode.data = "<FACTOR>";
-		
 		parent.children.add(factorNode);
 		
-		switch(token.getTokenName())
-		{	
-			case "ARITH_OP_EXPON":
+		if (token != null)
+		{
+			while (token.getTokenName().equals("ARITH_OP_EXPON"))
+			{
 				leafNode = new Node<String>();
 				leafNode.data = token.getTokenAttribute();
 				factorNode.children.add(leafNode);
-				/// SPACE
+				//// SPACE
+				nextToken();
+				space(factorNode);
+				nextToken();
+				///// CONSTANTS
+				switch (token.getTokenName())
+				{
+					case "DECIMAL":
+					case "INTEGER":
+						constant(factorNode);
+						break;
+					case "IDENT":
+						var(factorNode);
+						break;
+				}
+				
 				nextToken();
 				if (token.getTokenName().equals("SPACE"))
 				{
+					space(factorNode);
 					nextToken();
-					factor(factorNode);
 				}
-				break;
-			case "INTEGER":
-			case "DECIMAL":
-				constant(factorNode);
-				nextToken();
-				break;
-			case "IDENT":
-				var(factorNode);
-				nextToken();
-				break;
-			case "ARITH_OP_ADD":
-			case "ARITH_OP_SUBT":
-			case "ARITH_OP_MULT":
-			case "ARITH_OP_DIVIDE":
-			case "ARITH_OP_MOD":
-			case "ARITH_OP_DIV":	
-				mathExpression(factorNode);
+			}
+			
+			switch (token.getTokenName())
+			{
+				case "ARITH_OP_ADD":
+				case "ARITH_OP_SUBT":
+				case "ARITH_OP_MULT":
+				case "ARITH_OP_DIVIDE":
+				case "ARITH_OP_MOD":
+				case "ARITH_OP_DIV":
+					mathExpression(factorNode);
+			}
+		}
+	}
+	
+	public void postIncrement(Node<String> parent)
+	{
+		postIncrementNode = new Node<String>();
+		postIncrementNode.data = "<INCRE_STMT>";
+		parent.children.add(postIncrementNode);
+		
+		if (token != null)
+		{
+			/// ADDING VAR
+			var(postIncrementNode);
+			nextToken();
+			//// SPACE
+			space(postIncrementNode);
+			nextToken();
+			///// ADDING POST INCREMENT SUFFIX TO THE LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			postIncrementNode.children.add(leafNode);
+		}
+		nextToken();
+		/////statement(parent);
+	}
+	
+	public void postDecrement(Node<String> parent)
+	{
+		postDecrementNode = new Node<String>();
+		postDecrementNode.data = "<DECRE_STMT>";
+		parent.children.add(postDecrementNode);
+		
+		if (token != null)
+		{
+			/// ADDING VAR
+			var(postDecrementNode);
+			nextToken();
+			//// SPACE
+			space(postDecrementNode);
+			nextToken();
+			///// ADDING POST INCREMENT SUFFIX TO THE LEAF NODE
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			postDecrementNode.children.add(leafNode);
+		}
+		nextToken();
+		////statement(parent);
+	}
+	
+	public void forLoop(Node<String> parent)
+	{
+		forNode = new Node<String>();
+		forNode.data = "<FOR_STMT>";
+		parent.children.add(forNode);
+		
+		if (token != null)
+		{
+			//// ADDING FOR STATEMENT TO LEAF NODE %FOR
+			leafNode = new Node<String>();
+			leafNode.data = token.getTokenAttribute();
+			forNode.children.add(forNode);
+			/// SPACE                      " "
+			nextToken();
+			space(forNode);
+			//// LEFT PARENTHESIS          (
+			nextToken();
+			lparen(forNode);
+			//// SPACE                     " "
+			nextToken();
+			space(forNode);
+			//// ASSIGN STATEMENT           @aa = 1
+			nextToken();
+			assign(forNode);
+			/// SPACE                       " "
+			nextToken();
+			space(forNode);
+			////// SEMICOLON 				;
+			nextToken();
+			semicolon(forNode);
+			//// SPACE						" "
+			nextToken();
+			space(forNode);
+			///// RELATIONAL EXPRESSION		2 < 3
+			nextToken();
+			switch (lexer.lookahead2().getTokenName())
+			{
+				case "REL_OP_LESS":
+				case "REL_OP_GREATER":
+				case "REL_OP_LESSEQUAL":
+				case "REL_OP_GREATEREQUAL":
+				case "REL_OP_EQUALTO":
+				case "REL_OP_NOTEQUAL":
+				case "LOG_OP_OR":
+				case "LOG_OP_AND":
+					relExpressionNode = new Node<String>();
+					relExpressionNode.data = "<REL_EXPR>";
+					forNode.children.add(relExpressionNode);
+					switch (token.getTokenName())
+					{
+						case "DECIMAL":
+						case "INTEGER":
+							constant(relExpressionNode);
+							break;
+						case "IDENT":
+							var(relExpressionNode);
+							break;
+					}
+					nextToken();
+					/// SPACE AFTER THE FIRST TOKEN
+					space(relExpressionNode);
+					nextToken();
+					/// FUNCTION CALLING OF ALL THE EXPRESSIONS FOR MATH
+					relationalExpression(expressionNode);
+					break;
+				default:
+					System.out.println("Line: " + token.getLineNumber() + " | Error: Relational expression expected");
+			}
+			/////// SPACE					" "
+			nextToken();
+			space(forNode);
+			///// SEMICOLON					;
+			nextToken();		
+			semicolon(forNode);
+			//////// SPACE					" "
+			nextToken();
+			space(forNode);
+			///// POST INCREMENT OR POST DECREMENT	@aa ++
+			nextToken();
+			switch (lexer.lookahead2().getTokenName())
+			{
+				case "ARITH_OP_INCRE":
+					postIncrement(forNode);
+					break;
+				case "ARITH_OP_DECRE":
+					postDecrement(forNode);
+					break;
+				default:
+					System.out.println("Line: " + token.getLineNumber() + " | Error: Increment or decrement statement expected");
+			}
+			//// SPACE
+			nextToken();
+			space(forNode);
+			///// RIGHT PARENTHESIS
+			nextToken();
+			rparen(forNode);
+			////// NEWLINE
+			nextToken();
+			newline(forNode);
+			/////// INDENT THEN STATEMENTS
+			nextToken();
+			while (token.getTokenName().equals("INDENT"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = "INDENT";
+				forNode.children.add(leafNode);
 				
+				nextToken();
+				statement(forNode);
+				nextToken();
+			}
+			nextToken();
+		}
+	}
+	
+	public void relationalExpression(Node<String> parent)
+	{
+		if (token != null)
+		{
+			while (token.getTokenName().equals("REL_OP_LESS") || token.getTokenName().equals("REL_OP_GREATER") || token.getTokenName().equals("REL_OP_LESSEQUAL") || token.getTokenName().equals("REL_OP_GREATEREQUAL") || token.getTokenName().equals("REL_OP_EQUALTO") || token.getTokenName().equals("REL_OP_NOTEQUALTO") || token.getTokenName().equals("LOG_OP_AND") || token.getTokenName().equals("OR_OP"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				relExpressionNode.children.add(leafNode);
+				//// SPACE
+				nextToken();
+				space(relExpressionNode);
+				nextToken();
+				///// CONSTANTS
+				switch (token.getTokenName())
+				{
+					case "DECIMAL":
+					case "INTEGER":
+					case "STRING":
+					case "CHARACTER":
+					case "BOOLEAN":
+						constant(relExpressionNode);
+						break;
+					case "IDENT":
+						var(relExpressionNode);
+						break;
+				}
+				
+				nextToken();
+				if (token.getTokenName().equals("SPACE"))
+				{
+					space(relExpressionNode);
+					nextToken();
+				}
+			}
+		}
+	}
+	
+	public void relExpression2(Node<String> parent)
+	{
+		relExpression2Node = new Node<String>();
+		relExpression2Node.data = "<REL_EXPR2>";
+		
+		parent.children.add(relExpression2Node);
+		if (token != null)
+		{
+			if (token.getTokenName().equals("LOG_OP_NOT"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				relExpression3Node.children.add(leafNode);
+				//// SPACE
+				nextToken();
+				space(relExpression3Node);
+				nextToken();
+				relationalExpression(relExpression2Node);
+			}
 		}
 	}
 	
@@ -453,6 +763,25 @@ public class AvadaKedavraParser {
 			else
 			{
 				System.out.println("Line: " + token.getLineNumber() + " | Error: Equal operator expected");
+			}
+		}
+	}
+	
+	public void semicolon(Node<String> parent)
+	{
+		if (token != null)
+		{
+			//// ADD PARENTHESIS TO THE LEAF NODE
+			if (token.getTokenName().equals("DELIM"))
+			{
+				leafNode = new Node<String>();
+				leafNode.data = token.getTokenAttribute();
+				
+				parent.children.add(leafNode);
+			}
+			else
+			{
+				System.out.println("Line: " + token.getLineNumber() + " | Error: Semicolon expected");
 			}
 		}
 	}

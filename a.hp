@@ -1,4 +1,5 @@
-%INPUT.GET ( @ccc )
+%FOR ( @a = @c ; 1 < 2 ; @a ++ )
+	%INPUT.GET ( @ccc )
 %OUTPUT.PRINT ( @ccc )
 %OUTPUT.PRINTLN ( @ccc )
 ?GO @a
@@ -8,4 +9,5 @@
 @a = 1
 @a = 'C'
 @b = "STRINGzzz"
-@a = 1 + 1
+@a ++
+@a = 1 + 1 - 1 * 1 + 1 / @bbb $DIV 3 $MOD 1

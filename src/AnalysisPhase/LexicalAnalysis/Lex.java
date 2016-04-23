@@ -255,8 +255,8 @@ public class Lex {
 	public static Token lookahead2()
 	{
 		Token t = null;
-		if (tokenCount + 2 < tokens.length)
-			t = tokens[tokenCount + 2];
+		if (tokenCount + 1 < tokens.length)
+			t = tokens[tokenCount + 1];
 		else
 			return null;
 		return t;
@@ -266,7 +266,7 @@ public class Lex {
 	{
 		Token t = null;
 		if (tokenCount + 1 < tokens.length)
-			t = tokens[tokenCount + 1];
+			t = tokens[tokenCount];
 		else
 			return null;
 		return t;			
