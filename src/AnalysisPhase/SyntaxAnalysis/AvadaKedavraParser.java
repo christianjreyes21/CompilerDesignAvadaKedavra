@@ -73,8 +73,8 @@ public class AvadaKedavraParser {
 			statement(programNode);
 		System.out.println("Finished Parsing! If there are no errors, it means you have been successful in parsing!");
 		System.out.println(programNode.toString());
-		//ParseTreeGenerator ptg = new ParseTreeGenerator();
-		//ptg.generateTree(programNode);
+		ParseTreeGenerator ptg = new ParseTreeGenerator();
+		ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
