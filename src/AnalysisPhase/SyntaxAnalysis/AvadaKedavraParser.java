@@ -127,6 +127,7 @@ public class AvadaKedavraParser {
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Invalid start of statement.");
 					break;
 			}
+			nextToken();
 			newline(statementNode);
 		}
 	}
@@ -200,34 +201,66 @@ public class AvadaKedavraParser {
 	{
 		if (token != null)
 		{
-			inputNode = new Node<String>();
-			inputNode.data = "<OUTPUT_STMT>";
+			outputNode = new Node<String>();
+			outputNode.data = "<OUTPUT_STMT>";
 			
-			parent.children.add(inputNode);
+			parent.children.add(outputNode);
 			
 			//// ADD INPUT KEYWORD TO LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
 			
-			inputNode.children.add(leafNode);
+			outputNode.children.add(leafNode);
 			//// SPACE
 			nextToken();
-			space(inputNode);
+			space(outputNode);
 			nextToken();
 			//// LEFT PARENTHESIS
-			lparen(inputNode);
+			lparen(outputNode);
 			nextToken();
 			//// SPACE
-			space(inputNode);
+			space(outputNode);
 			nextToken();
 			///// VAR
-			var(inputNode);
-			nextToken();
+			switch (lexer.lookahead2().getTokenName())
+			{
+				case "ARITH_OP_ADD":
+				case "ARITH_OP_SUBT":
+				case "ARITH_OP_MULT":
+				case "ARITH_OP_DIVIDE":
+				case "ARITH_OP_MOD":
+				case "ARITH_OP_DIV":
+				case "ARITH_OP_EXPON":
+				case "REL_OP_LESS":
+				case "REL_OP_GREATER":
+				case "REL_OP_LESSEQUAL":
+				case "REL_OP_GREATEREQUAL":
+				case "REL_OP_EQUALTO":
+				case "REL_OP_NOTEQUAL":
+				case "LOG_OP_OR":
+				case "LOG_OP_AND":
+					expression(outputNode);
+					break;
+				default:
+					switch (token.getTokenName())
+					{
+						case "INTEGER":
+						case "BOOLEAN":
+						case "STRING":
+						case "CHARACTER":
+						case "DECIMAL":
+							constant(outputNode);
+							break;
+						case "IDENT":
+							var(outputNode);
+							break;
+					}
+			}
 			///// SPACE
-			space(inputNode);
+			space(outputNode);
 			nextToken();
 			///// RIGHT PARENTHESIS
-			rparen(inputNode);
+			rparen(outputNode);
 			nextToken();
 			//nextToken();
 			///// NEWLINE

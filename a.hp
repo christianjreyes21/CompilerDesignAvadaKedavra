@@ -1,1 +1,1 @@
-@a = @a
+%OUTPUT.PRINT ( @a + 1 * @bb )
