@@ -254,21 +254,23 @@ public class Lex {
 	
 	public static Token lookahead2()
 	{
-		Token t = null;
+		Token t = new Token();
+		t.setTokenName("NULL");
 		if (tokenCount + 1 < tokens.length)
 			t = tokens[tokenCount + 1];
 		else
-			return null;
+			return t;
 		return t;
 	}
 	
 	public static Token lookahead()
 	{
 		Token t = null;
-		if (tokenCount + 1 < tokens.length)
+		t.setTokenName("NULL");
+		if (tokenCount < tokens.length)
 			t = tokens[tokenCount];
 		else
-			return null;
+			return t;
 		return t;			
 	}
 }
