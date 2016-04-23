@@ -265,7 +265,7 @@ public class Lex {
 	
 	public static Token lookahead()
 	{
-		Token t = null;
+		Token t = new Token();
 		t.setTokenName("NULL");
 		if (tokenCount < tokens.length)
 			t = tokens[tokenCount];

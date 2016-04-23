@@ -1,3 +1,6 @@
+%INPUT.GET ( @ccc )
+%OUTPUT.PRINT ( 1 + 2 )
+%OUTPUT.PRINTLN ( @p )
 %SWITCH ( @aaa )
 	%CASE 1 : %INPUT.GET ( @b )
 	%STOP
@@ -7,6 +10,7 @@
 	%STOP
 %FOR ( @a = 1 ; 3 < 4 &AND 4 < 5 ; @a ++ )
 	%OUTPUT.PRINTLN ( @a + 3 - 2 )
-%OUTPUT.PRINTLN ( "HELLO" )
-#INTEGER @ccc
-#ccc = 21 * 3 / 4 + 1
+	@d ++
+	@c = %FALSE
+#INTEGER @c
+?GO @d

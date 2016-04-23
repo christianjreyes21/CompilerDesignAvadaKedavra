@@ -53,7 +53,7 @@ public class AvadaKedavraParser {
 	public void nextToken()
 	{
 		token = lexer.nextToken();
-		if (token != null) System.out.println(token.getLineNumber() + " " + token.getTokenName());
+		//if (token != null) System.out.println(token.getLineNumber() + " " + token.getTokenName());
 	}
 	
 	public static void main(String args[]) throws IOException
@@ -71,6 +71,7 @@ public class AvadaKedavraParser {
 		token = new Token();
 		while (token != null)
 			statement(programNode);
+		System.out.println("Finished Parsing! If there are no errors, it means you have been successful in parsing!");
 		System.out.println(programNode.toString());
 		//ParseTreeGenerator ptg = new ParseTreeGenerator();
 		//ptg.generateTree(programNode);
@@ -131,6 +132,7 @@ public class AvadaKedavraParser {
 					break;
 			}
 			//nextToken();
+			//System.out.println(token.getTokenName());
 			newline(statementNode);
 		}
 	}
@@ -154,7 +156,7 @@ public class AvadaKedavraParser {
 			nextToken();
 			/// VARIABLE
 			var(declarationNode);
-			//nextToken();
+			nextToken();
 			//nextToken();
 			//newline(declarationNode);
 			////statement(parent);
@@ -243,6 +245,9 @@ public class AvadaKedavraParser {
 				case "LOG_OP_OR":
 				case "LOG_OP_AND":
 					expression(outputNode);
+					rparen(outputNode);
+					
+					nextToken();
 					break;
 				default:
 					switch (token.getTokenName())
@@ -258,12 +263,17 @@ public class AvadaKedavraParser {
 							var(outputNode);
 							break;
 					}
+					///// SPACE
+					nextToken();
+					//System.out.println(token.getTokenName());
+					space(outputNode);
+					nextToken();
+					///// RIGHT PARENTHESIS
+					rparen(outputNode);
+					
+					nextToken();
+					break;
 			}
-			///// SPACE
-			///// RIGHT PARENTHESIS
-			rparen(outputNode);
-			
-			nextToken();
 			///// NEWLINE
 			//newline(inputNode);
 			//////statement(parent);
@@ -698,7 +708,6 @@ public class AvadaKedavraParser {
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Increment or decrement statement expected");
 					genericErrorRecovery();
 			}
-			System.out.println(token.getTokenName());
 			//// SPACE
 			space(forNode);
 			///// RIGHT PARENTHESIS
@@ -716,10 +725,17 @@ public class AvadaKedavraParser {
 				forNode.children.add(leafNode);
 				
 				statement(forNode);
-				nextToken();
+				//nextToken();
+				
+				//System.out.println(token.getTokenName());
+				if (!lexer.lookahead().getTokenName().equals("INDENT"))
+					break;
+				else
+					nextToken();
 				if (token == null)
 					break;
 			}
+			//System.out.println(token.getTokenName());
 		}
 	}
 	
@@ -831,7 +847,12 @@ public class AvadaKedavraParser {
 				switchNode.children.add(leafNode);
 				nextToken();
 				stop(switchNode);
-				nextToken();
+				
+				if (!lexer.lookahead().getTokenName().equals("INDENT"))
+					break;
+				else
+					nextToken();
+				
 				if (token == null)
 					break;
 			}
