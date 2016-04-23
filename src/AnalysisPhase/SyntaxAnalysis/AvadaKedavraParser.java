@@ -69,9 +69,9 @@ public class AvadaKedavraParser {
 		programNode.data = "<PROGRAM>";
 		
 		statement(programNode);
-		//System.out.println(programNode.toString());
-		ParseTreeGenerator ptg = new ParseTreeGenerator();
-		ptg.generateTree(programNode);
+		System.out.println(programNode.toString());
+		//ParseTreeGenerator ptg = new ParseTreeGenerator();
+		//ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
@@ -257,11 +257,8 @@ public class AvadaKedavraParser {
 					}
 			}
 			///// SPACE
-			space(outputNode);
-			nextToken();
 			///// RIGHT PARENTHESIS
 			rparen(outputNode);
-			nextToken();
 			//nextToken();
 			///// NEWLINE
 			//newline(inputNode);
@@ -675,10 +672,8 @@ public class AvadaKedavraParser {
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Relational expression expected");
 			}
 			/////// SPACE					" "
-			nextToken();
-			space(forNode);
 			///// SEMICOLON					;
-			nextToken();		
+			//System.out.println(token.getTokenName());	
 			semicolon(forNode);
 			//////// SPACE					" "
 			nextToken();
@@ -696,8 +691,8 @@ public class AvadaKedavraParser {
 				default:
 					System.out.println("Line: " + token.getLineNumber() + " | Error: Increment or decrement statement expected");
 			}
+			System.out.println(token.getTokenName());
 			//// SPACE
-			nextToken();
 			space(forNode);
 			///// RIGHT PARENTHESIS
 			nextToken();
@@ -713,9 +708,10 @@ public class AvadaKedavraParser {
 				leafNode.data = "INDENT";
 				forNode.children.add(leafNode);
 				
-				nextToken();
 				statement(forNode);
 				nextToken();
+				if (token == null)
+					break;
 			}
 			nextToken();
 		}

@@ -1,1 +1,2 @@
-%OUTPUT.PRINT ( @a + 1 * @bb )
+%FOR ( @a = 1 ; 3 < 4 &AND 4 < 5 ; @a ++ )
+	%OUTPUT.PRINTLN ( @a + 3 - 2 )
