@@ -1,16 +1,16 @@
-%INPUT.GET ( @ccc )
+%INPUT.GET (  )
 %OUTPUT.PRINT ( 1 + 2 )
-%OUTPUT.PRINTLN ( @p )
+%OUTPUT.PRINTLN ( @p 
 %SWITCH ( @aaa )
-	%CASE 1 : %INPUT.GET ( @b )
+	 1 : %INPUT.GET ( @b )
 	%STOP
-	%CASE 2 : @c = 3 - 2 + 1
+	%CASE 2 : @c  3 - 2 + 1
 	%STOP
 	%CASE "Three" : %OUTPUT.PRINTLN ( 1 + 1 )
 	%STOP
-%FOR ( @a = 1 ; 3 < 4 &AND 4 < 5 ; @a ++ )
+%FOR ( @a = 1  3 < 4 &AND 4 < 5 ; @a ++ )
 	%OUTPUT.PRINTLN ( @a + 3 - 2 )
 	@d ++
 	@c = %FALSE
-#INTEGER @c
+#INTEGER 
 ?GO @d

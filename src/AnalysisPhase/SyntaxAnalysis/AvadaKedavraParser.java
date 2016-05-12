@@ -44,10 +44,10 @@ public class AvadaKedavraParser {
 	Node<String> goNode = null;
 	Node<String> leafNode = null;
 	
-	public AvadaKedavraParser ()
+	public AvadaKedavraParser (String file)
 	{
 		lexer = new Lex();
-		lexer.Lex(InputOutput.getText("a.hp"));
+		lexer.Lex(InputOutput.getText(file));
 	}
 	
 	public void nextToken()
@@ -58,7 +58,7 @@ public class AvadaKedavraParser {
 	
 	public static void main(String args[]) throws IOException
 	{
-		AvadaKedavraParser akp = new AvadaKedavraParser();
+		AvadaKedavraParser akp = new AvadaKedavraParser("a.hp");
 		akp.program();
 	}
 
@@ -726,14 +726,16 @@ public class AvadaKedavraParser {
 				
 				statement(forNode);
 				//nextToken();
-				
+
 				//System.out.println(token.getTokenName());
 				if (!lexer.lookahead().getTokenName().equals("INDENT"))
 					break;
 				else
+				{
 					nextToken();
-				if (token == null)
-					break;
+					if (token == null)
+						break;
+				}
 			}
 			//System.out.println(token.getTokenName());
 		}
@@ -834,6 +836,7 @@ public class AvadaKedavraParser {
 			newline(switchNode);
 			////// STATEMENTS
 			nextToken();
+			try{
 			while (token.getTokenName().equals("INDENT"))
 			{
 				leafNode = new Node<String>();
@@ -848,14 +851,17 @@ public class AvadaKedavraParser {
 				nextToken();
 				stop(switchNode);
 				
+
 				if (!lexer.lookahead().getTokenName().equals("INDENT"))
 					break;
 				else
+				{
 					nextToken();
-				
-				if (token == null)
-					break;
+					if (token == null)
+						break;
+				}
 			}
+			}catch(Exception e){}
 		}
 	}
 	
