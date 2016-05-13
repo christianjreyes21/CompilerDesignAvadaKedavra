@@ -299,7 +299,7 @@ public class Interpreter {
 	public String relationalExecute(Node<String> relational)
 	{
 		int a = relational.children.get(0).data.compareTo(relational.children.get(4).data);
-		System.out.println(a);
+		//System.out.println(a);
 		boolean ans = true;
 		switch (relational.children.get(2).data)
 		{

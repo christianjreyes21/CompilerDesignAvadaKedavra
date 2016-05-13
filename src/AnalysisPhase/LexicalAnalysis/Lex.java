@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
+import AnalysisPhase.SyntaxAnalysis.AvadaKedavraParser;
 import AnalysisPhase.SyntaxAnalysis.Parser;
 import AnalysisPhase.SyntaxAnalysis.SyntaxAnalyzer;
 
@@ -101,7 +102,6 @@ public class Lex {
 								i++;
 							}
 						}
-						
 						maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
 					}
 					else if (possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '\"')
@@ -214,7 +214,7 @@ public class Lex {
 		String file = JOptionPane.showInputDialog("Please enter the full path of the file");
 		Token[] symbolTable;
 		//System.out.println(file);
-		Parser syntax = new Parser();
+		//Parser syntax = new Parser();
 		
 		if (file.charAt(file.length() - 2) == 'h' && file.charAt(file.length() - 1) == 'p')
 		{
@@ -227,8 +227,10 @@ public class Lex {
 			//try{
 			InputOutput.writeText(symbolTable);
 			try {
-				syntax.parse(file);
-			} catch (IOException e) {
+				//syntax.parse(file);
+				AvadaKedavraParser akp = new AvadaKedavraParser(file);
+				akp.program();
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
