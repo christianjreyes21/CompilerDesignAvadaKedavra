@@ -97,7 +97,7 @@ public class Interpreter {
 		MemoryCell cell = retrieveCell(input.children.get(4).children.get(0).data);
 		Scanner in = new Scanner(System.in);
 		cell.cellValue = in.next();
-		System.out.println(cell.cellName);
+		//System.out.println(cell.cellName);
 		try
 		{
 			if (cell.tokenName.equals("#INTEGER"))
