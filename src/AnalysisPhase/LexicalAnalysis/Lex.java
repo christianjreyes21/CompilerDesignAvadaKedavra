@@ -205,6 +205,7 @@ public class Lex {
 			trimmedTokens[i] = maxTokens[i];
 		
 		tokens = trimmedTokens;
+		InputOutput.writeText(tokens);
 		return trimmedTokens;
 	}
 	

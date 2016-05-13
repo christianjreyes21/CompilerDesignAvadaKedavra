@@ -2,6 +2,7 @@ package AnalysisPhase.SyntaxAnalysis;
 
 import java.io.IOException;
 
+import SynthesisPhase.Interpreter.Interpreter;
 import Utilities.Node;
 import Utilities.ParseTreeGenerator;
 import AnalysisPhase.LexicalAnalysis.InputOutput;
@@ -44,6 +45,8 @@ public class AvadaKedavraParser {
 	Node<String> goNode = null;
 	Node<String> leafNode = null;
 	
+	boolean parsed = true;
+	
 	public AvadaKedavraParser ()
 	{
 		lexer = new Lex();
@@ -71,8 +74,16 @@ public class AvadaKedavraParser {
 		token = new Token();
 		while (token != null)
 			statement(programNode);
-		System.out.println("Finished Parsing! If there are no errors, it means you have been successful in parsing!");
-		System.out.println(programNode.toString());
+		if (parsed)
+		{
+			System.out.println("Successful parsing!");
+			//System.out.println(programNode.toString());
+			new Interpreter().execute(programNode);
+		}
+		else
+		{
+			System.out.println("Parsing has been unsuccessful. Please correct the errors");
+		}
 		//ParseTreeGenerator ptg = new ParseTreeGenerator();
 		//ptg.generateTree(programNode);
 	}
@@ -148,7 +159,8 @@ public class AvadaKedavraParser {
 			/// ADD DATA TYPE TO THE LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
-			declarationNode.children.add(leafNode);
+			leafNode.lineNumber = Integer.toString(token.getLineNumber());
+			declarationNode.children.add(leafNode);			
 			
 			/// SPACE
 			nextToken();
@@ -175,6 +187,7 @@ public class AvadaKedavraParser {
 			//// ADD INPUT KEYWORD TO LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
+			leafNode.lineNumber = Integer.toString(token.getLineNumber());
 			
 			inputNode.children.add(leafNode);
 			//// SPACE
@@ -214,6 +227,7 @@ public class AvadaKedavraParser {
 			//// ADD INPUT KEYWORD TO LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
+			leafNode.lineNumber = Integer.toString(token.getLineNumber());
 			
 			outputNode.children.add(leafNode);
 			//// SPACE
@@ -292,6 +306,7 @@ public class AvadaKedavraParser {
 			///// ADD GO STATEMENT TO LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
+			leafNode.lineNumber = Integer.toString(token.getLineNumber());
 			
 			goNode.children.add(leafNode);
 			/// SPACE
@@ -590,6 +605,7 @@ public class AvadaKedavraParser {
 			///// ADDING POST INCREMENT SUFFIX TO THE LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
+			leafNode.lineNumber = Integer.toString(token.getLineNumber());
 			postIncrementNode.children.add(leafNode);
 		}
 		nextToken();
@@ -741,6 +757,9 @@ public class AvadaKedavraParser {
 	
 	public void relationalExpression(Node<String> parent)
 	{
+		leafNode = new Node<String>();
+		leafNode.data = token.getTokenAttribute();
+		relExpressionNode.children.add(leafNode);
 		if (token != null)
 		{
 			while (token.getTokenName().equals("REL_OP_LESS") || token.getTokenName().equals("REL_OP_GREATER") || token.getTokenName().equals("REL_OP_LESSEQUAL") || token.getTokenName().equals("REL_OP_GREATEREQUAL") || token.getTokenName().equals("REL_OP_EQUALTO") || token.getTokenName().equals("REL_OP_NOTEQUALTO") || token.getTokenName().equals("LOG_OP_AND") || token.getTokenName().equals("OR_OP"))
@@ -999,6 +1018,7 @@ public class AvadaKedavraParser {
 			/// ADD CONSTANT TO LEAF NODE
 			leafNode = new Node<String>();
 			leafNode.data = token.getTokenAttribute();
+			leafNode.lineNumber = Integer.toString(token.getLineNumber());
 			
 			parent.children.add(leafNode);
 		}
@@ -1063,6 +1083,7 @@ public class AvadaKedavraParser {
 			{
 				leafNode = new Node<String>();
 				leafNode.data = token.getTokenAttribute();
+				leafNode.lineNumber = Integer.toString(token.getLineNumber());
 				
 				varNode.children.add(leafNode);
 			}
@@ -1119,5 +1140,7 @@ public class AvadaKedavraParser {
 		while (!token.getTokenName().equals("NEWLINE"))
 			nextToken();
 		statement(programNode);
+		
+		parsed = false;
 	}
 }
