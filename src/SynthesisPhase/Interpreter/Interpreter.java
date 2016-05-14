@@ -298,9 +298,10 @@ public class Interpreter {
 	
 	public String relationalExecute(Node<String> relational)
 	{
-		int a = relational.children.get(0).data.compareTo(relational.children.get(4).data);
+		int a = relational.children.get(0).data.compareTo(relational.children.get(5).data);
 		//System.out.println(a);
 		boolean ans = true;
+		//System.out.println(relational.children.get(2).data + "\n    " + a + "\n"+relational.children.get(0).data+"\n"+relational.children.get(5).data);
 		switch (relational.children.get(2).data)
 		{
 			case "<":

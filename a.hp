@@ -1,3 +1,6 @@
 #BOOLEAN @a
-@a = 5 < 4
+@a = 1 < 2
 %OUTPUT.PRINT ( @a )
+#INTEGER @c
+@c = 4 + 6
+%OUTPUT.PRINT ( @c )
