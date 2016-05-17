@@ -77,15 +77,15 @@ public class AvadaKedavraParser {
 		if (parsed)
 		{
 			System.out.println("Successful parsing!");
-			//System.out.println(programNode.toString());
+			System.out.println(programNode.toString());
 			new Interpreter().execute(programNode);
 		}
 		else
 		{
 			System.out.println("Parsing has been unsuccessful. Please correct the errors");
 		}
-		ParseTreeGenerator ptg = new ParseTreeGenerator();
-		ptg.generateTree(programNode);
+		//ParseTreeGenerator ptg = new ParseTreeGenerator();
+		//ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)

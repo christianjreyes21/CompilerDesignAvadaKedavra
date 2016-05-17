@@ -1,7 +1,9 @@
-#INTEGER @a
-#STRING @b
-#INTEGER @c
-%INPUT.GET ( @b )
-%FOR ( @a = 1 ; @a < 3 ; @a ++ )
-	%OUTPUT.PRINTLN ( @a )
-	%OUTPUT.PRINTLN ( @b )
+#INTEGER @i
+#STRING @s
+#CHARACTER @c
+#BOOLEAN @b
+#DECIMAL @d
+@i = 1
+%OUTPUT.PRINTLN ( @i )
+@i = 1 + 3 * 2
+%OUTPUT.PRINTLN ( @i )

@@ -165,6 +165,7 @@ public class Interpreter {
 	{
 		//System.out.println("ASSIGNMENT");
 		MemoryCell existing = retrieveCell(assign.children.get(0).children.get(0).data);
+		//System.out.println(assign.children.get(0).children.get(0).data);
 		if (existing == null)
 		{
 			System.out.println("Line: " + assign.children.get(0).children.get(0).lineNumber + " | Semantic Error: Variable not declared");
@@ -284,6 +285,7 @@ public class Interpreter {
 					existing.cellValue = null;
 				}
 			}
+			//System.out.println(existing.cellValue + " " + existing.cellName);
 		}
 	}
 	
@@ -358,9 +360,29 @@ public class Interpreter {
 		}
 	}
 	
-	public void switchExecute(Node<String> declaration)
+	public void switchExecute(Node<String> switchNode)
 	{
-		
+		MemoryCell cell1;
+		cell1 = retrieveCell(switchNode.children.get(4).children.get(0).data);
+		if (cell1 == null)
+		{
+			System.out.println("Line: " + switchNode.children.get(4).children.get(0).lineNumber + " | Semantic Error: Variable not declared");
+			errorDetected = true;
+		}
+		else
+		{
+			String value = cell1.cellValue;	
+			for (int i = 9; ;)
+			{
+				if (value.equals(switchNode.children.get(i).children.get(2).data))
+				{
+					statementExecute(switchNode.children.get(i).children.get(6));
+					i += 5;
+					if (switchNode.children.size() < i)
+						break;
+				}
+			}
+		}
 	}
 	
 	public String relationalExecute(Node<String> relational)
