@@ -82,7 +82,7 @@ public class LexRecognizer {
 				}
 			} else if (str.charAt(0) == '*') {
 				token.tokenName = "ARITH_OP_MULT";
-			} else if (str.charAt(0) == '/') {
+			} else if (str.charAt(0) == '/') { 
 				token.tokenName = "ARITH_OP_DIVIDE";
 			} else if (str.charAt(0) == '^') {
 				token.tokenName = "ARITH_OP_EXPON";

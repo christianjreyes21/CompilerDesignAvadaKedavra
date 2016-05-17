@@ -1,6 +1,7 @@
-#BOOLEAN @a
-@a = 1 < 2
-%OUTPUT.PRINT ( @a )
+#INTEGER @a
+#STRING @b
 #INTEGER @c
-@c = 4 + 6
-%OUTPUT.PRINT ( @c )
+%INPUT.GET ( @b )
+%FOR ( @a = 1 ; @a < 3 ; @a ++ )
+	%OUTPUT.PRINTLN ( @a )
+	%OUTPUT.PRINTLN ( @b )

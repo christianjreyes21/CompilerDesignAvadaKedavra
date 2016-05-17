@@ -84,8 +84,8 @@ public class AvadaKedavraParser {
 		{
 			System.out.println("Parsing has been unsuccessful. Please correct the errors");
 		}
-		//ParseTreeGenerator ptg = new ParseTreeGenerator();
-		//ptg.generateTree(programNode);
+		ParseTreeGenerator ptg = new ParseTreeGenerator();
+		ptg.generateTree(programNode);
 	}
 	
 	public void statement(Node<String> parent)
@@ -342,7 +342,7 @@ public class AvadaKedavraParser {
 			nextToken();
 			//// SPACE
 			space(assignNode);
-			nextToken();
+			nextToken();//System.out.println(token.getTokenName());
 			//// VAR, EXPR, CONST
 			switch (lexer.lookahead2().getTokenName())
 			{
@@ -367,7 +367,8 @@ public class AvadaKedavraParser {
 					switch (token.getTokenName())
 					{
 						case "INTEGER":
-						case "BOOLEAN":
+						case "KEYWORD_BOOLEAN_FALSE":
+						case "KEYWORD_BOOLEAN_TRUE":
 						case "STRING":
 						case "CHARACTER":
 						case "DECIMAL":

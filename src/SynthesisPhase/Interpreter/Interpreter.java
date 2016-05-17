@@ -10,6 +10,7 @@ import Utilities.MemoryCell;
 public class Interpreter {
 	
 	ArrayList<MemoryCell> MemoryAllocation = new ArrayList<MemoryCell>();
+	boolean errorDetected = false;
 	
 	public MemoryCell retrieveCell(String data) //// retrieve variables!
 	{
@@ -34,6 +35,7 @@ public class Interpreter {
 			statementExecute(root.children.get(i));
 			//System.out.println();
 		}
+		warningCheck();
 	}
 	
 	public void statementExecute(Node<String> statement) //// Decide which kind of statement to execute
@@ -45,6 +47,7 @@ public class Interpreter {
 				declarationExecute(statement.children.get(0));
 				break;
 			case "<INPUT_STMT>":
+				if(!errorDetected)
 				inputExecute(statement.children.get(0));
 				break;
 			case "<OUTPUT_STMT>":
@@ -63,7 +66,7 @@ public class Interpreter {
 				decreExecute(statement.children.get(0));
 				break;
 			case "<FOR_STMT>":
-				System.out.println(statement.children.get(0));
+				//System.out.println(statement.children.get(0));
 				forExecute(statement.children.get(0));
 				break;
 			case "<SWITCH_STMT>":
@@ -87,7 +90,8 @@ public class Interpreter {
 		}
 		else
 		{
-			existing.tokenName = declaration.children.get(0).data;
+			System.out.println("Line: " + declaration.children.get(0).lineNumber + " | Semantic Error: Double declaration detected");
+			errorDetected=true;
 		}
 	}
 	
@@ -96,27 +100,36 @@ public class Interpreter {
 		//System.out.println("INPUT");
 		MemoryCell cell = retrieveCell(input.children.get(4).children.get(0).data);
 		Scanner in = new Scanner(System.in);
-		cell.cellValue = in.next();
-		//System.out.println(cell.cellName);
 		try
 		{
-			if (cell.tokenName.equals("#INTEGER"))
-				Integer.parseInt(cell.cellValue);
-			else if (cell.tokenName.equals("#DOUBLE"))
-				Double.parseDouble(cell.cellValue);
-			else if (cell.tokenName.equals("#BOOLEAN") && (!cell.cellValue.equals("%TRUE") || !cell.cellValue.equals("%FALSE")))
-				throw new Exception();
-			else if (cell.tokenName.equals("#STRING") && !(cell.cellValue.charAt(0) == '\"'))
-				throw new Exception();
-			else if (cell.tokenName.equals("#CHARACTER") && !(cell.cellValue.charAt(0) == '\''))
-				throw new Exception();
+			cell.cellValue = in.next();
+			try
+			{
+				if (cell.tokenName.equals("#INTEGER"))
+					Integer.parseInt(cell.cellValue);
+				else if (cell.tokenName.equals("#DOUBLE"))
+					Double.parseDouble(cell.cellValue);
+				else if (cell.tokenName.equals("#BOOLEAN") && (!cell.cellValue.equals("%TRUE") || !cell.cellValue.equals("%FALSE")))
+					throw new Exception();
+				else if (cell.tokenName.equals("#STRING") && !(cell.cellValue.charAt(0) == '\"'))
+					throw new Exception();
+				else if (cell.tokenName.equals("#CHARACTER") && !(cell.cellValue.charAt(0) == '\''))
+					throw new Exception();
+			}
+			catch (Exception e)
+			{
+				cell.cellValue = null;
+				System.out.println("Line: " + input.children.get(0).lineNumber + " | Semantic Error: Type mismatch detected");
+				errorDetected = true;
+				in.close();
+			}
 		}
 		catch (Exception e)
 		{
-			cell.cellValue = null;
-			System.out.println("Line: " + input.children.get(0).lineNumber + " | Semantic Error: Type mismatch detected");
-			in.close();
+			System.out.println("Line: " + input.children.get(0).lineNumber + " | Semantic Error: Variable not declared");
+			errorDetected = true;
 		}
+		//System.out.println(cell.cellName);
 		
 		in.close();
 	}
@@ -135,13 +148,16 @@ public class Interpreter {
 		{
 			if (existing.cellValue != null)
 			{	
-				if (output.children.get(0).data.equals("KEYWORD_OUTPUT.PRINT"))
+				if (output.children.get(0).data.equals("%OUTPUT.PRINT"))
 					System.out.print(existing.cellValue);
 				else
 					System.out.println(existing.cellValue);
 			}
 			else
+			{
 				System.out.println("Line: " + output.children.get(0).lineNumber + " | Semantic Error: Variable hasn't been assigned a value");
+				errorDetected = true;
+			}
 		}
 	}
 	
@@ -151,7 +167,9 @@ public class Interpreter {
 		MemoryCell existing = retrieveCell(assign.children.get(0).children.get(0).data);
 		if (existing == null)
 		{
-			MemoryCell cell = new MemoryCell();
+			System.out.println("Line: " + assign.children.get(0).children.get(0).lineNumber + " | Semantic Error: Variable not declared");
+			errorDetected = true;
+			/*MemoryCell cell = new MemoryCell();
 			if (assign.children.get(4).data.startsWith("<"))
 			{
 				if (assign.children.get(4).children.get(0).data.equals("<MATH_EXPR>"))
@@ -165,7 +183,7 @@ public class Interpreter {
 				else
 				{
 					cell.cellValue = relationalExecute(assign.children.get(4).children.get(0));
-					if (cell.tokenName.equals("#BOOLEAN") && (!cell.cellValue.equals("true") || !cell.cellValue.equals("false")))
+					if (cell.tokenName.equals("#BOOLEAN") && (!cell.cellValue.equals("true") || !cell.cellValue.equals("false") || !cell.cellValue.equals("%FALSE") || !cell.cellValue.equals("%TRUE")))
 					{
 						System.out.println("Line: " + assign.children.get(0).children.get(0).lineNumber + " | Semantic Error: The right hand side must be a boolean value. Please recheck your code");
 					}
@@ -173,14 +191,21 @@ public class Interpreter {
 			}
 			else
 			{
-				cell.cellValue = assign.children.get(4).data;
+				if (cell.cellValue.equals("%TRUE"))
+					cell.cellValue = "true";
+				else if (cell.cellValue.equals("%FALSE"))
+					cell.cellValue = "true";
+				else
+					cell.cellValue = assign.children.get(4).data;
 			}
 			
 			cell.cellName = assign.children.get(0).children.get(0).data;
-			MemoryAllocation.add(cell);
+			MemoryAllocation.add(cell);*/
+			
 		}
 		else
 		{
+			try{
 			if (assign.children.get(4).data.startsWith("<"))
 			{
 				if (assign.children.get(4).children.get(0).data.equals("<MATH_EXPR>"))
@@ -196,6 +221,7 @@ public class Interpreter {
 					existing.cellValue = relationalExecute(assign.children.get(4).children.get(0));
 					if (existing.tokenName.equals("#BOOLEAN") && !(existing.cellValue.equals("true") || existing.cellValue.equals("false")))
 					{
+						errorDetected = true;
 						System.out.println("Line: " + assign.children.get(0).children.get(0).lineNumber + " | Semantic Error: The right hand side must be a boolean value. Please recheck your code");
 					}
 				}
@@ -203,6 +229,7 @@ public class Interpreter {
 			else
 			{
 				existing.cellValue = assign.children.get(4).data;
+				//System.out.println(existing.cellValue);
 				try
 				{
 					if (existing.tokenName.equals("#INTEGER"))
@@ -215,10 +242,45 @@ public class Interpreter {
 						throw new Exception();
 					else if (existing.tokenName.equals("#CHARACTER") && !(existing.cellValue.charAt(0) == '\''))
 						throw new Exception();
+					else if (existing.tokenName.equals("#CHARACTER") && (existing.cellValue.charAt(0) == '\''))
+						existing.cellValue = Character.toString(assign.children.get(4).data.charAt(1));
+					else if (existing.tokenName.equals("#STRING") && (existing.cellValue.charAt(0) == '\"'))
+						existing.cellValue = assign.children.get(4).data.substring(1, assign.children.get(4).data.length() - 1);
+
 				}
-				catch (Exception e)
+				catch (Exception ea)
 				{
 					System.out.println("Variable " + existing.cellValue + " | Semantic Error: Type mismatch detected");
+					errorDetected = true;
+					existing.cellValue = null;
+				}
+			}
+			}catch (Exception e)
+			{
+				try
+				{
+					existing.cellValue = assign.children.get(4).data;
+					//System.out.println(existing.cellValue);
+					
+					if (existing.tokenName.equals("#INTEGER"))
+						Integer.parseInt(existing.cellValue);
+					else if (existing.tokenName.equals("#DOUBLE"))
+						Double.parseDouble(existing.cellValue);
+					else if (existing.tokenName.equals("#BOOLEAN") && (!existing.cellValue.equals("%TRUE") || !existing.cellValue.equals("%FALSE")))
+						throw new Exception();
+					else if (existing.tokenName.equals("#STRING") && !(existing.cellValue.charAt(0) == '\"'))
+						throw new Exception();
+					else if (existing.tokenName.equals("#CHARACTER") && !(existing.cellValue.charAt(0) == '\''))
+						throw new Exception();
+					else if (existing.tokenName.equals("#CHARACTER") && (existing.cellValue.charAt(0) == '\''))
+						existing.cellValue = Character.toString(assign.children.get(4).data.charAt(1));
+					else if (existing.tokenName.equals("#STRING") && (existing.cellValue.charAt(0) == '\"'))
+						existing.cellValue = assign.children.get(4).data.substring(1, assign.children.get(4).data.length() - 1);
+				}
+				catch (Exception ea)
+				{
+					System.out.println("Variable " + existing.cellValue + " | Semantic Error: Type mismatch detected");
+					errorDetected = true;
 					existing.cellValue = null;
 				}
 			}
@@ -233,6 +295,7 @@ public class Interpreter {
 		if (existing == null)
 		{
 			System.out.println("Line: " + incre.children.get(2).lineNumber + " | Semantic Error: The variable must be declared and assigned an integer value");
+			errorDetected = true;
 		}
 		else
 		{
@@ -243,6 +306,7 @@ public class Interpreter {
 			else
 			{
 				System.out.println("Line: " + incre.children.get(2).lineNumber + " | Semantic Error: The variable must have an integer value");
+				errorDetected = true;
 			}
 		}
 	}
@@ -255,6 +319,7 @@ public class Interpreter {
 		if (existing == null)
 		{
 			System.out.println("Line: " + decre.children.get(2).lineNumber + " | Semantic Error: The variable must be declared and assigned an integer value");
+			errorDetected = true;
 		}
 		else
 		{
@@ -265,6 +330,7 @@ public class Interpreter {
 			else
 			{
 				System.out.println("Line: " + decre.children.get(2).lineNumber + " | Semantic Error: The variable must have an integer value");
+				errorDetected = true;
 			}
 		}
 	}
@@ -276,6 +342,7 @@ public class Interpreter {
 		while(true)
 		{
 			boolean condition = Boolean.parseBoolean(relationalExecute(forLoop.children.get(8)));
+			//System.out.print(condition);
 			if (!condition)
 				break;
 			
@@ -298,10 +365,38 @@ public class Interpreter {
 	
 	public String relationalExecute(Node<String> relational)
 	{
-		int a = relational.children.get(0).data.compareTo(relational.children.get(5).data);
+		int a = 0;
+		MemoryCell cell1;
+		MemoryCell cell2;
+		try{
+		
+		if (relational.children.get(5).data.startsWith("<") && relational.children.get(0).data.startsWith("<"))
+		{
+			cell1 = retrieveCell(relational.children.get(0).children.get(0).data);
+			cell2 = retrieveCell(relational.children.get(5).children.get(0).data);
+			
+			a = cell1.cellValue.compareTo(cell2.cellValue);
+		}
+		else if (relational.children.get(5).data.startsWith("<"))
+		{
+			cell1 = retrieveCell(relational.children.get(5).children.get(0).data);
+			//System.out.print(cell1);
+			a = relational.children.get(0).data.compareTo(cell1.cellValue);
+		}
+		else if (relational.children.get(0).data.startsWith("<"))
+		{
+			cell1 = retrieveCell(relational.children.get(0).children.get(0).data);
+			//System.out.print(cell1.cellValue);
+			a = cell1.cellValue.compareTo(relational.children.get(5).data);
+		}
+		else
+			a = relational.children.get(0).data.compareTo(relational.children.get(5).data);
+		//System.out.println(relational.children.get(0).data);
+		}
+		catch(Exception e){}
 		//System.out.println(a);
 		boolean ans = true;
-		//System.out.println(relational.children.get(2).data + "\n    " + a + "\n"+relational.children.get(0).data+"\n"+relational.children.get(5).data);
+		
 		switch (relational.children.get(2).data)
 		{
 			case "<":
@@ -383,6 +478,7 @@ public class Interpreter {
 		catch (Exception e)
 		{
 			System.out.println("Line: " + math.children.get(0).lineNumber + " | Semantic Error: Must only operate on numeric types");
+			errorDetected = true;
 			return null;
 		}
 	}
@@ -390,5 +486,16 @@ public class Interpreter {
 	public void gotoExecute(Node<String> gotoStmt)
 	{
 		
+	}
+	
+	public void warningCheck()
+	{
+		for (int i = 0; i < MemoryAllocation.size(); i++)
+		{
+			if (MemoryAllocation.get(i).cellValue == null)
+			{
+				System.out.println("Warning: " + MemoryAllocation.get(i).cellName + " was not used");
+			}
+		}
 	}
 }
