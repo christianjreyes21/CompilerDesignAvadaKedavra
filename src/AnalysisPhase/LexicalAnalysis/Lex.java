@@ -41,6 +41,23 @@ public class Lex {
 		// reading the whole file (medyo ito yung scanner)
 		for (int i = 0; i < file.length(); i++)
 		{
+			if (file.charAt(i) == '\"')
+			{
+				possibleToken += file.charAt(i);
+				while (true)
+				{
+					i++;
+					possibleToken += file.charAt(i);
+					if (file.charAt(i) == '\"')
+					{
+						i++;
+						break;
+					}
+				}
+				maxTokens[numTokens] = LexRecognizer.charOrString(possibleToken, line);
+				numTokens++;
+				possibleToken = "";
+			}
 			// reads characters from start of a character to a space or newline
 			if (!(file.charAt(i) == ' ' || file.charAt(i) == '\n' || file.charAt(i) == '\t'))
 				possibleToken += file.charAt(i);
@@ -104,7 +121,7 @@ public class Lex {
 						}
 						maxTokens[numTokens] = LexRecognizer.comment(possibleToken, line);
 					}
-					else if (possibleToken.charAt(0) == '\'' || possibleToken.charAt(0) == '\"')
+					else if (possibleToken.charAt(0) == '\'')
 					{
 						maxTokens[numTokens] = LexRecognizer.charOrString(possibleToken, line);
 					}

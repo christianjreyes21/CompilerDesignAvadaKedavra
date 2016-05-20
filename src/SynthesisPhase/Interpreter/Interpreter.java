@@ -149,9 +149,23 @@ public class Interpreter {
 			if (existing.cellValue != null)
 			{	
 				if (output.children.get(0).data.equals("%OUTPUT.PRINT"))
-					System.out.print(existing.cellValue);
+				{
+					if (existing.tokenName.equals("#CHARACTER"))
+						System.out.print(existing.cellValue.charAt(1));
+					else if (existing.tokenName.equals("#STRING"))
+						System.out.print(existing.cellValue.substring(1, existing.cellValue.length() - 1));
+					else
+						System.out.print(existing.cellValue);
+				}
 				else
-					System.out.println(existing.cellValue);
+				{
+					if (existing.tokenName.equals("#CHARACTER"))
+						System.out.println(existing.cellValue.charAt(1));
+					else if (existing.tokenName.equals("#STRING"))
+						System.out.println(existing.cellValue.substring(1, existing.cellValue.length() - 1));
+					else
+						System.out.println(existing.cellValue);
+				}
 			}
 			else
 			{
@@ -212,7 +226,9 @@ public class Interpreter {
 				if (assign.children.get(4).children.get(0).data.equals("<MATH_EXPR>"))
 				{
 					existing.cellValue = mathExecute(assign.children.get(4).children.get(0));
-					if ( existing.cellValue == null || (existing.tokenName.equals("#INTEGER") && Double.parseDouble(existing.cellValue) % 1 != 0))
+					if (existing.cellValue != null && existing.tokenName.equals("#STRING"))
+						existing.cellValue = existing.cellValue;
+					else if ( existing.cellValue == null || (existing.tokenName.equals("#INTEGER") && Double.parseDouble(existing.cellValue) % 1 != 0))
 					{
 						System.out.println("Line: " + assign.children.get(0).children.get(0).lineNumber + " | Semantic Error: The right hand side must be an integer value. Please recheck your code");
 					}
@@ -241,20 +257,21 @@ public class Interpreter {
 						Integer.parseInt(existing.cellValue);
 					else if (existing.tokenName.equals("#DOUBLE"))
 						Double.parseDouble(existing.cellValue);
-					else if (existing.tokenName.equals("#BOOLEAN") && (!existing.cellValue.equals("%TRUE") || !existing.cellValue.equals("%FALSE")))
+					else if (existing.tokenName.equals("#BOOLEAN") && !((existing.cellValue.equals("%TRUE") || existing.cellValue.equals("%FALSE"))))
 						throw new Exception();
-					else if (existing.tokenName.equals("#STRING") && !(existing.cellValue.charAt(0) == '\"'))
+					else if (existing.tokenName.equals("#STRING") && !(existing.cellValue.charAt(0) == '\"'))	
 						throw new Exception();
 					else if (existing.tokenName.equals("#CHARACTER") && !(existing.cellValue.charAt(0) == '\''))
 						throw new Exception();
 					else if (existing.tokenName.equals("#CHARACTER") && (existing.cellValue.charAt(0) == '\''))
-						existing.cellValue = Character.toString(assign.children.get(4).data.charAt(1));
+						existing.cellValue = (assign.children.get(4).data);
 					else if (existing.tokenName.equals("#STRING") && (existing.cellValue.charAt(0) == '\"'))
-						existing.cellValue = assign.children.get(4).data.substring(1, assign.children.get(4).data.length() - 1);
+						existing.cellValue = assign.children.get(4).data;
 
 				}
 				catch (Exception ea)
 				{
+					
 					System.out.println("Variable " + existing.cellValue + " | Semantic Error: Type mismatch detected");
 					errorDetected = true;
 					existing.cellValue = null;
@@ -278,9 +295,9 @@ public class Interpreter {
 					else if (existing.tokenName.equals("#CHARACTER") && !(existing.cellValue.charAt(0) == '\''))
 						throw new Exception();
 					else if (existing.tokenName.equals("#CHARACTER") && (existing.cellValue.charAt(0) == '\''))
-						existing.cellValue = Character.toString(assign.children.get(4).data.charAt(1));
+						existing.cellValue = (assign.children.get(4).data);
 					else if (existing.tokenName.equals("#STRING") && (existing.cellValue.charAt(0) == '\"'))
-						existing.cellValue = assign.children.get(4).data.substring(1, assign.children.get(4).data.length() - 1);
+						existing.cellValue = assign.children.get(4).data;
 				}
 				catch (Exception ea)
 				{
@@ -380,10 +397,10 @@ public class Interpreter {
 				if (value.equals(switchNode.children.get(i).children.get(2).data))
 				{
 					statementExecute(switchNode.children.get(i).children.get(6));
-					i += 5;
-					if (switchNode.children.size() < i)
-						break;
 				}
+				i += 5;
+				if (switchNode.children.size() < i)
+					break;
 			}
 		}
 	}
@@ -511,17 +528,60 @@ public class Interpreter {
 			else if (!math.children.get(i).data.equals("SPACE"))
 				expression += math.children.get(i).data;
 		}
-		try 
+
+		if (expression.contains("/") || expression.contains("-") || expression.contains("*"))
 		{
-			String ans = Double.toString(new Infix().infix(expression));
-			
-			return ans;
+			try 
+			{
+				String ans = Double.toString(new Infix().infix(expression));
+				
+				return ans;
+			}
+			catch (Exception e)
+			{
+				System.out.println("Semantic Error: Must only operate on numeric types");
+				errorDetected = true;
+				return null;
+			}
 		}
-		catch (Exception e)
+		else
 		{
-			System.out.println("Line: " + math.children.get(0).lineNumber + " | Semantic Error: Must only operate on numeric types");
-			errorDetected = true;
-			return null;
+			boolean num = false;
+			String results[] = expression.split("\\+");
+			
+			for (int i = 0; i < results.length; i++)
+			{
+				if (results[i].charAt(0) == '\"' && results[i].charAt(results[i].length()-1) == '\"')
+					continue;
+				else
+				{
+					num = true;
+					break;
+				}
+			}
+			
+			if (num)
+			{
+				try 
+				{
+					String ans = Double.toString(new Infix().infix(expression));
+					
+					return ans;
+				}
+				catch (Exception e)
+				{
+					System.out.println("Semantic Error: Must only operate on numeric types");
+					errorDetected = true;
+					return null;
+				}
+			}
+			else
+			{
+				String ans = "";
+				for (int i = 0; i < results.length; i++)
+					ans += results[i].substring(1, results[i].length()-1);
+				return "\""+ans+"\"";
+			}
 		}
 	}
 	

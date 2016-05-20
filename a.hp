@@ -1,19 +1,13 @@
-#INTEGER @i
-#INTEGER @count
+#STRING @i
 #STRING @s
-#STRING @s2
-#CHARACTER @c
-#BOOLEAN @b
-#DECIMAL @d
-%FOR ( @count = 1 ; @count < 9 ; @count ++ )
-	%OUTPUT.PRINTLN ( @count )
-@i = 1 + 1 - 2 * 3 - 0
+@s = "Hello "
+#STRING @r
+@r = "world"
+@i = @s + @r
 %OUTPUT.PRINTLN ( @i )
-@i = @i + 32
-%OUTPUT.PRINTLN ( @i )
-@s = "HEllo"
-%OUTPUT.PRINTLN ( @s )
-%SWITCH ( @i )
-	%CASE 28 : @i = 1
-	%STOP
-%OUTPUT.PRINTLN ( @i )
+#INTEGER @j
+#INTEGER @k
+@k = 1 + 3 + 2 + 1
+@j = 1 * 3
+@j = @k + @j
+%OUTPUT.PRINTLN ( @j )

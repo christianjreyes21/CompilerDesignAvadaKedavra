@@ -267,7 +267,8 @@ public class AvadaKedavraParser {
 					switch (token.getTokenName())
 					{
 						case "INTEGER":
-						case "BOOLEAN":
+						case "KEYWORD_BOOLEAN_TRUE":
+						case "KEYWORD_BOOLEAN_FALSE":
 						case "STRING":
 						case "CHARACTER":
 						case "DECIMAL":
@@ -781,7 +782,8 @@ public class AvadaKedavraParser {
 					case "INTEGER":
 					case "STRING":
 					case "CHARACTER":
-					case "BOOLEAN":
+					case "KEYWORD_BOOLEAN_FALSE":
+					case "KEYWORD_BOOLEAN_TRUE":
 						constant(relExpressionNode);
 						break;
 					case "IDENT":
@@ -910,7 +912,8 @@ public class AvadaKedavraParser {
 					case "INTEGER":
 					case "DECIMAL":
 					case "STRING":
-					case "BOOLEAN":
+					case "KEYWORD_BOOLEAN_TRUE":
+					case "KEYWORD_BOOLEAN_FALSE":
 					case "CHARACTER":
 						constant(caseNode);
 						break;
