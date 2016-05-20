@@ -1,9 +1,19 @@
 #INTEGER @i
+#INTEGER @count
 #STRING @s
+#STRING @s2
 #CHARACTER @c
 #BOOLEAN @b
 #DECIMAL @d
-@i = 1
+%FOR ( @count = 1 ; @count < 9 ; @count ++ )
+	%OUTPUT.PRINTLN ( @count )
+@i = 1 + 1 - 2 * 3 - 0
 %OUTPUT.PRINTLN ( @i )
-@i = 1 + 3 * 2
+@i = @i + 32
+%OUTPUT.PRINTLN ( @i )
+@s = "HEllo"
+%OUTPUT.PRINTLN ( @s )
+%SWITCH ( @i )
+	%CASE 28 : @i = 1
+	%STOP
 %OUTPUT.PRINTLN ( @i )

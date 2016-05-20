@@ -212,9 +212,13 @@ public class Interpreter {
 				if (assign.children.get(4).children.get(0).data.equals("<MATH_EXPR>"))
 				{
 					existing.cellValue = mathExecute(assign.children.get(4).children.get(0));
-					if ( existing.cellValue == null || (existing.tokenName.equals("#INTEGER") && existing.cellValue.contains(".")))
+					if ( existing.cellValue == null || (existing.tokenName.equals("#INTEGER") && Double.parseDouble(existing.cellValue) % 1 != 0))
 					{
 						System.out.println("Line: " + assign.children.get(0).children.get(0).lineNumber + " | Semantic Error: The right hand side must be an integer value. Please recheck your code");
+					}
+					else
+					{
+						existing.cellValue = Integer.toString((int)Double.parseDouble(existing.cellValue));
 					}
 				}
 				else
@@ -347,7 +351,7 @@ public class Interpreter {
 			//System.out.print(condition);
 			if (!condition)
 				break;
-			
+
 			for (int i = 16; ;)
 			{
 				statementExecute(forLoop.children.get(i));
@@ -355,7 +359,6 @@ public class Interpreter {
 				if (forLoop.children.size() < i)
 					break;
 			}
-			
 			increExecute(forLoop.children.get(11));
 		}
 	}
@@ -408,8 +411,8 @@ public class Interpreter {
 		else if (relational.children.get(0).data.startsWith("<"))
 		{
 			cell1 = retrieveCell(relational.children.get(0).children.get(0).data);
-			//System.out.print(cell1.cellValue);
 			a = cell1.cellValue.compareTo(relational.children.get(5).data);
+			//System.out.print(a);
 		}
 		else
 			a = relational.children.get(0).data.compareTo(relational.children.get(5).data);
@@ -418,7 +421,7 @@ public class Interpreter {
 		catch(Exception e){}
 		//System.out.println(a);
 		boolean ans = true;
-		
+
 		switch (relational.children.get(2).data)
 		{
 			case "<":
@@ -471,26 +474,43 @@ public class Interpreter {
 			{
 				for (int j = 0; j < math.children.get(i).children.size(); j++)
 				{
-					if (!math.children.get(i).children.isEmpty() && math.children.get(i).children.get(j).data.startsWith("<"))
+					if (math.children.get(i).data.equals("<VAR>") && !math.children.get(i).children.isEmpty())
+					{
+						MemoryCell existing;
+						existing = retrieveCell(math.children.get(i).children.get(j).data);
+		
+						if (existing.cellValue == null)
+							System.out.println("Line: " + math.children.get(0).lineNumber + " | Semantic Error: The variable must have a value assigned to it");
+						else
+						{
+							if (existing.cellValue.contains("-"))
+								expression += ("0" + existing.cellValue);
+							else
+								expression += existing.cellValue;
+						}
+					}
+					else if (!math.children.get(i).children.isEmpty() && math.children.get(i).children.get(j).data.startsWith("<"))
 					{
 						if (!math.children.get(i).children.get(j).children.isEmpty())
 						{
 							MemoryCell existing;
 							existing = retrieveCell(math.children.get(i).children.get(j).children.get(0).data);
 							if (existing != null)
-								expression += existing.cellValue;
+							{
+								if (existing.cellValue.contains("-"))
+									expression += ("0" + existing.cellValue);
+								else
+									expression += existing.cellValue;
+							}
 						}
-						
 					}
 					else if (!math.children.get(i).children.get(j).data.equals("SPACE"))
 						expression += math.children.get(i).children.get(j).data;
-					
 				}
 			}
 			else if (!math.children.get(i).data.equals("SPACE"))
 				expression += math.children.get(i).data;
 		}
-		
 		try 
 		{
 			String ans = Double.toString(new Infix().infix(expression));
